@@ -24,7 +24,7 @@
         <header class="bg-white shadow-sm border-b">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex justify-between items-center py-4">
-                    <h1 class="text-2xl font-bold text-gray-900">Sistema de Almoxarifado Embalagens</h1>
+                    <h1 class="text-2xl font-bold text-gray-900">Sistema de Almoxarifado Embalagens Tatuí</h1>
                     <div class="flex items-center space-x-4">
                         <span class="text-sm text-gray-600">Sistema Ativo</span>
                     </div>
@@ -122,12 +122,18 @@
                 
                 <!-- Camera Controls -->
                 <div class="mb-6">
-                    <div class="flex space-x-4 mb-4">
+                    <div class="flex flex-wrap gap-2 mb-4">
                         <button id="startCamera" class="bg-green-600 text-white px-6 py-2 rounded-md hover:bg-green-700 transition duration-200">
                             📷 Iniciar Câmera
                         </button>
                         <button id="stopCamera" class="bg-red-600 text-white px-6 py-2 rounded-md hover:bg-red-700 transition duration-200 hidden">
                             ⏹️ Parar Câmera
+                        </button>
+                        <button id="focusCamera" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition duration-200 hidden">
+                            🎯 Focar
+                        </button>
+                        <button id="toggleFlash" class="bg-yellow-600 text-white px-4 py-2 rounded-md hover:bg-yellow-700 transition duration-200 hidden">
+                            💡 Flash
                         </button>
                         <select id="cameraSelect" class="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                             <option value="">Selecionar Câmera</option>
@@ -152,14 +158,38 @@
                         <div id="scanningOverlay" class="absolute inset-0 hidden">
                             <div class="absolute inset-0 bg-black bg-opacity-30"></div>
                             <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-                                <div class="w-64 h-64 border-4 border-green-500 rounded-lg relative">
+                                <div class="w-64 h-64 border-4 border-green-500 rounded-lg relative animate-pulse">
                                     <div class="absolute top-0 left-0 w-8 h-8 border-t-4 border-l-4 border-green-500"></div>
                                     <div class="absolute top-0 right-0 w-8 h-8 border-t-4 border-r-4 border-green-500"></div>
                                     <div class="absolute bottom-0 left-0 w-8 h-8 border-b-4 border-l-4 border-green-500"></div>
                                     <div class="absolute bottom-0 right-0 w-8 h-8 border-b-4 border-r-4 border-green-500"></div>
+                                    
+                                    <!-- Scanning line animation -->
+                                    <div class="absolute inset-0 overflow-hidden">
+                                        <div id="scanLine" class="absolute w-full h-1 bg-green-400 opacity-80" style="top: 0; animation: scanAnimation 2s linear infinite;"></div>
+                                    </div>
                                 </div>
                             </div>
+                            
+                            <!-- Status indicator -->
+                            <div class="absolute top-4 left-1/2 transform -translate-x-1/2 bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-medium">
+                                🔍 Procurando QR Code...
+                            </div>
+                            
+                            <!-- Tips -->
+                            <div class="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-black bg-opacity-70 text-white px-4 py-2 rounded-lg text-sm text-center max-w-xs">
+                                💡 Mantenha o QR dentro do quadrado<br>
+                                📱 Aproxime ou afaste para melhor foco
+                            </div>
                         </div>
+                        
+                        <style>
+                            @keyframes scanAnimation {
+                                0% { top: 0; }
+                                50% { top: calc(100% - 4px); }
+                                100% { top: 0; }
+                            }
+                        </style>
                     </div>
                 </div>
 
@@ -867,12 +897,14 @@
 
                 const videoElement = document.getElementById('cameraPreview');
                 
-                // Request camera access
+                // Request camera access with optimized settings
                 const constraints = {
                     video: {
                         deviceId: selectedCamera ? { exact: selectedCamera } : undefined,
-                        width: { ideal: 1280 },
-                        height: { ideal: 720 },
+                        width: { ideal: 1920, min: 640 },
+                        height: { ideal: 1080, min: 480 },
+                        frameRate: { ideal: 30, min: 15 },
+                        focusMode: { ideal: 'continuous' },
                         facingMode: selectedCamera ? undefined : { ideal: 'environment' }
                     }
                 };
@@ -902,6 +934,8 @@
                 // Update buttons
                 document.getElementById('startCamera').classList.add('hidden');
                 document.getElementById('stopCamera').classList.remove('hidden');
+                document.getElementById('focusCamera').classList.remove('hidden');
+                document.getElementById('toggleFlash').classList.remove('hidden');
                 
                 console.log('Câmera iniciada com sucesso');
                 
@@ -911,7 +945,7 @@
             }
         });
 
-        // Start QR scanning
+        // Start QR scanning with advanced detection
         function startQRScanning(videoElement) {
             scanningInterval = setInterval(() => {
                 if (videoElement.readyState === videoElement.HAVE_ENOUGH_DATA) {
@@ -920,28 +954,86 @@
                     canvas.height = videoElement.videoHeight;
                     context.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
                     
-                    const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+                    // Try multiple scanning strategies for maximum detection
+                    const detectionStrategies = [
+                        // Strategy 1: Full image, normal
+                        () => {
+                            const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+                            return jsQR(imageData.data, imageData.width, imageData.height, {
+                                inversionAttempts: "dontInvert",
+                            });
+                        },
+                        
+                        // Strategy 2: Full image, inverted
+                        () => {
+                            const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+                            return jsQR(imageData.data, imageData.width, imageData.height, {
+                                inversionAttempts: "onlyInvert",
+                            });
+                        },
+                        
+                        // Strategy 3: Center crop (for close-up QRs)
+                        () => {
+                            const cropSize = Math.min(canvas.width, canvas.height) * 0.8;
+                            const startX = (canvas.width - cropSize) / 2;
+                            const startY = (canvas.height - cropSize) / 2;
+                            const imageData = context.getImageData(startX, startY, cropSize, cropSize);
+                            return jsQR(imageData.data, imageData.width, imageData.height, {
+                                inversionAttempts: "attemptBoth",
+                            });
+                        },
+                        
+                        // Strategy 4: Enhanced contrast
+                        () => {
+                            const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+                            // Enhance contrast
+                            const data = imageData.data;
+                            for (let i = 0; i < data.length; i += 4) {
+                                const gray = (data[i] + data[i + 1] + data[i + 2]) / 3;
+                                const enhanced = gray > 128 ? 255 : 0;
+                                data[i] = data[i + 1] = data[i + 2] = enhanced;
+                            }
+                            return jsQR(data, imageData.width, imageData.height, {
+                                inversionAttempts: "attemptBoth",
+                            });
+                        },
+                        
+                        // Strategy 5: Scaled down for distant QRs
+                        () => {
+                            const scale = 0.5;
+                            const scaledWidth = canvas.width * scale;
+                            const scaledHeight = canvas.height * scale;
+                            
+                            const tempCanvas = document.createElement('canvas');
+                            const tempContext = tempCanvas.getContext('2d');
+                            tempCanvas.width = scaledWidth;
+                            tempCanvas.height = scaledHeight;
+                            
+                            tempContext.drawImage(canvas, 0, 0, scaledWidth, scaledHeight);
+                            const imageData = tempContext.getImageData(0, 0, scaledWidth, scaledHeight);
+                            
+                            return jsQR(imageData.data, imageData.width, imageData.height, {
+                                inversionAttempts: "attemptBoth",
+                            });
+                        }
+                    ];
                     
-                    // Try multiple detection attempts with different options
-                    const code = jsQR(imageData.data, imageData.width, imageData.height, {
-                        inversionAttempts: "dontInvert",
-                    });
-                    
-                    if (code) {
-                        console.log('QR detectado:', code.data);
-                        handleQRScan(code.data);
-                    } else {
-                        // Try with inversion for better detection
-                        const codeInverted = jsQR(imageData.data, imageData.width, imageData.height, {
-                            inversionAttempts: "onlyInvert",
-                        });
-                        if (codeInverted) {
-                            console.log('QR detectado (invertido):', codeInverted.data);
-                            handleQRScan(codeInverted.data);
+                    // Try each strategy until one works
+                    for (let i = 0; i < detectionStrategies.length; i++) {
+                        try {
+                            const code = detectionStrategies[i]();
+                            if (code) {
+                                console.log(`QR detectado com estratégia ${i + 1}:`, code.data);
+                                handleQRScan(code.data);
+                                return; // Stop trying other strategies
+                            }
+                        } catch (error) {
+                            // Continue to next strategy if this one fails
+                            console.log(`Estratégia ${i + 1} falhou:`, error);
                         }
                     }
                 }
-            }, 50); // Faster scanning - every 50ms
+            }, 30); // Even faster scanning - every 30ms
         }
 
         // Stop camera
@@ -970,6 +1062,8 @@
             // Update buttons
             document.getElementById('startCamera').classList.remove('hidden');
             document.getElementById('stopCamera').classList.add('hidden');
+            document.getElementById('focusCamera').classList.add('hidden');
+            document.getElementById('toggleFlash').classList.add('hidden');
             
             console.log('Câmera parada');
         });
@@ -1337,6 +1431,75 @@
             img.src = currentQRData.qrCode;
         });
 
+        // Focus camera button
+        document.getElementById('focusCamera').addEventListener('click', async () => {
+            try {
+                const videoElement = document.getElementById('cameraPreview');
+                if (videoStream && videoElement) {
+                    const track = videoStream.getVideoTracks()[0];
+                    const capabilities = track.getCapabilities();
+                    
+                    if (capabilities.focusMode && capabilities.focusMode.includes('manual')) {
+                        await track.applyConstraints({
+                            advanced: [{ focusMode: 'single-shot' }]
+                        });
+                        
+                        // Visual feedback
+                        const focusBtn = document.getElementById('focusCamera');
+                        const originalText = focusBtn.textContent;
+                        focusBtn.textContent = '✅ Focado!';
+                        focusBtn.classList.add('bg-green-600');
+                        focusBtn.classList.remove('bg-blue-600');
+                        
+                        setTimeout(() => {
+                            focusBtn.textContent = originalText;
+                            focusBtn.classList.remove('bg-green-600');
+                            focusBtn.classList.add('bg-blue-600');
+                        }, 1500);
+                    } else {
+                        alert('Esta câmera não suporta foco manual');
+                    }
+                }
+            } catch (error) {
+                console.error('Erro ao focar:', error);
+                alert('Erro ao ajustar foco');
+            }
+        });
+
+        // Toggle flash button
+        let flashEnabled = false;
+        document.getElementById('toggleFlash').addEventListener('click', async () => {
+            try {
+                if (videoStream) {
+                    const track = videoStream.getVideoTracks()[0];
+                    const capabilities = track.getCapabilities();
+                    
+                    if (capabilities.torch) {
+                        flashEnabled = !flashEnabled;
+                        await track.applyConstraints({
+                            advanced: [{ torch: flashEnabled }]
+                        });
+                        
+                        const flashBtn = document.getElementById('toggleFlash');
+                        if (flashEnabled) {
+                            flashBtn.textContent = '🔦 Flash ON';
+                            flashBtn.classList.add('bg-orange-600');
+                            flashBtn.classList.remove('bg-yellow-600');
+                        } else {
+                            flashBtn.textContent = '💡 Flash';
+                            flashBtn.classList.remove('bg-orange-600');
+                            flashBtn.classList.add('bg-yellow-600');
+                        }
+                    } else {
+                        alert('Esta câmera não possui flash');
+                    }
+                }
+            } catch (error) {
+                console.error('Erro ao controlar flash:', error);
+                alert('Erro ao controlar flash');
+            }
+        });
+
         // Initialize cameras when page loads
         document.addEventListener('DOMContentLoaded', () => {
             initializeCameras();
@@ -1349,5 +1512,5 @@
             }
         });
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'987454a175a6cdc3',t:'MTc1OTI0MTcwNy4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'98745ee6207ef171',t:'MTc1OTI0MjEyOC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
