@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema de Almoxarifadoaaa</title>
+    <title>Sistema de Almoxarifado</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
@@ -24,7 +24,7 @@
         <header class="bg-white shadow-sm border-b">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex justify-between items-center py-4">
-                    <h1 class="text-2xl font-bold text-gray-900">Sistema de Almoxarifado</h1>
+                    <h1 class="text-2xl font-bold text-gray-900">Sistema de Almoxarifado Embalagens</h1>
                     <div class="flex items-center space-x-4">
                         <span class="text-sm text-gray-600">Sistema Ativo</span>
                     </div>
@@ -915,19 +915,33 @@
         function startQRScanning(videoElement) {
             scanningInterval = setInterval(() => {
                 if (videoElement.readyState === videoElement.HAVE_ENOUGH_DATA) {
+                    // Use higher resolution for better detection
                     canvas.width = videoElement.videoWidth;
                     canvas.height = videoElement.videoHeight;
                     context.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
                     
                     const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
-                    const code = jsQR(imageData.data, imageData.width, imageData.height);
+                    
+                    // Try multiple detection attempts with different options
+                    const code = jsQR(imageData.data, imageData.width, imageData.height, {
+                        inversionAttempts: "dontInvert",
+                    });
                     
                     if (code) {
                         console.log('QR detectado:', code.data);
                         handleQRScan(code.data);
+                    } else {
+                        // Try with inversion for better detection
+                        const codeInverted = jsQR(imageData.data, imageData.width, imageData.height, {
+                            inversionAttempts: "onlyInvert",
+                        });
+                        if (codeInverted) {
+                            console.log('QR detectado (invertido):', codeInverted.data);
+                            handleQRScan(codeInverted.data);
+                        }
                     }
                 }
-            }, 100); // Scan every 100ms
+            }, 50); // Faster scanning - every 50ms
         }
 
         // Stop camera
@@ -1004,38 +1018,225 @@
             // Show results section
             scanResults.classList.remove('hidden');
             
-            // Create product button
-            const productButton = document.createElement('button');
-            productButton.className = 'w-full text-left bg-green-50 border border-green-200 rounded-lg p-4 hover:bg-green-100 transition duration-200';
-            productButton.innerHTML = `
-                <div class="flex justify-between items-center">
-                    <div>
-                        <h5 class="font-semibold text-gray-800">${product.name}</h5>
-                        <p class="text-sm text-gray-600">Código: ${product.code} | Qtd: ${product.quantity}</p>
-                        <p class="text-xs text-gray-500">${product.location.sector} - ${product.location.corridor} - ${product.location.shelf}</p>
+            // Get current timestamp
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('pt-BR', { 
+                hour: '2-digit', 
+                minute: '2-digit', 
+                second: '2-digit' 
+            });
+            
+            // Create product card with enhanced design
+            const productCard = document.createElement('div');
+            productCard.className = 'bg-gradient-to-r from-green-50 to-emerald-50 border-l-4 border-green-500 rounded-lg p-4 shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer';
+            productCard.innerHTML = `
+                <div class="flex justify-between items-start mb-2">
+                    <div class="flex-1">
+                        <div class="flex items-center space-x-2 mb-1">
+                            <span class="text-green-600 text-lg">✅</span>
+                            <h5 class="font-bold text-gray-800 text-lg">${product.name}</h5>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2 text-sm">
+                            <div>
+                                <span class="font-medium text-gray-600">Código:</span>
+                                <span class="text-gray-800 font-mono bg-gray-100 px-2 py-1 rounded ml-1">${product.code}</span>
+                            </div>
+                            <div>
+                                <span class="font-medium text-gray-600">Quantidade:</span>
+                                <span class="text-gray-800 font-bold ml-1">${product.quantity}</span>
+                            </div>
+                        </div>
+                        <div class="mt-2 text-sm">
+                            <span class="font-medium text-gray-600">📍 Localização:</span>
+                            <span class="text-gray-800 ml-1">${product.location.sector} → ${product.location.corridor} → ${product.location.shelf}</span>
+                        </div>
                     </div>
-                    <div class="text-green-600">
-                        ✅ Escaneado
+                    <div class="text-right ml-4">
+                        <div class="text-xs text-gray-500 mb-1">Escaneado às</div>
+                        <div class="text-sm font-medium text-green-600">${timeString}</div>
+                        <button class="mt-2 bg-blue-500 text-white px-3 py-1 rounded-full text-xs hover:bg-blue-600 transition duration-200">
+                            Ver Detalhes
+                        </button>
                     </div>
+                </div>
+                <div class="flex justify-between items-center mt-3 pt-3 border-t border-green-200">
+                    <div class="flex space-x-2">
+                        <button class="bg-red-500 text-white px-3 py-1 rounded text-xs hover:bg-red-600 transition duration-200" onclick="quickWithdraw('${productId}')">
+                            📤 Retirar
+                        </button>
+                        <button class="bg-green-500 text-white px-3 py-1 rounded text-xs hover:bg-green-600 transition duration-200" onclick="quickReturn('${productId}')">
+                            📥 Devolver
+                        </button>
+                    </div>
+                    <button class="text-red-500 hover:text-red-700 text-xs" onclick="removeFromScanned('${productId}')">
+                        🗑️ Remover da Lista
+                    </button>
                 </div>
             `;
             
-            productButton.addEventListener('click', () => {
+            productCard.addEventListener('click', (e) => {
+                // Don't open modal if clicking on buttons
+                if (e.target.tagName === 'BUTTON') return;
                 openProductModal(productId);
             });
             
-            // Add to top of list
-            scannedProducts.insertBefore(productButton, scannedProducts.firstChild);
+            // Add to top of list with animation
+            productCard.style.opacity = '0';
+            productCard.style.transform = 'translateY(-10px)';
+            scannedProducts.insertBefore(productCard, scannedProducts.firstChild);
+            
+            // Animate in
+            setTimeout(() => {
+                productCard.style.transition = 'all 0.3s ease';
+                productCard.style.opacity = '1';
+                productCard.style.transform = 'translateY(0)';
+            }, 10);
+            
+            // Update counter
+            updateScannedCounter();
         }
 
         // Visual scan feedback
         function showScanFeedback() {
             const overlay = document.getElementById('scanningOverlay');
-            overlay.style.backgroundColor = 'rgba(34, 197, 94, 0.3)';
+            
+            // Green flash for successful scan
+            overlay.style.backgroundColor = 'rgba(34, 197, 94, 0.5)';
+            
+            // Add success sound effect (visual)
+            const successIndicator = document.createElement('div');
+            successIndicator.className = 'absolute top-4 left-1/2 transform -translate-x-1/2 bg-green-500 text-white px-4 py-2 rounded-full text-sm font-bold z-50';
+            successIndicator.textContent = '✅ QR DETECTADO!';
+            successIndicator.style.animation = 'bounce 0.5s ease-in-out';
+            overlay.appendChild(successIndicator);
             
             setTimeout(() => {
                 overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.3)';
-            }, 300);
+                if (successIndicator.parentNode) {
+                    successIndicator.remove();
+                }
+            }, 800);
+        }
+
+        // Update scanned counter
+        function updateScannedCounter() {
+            const count = scannedProductsSet.size;
+            const clearButton = document.getElementById('clearScanned');
+            clearButton.innerHTML = `🗑️ Limpar Lista (${count})`;
+        }
+
+        // Quick withdraw function
+        function quickWithdraw(productId) {
+            const quantity = parseInt(prompt('Quantidade a retirar:'));
+            if (quantity && quantity > 0) {
+                database.ref(`products/${productId}`).once('value').then((snapshot) => {
+                    const product = snapshot.val();
+                    if (quantity > product.quantity) {
+                        alert('❌ Quantidade insuficiente em estoque!');
+                        return;
+                    }
+                    
+                    const newQuantity = product.quantity - quantity;
+                    database.ref(`products/${productId}/quantity`).set(newQuantity);
+
+                    // Record movement
+                    const movementData = {
+                        type: 'withdraw',
+                        quantity: quantity,
+                        timestamp: new Date().toISOString(),
+                        userEmail: 'Scanner',
+                        previousQuantity: product.quantity,
+                        newQuantity: newQuantity
+                    };
+
+                    database.ref(`movements/${productId}`).push(movementData);
+                    alert(`✅ ${quantity} unidades retiradas com sucesso!`);
+                    
+                    // Update the scanned item display
+                    setTimeout(() => {
+                        database.ref(`products/${productId}`).once('value').then((snapshot) => {
+                            const updatedProduct = snapshot.val();
+                            updateScannedProductDisplay(productId, updatedProduct);
+                        });
+                    }, 500);
+                });
+            }
+        }
+
+        // Quick return function
+        function quickReturn(productId) {
+            const quantity = parseInt(prompt('Quantidade a devolver:'));
+            if (quantity && quantity > 0) {
+                database.ref(`products/${productId}`).once('value').then((snapshot) => {
+                    const product = snapshot.val();
+                    const newQuantity = product.quantity + quantity;
+                    database.ref(`products/${productId}/quantity`).set(newQuantity);
+
+                    // Record movement
+                    const movementData = {
+                        type: 'return',
+                        quantity: quantity,
+                        timestamp: new Date().toISOString(),
+                        userEmail: 'Scanner',
+                        previousQuantity: product.quantity,
+                        newQuantity: newQuantity
+                    };
+
+                    database.ref(`movements/${productId}`).push(movementData);
+                    alert(`✅ ${quantity} unidades devolvidas com sucesso!`);
+                    
+                    // Update the scanned item display
+                    setTimeout(() => {
+                        database.ref(`products/${productId}`).once('value').then((snapshot) => {
+                            const updatedProduct = snapshot.val();
+                            updateScannedProductDisplay(productId, updatedProduct);
+                        });
+                    }, 500);
+                });
+            }
+        }
+
+        // Remove from scanned list
+        function removeFromScanned(productId) {
+            scannedProductsSet.delete(productId);
+            const productCards = document.querySelectorAll('#scannedProducts > div');
+            productCards.forEach(card => {
+                if (card.innerHTML.includes(`onclick="removeFromScanned('${productId}')`)) {
+                    card.style.transition = 'all 0.3s ease';
+                    card.style.opacity = '0';
+                    card.style.transform = 'translateX(-100%)';
+                    setTimeout(() => card.remove(), 300);
+                }
+            });
+            
+            updateScannedCounter();
+            
+            // Hide results if no items
+            if (scannedProductsSet.size === 0) {
+                setTimeout(() => {
+                    document.getElementById('scanResults').classList.add('hidden');
+                }, 300);
+            }
+        }
+
+        // Update scanned product display
+        function updateScannedProductDisplay(productId, updatedProduct) {
+            const productCards = document.querySelectorAll('#scannedProducts > div');
+            productCards.forEach(card => {
+                if (card.innerHTML.includes(`onclick="removeFromScanned('${productId}')`)) {
+                    // Update quantity display
+                    const quantitySpan = card.querySelector('.font-bold');
+                    if (quantitySpan && quantitySpan.parentElement.textContent.includes('Quantidade:')) {
+                        quantitySpan.textContent = updatedProduct.quantity;
+                        
+                        // Add visual feedback
+                        quantitySpan.style.backgroundColor = '#fef3c7';
+                        setTimeout(() => {
+                            quantitySpan.style.backgroundColor = 'transparent';
+                        }, 1000);
+                    }
+                }
+            });
         }
 
         // Clear scanned products
@@ -1044,6 +1245,7 @@
                 scannedProductsSet.clear();
                 document.getElementById('scannedProducts').innerHTML = '';
                 document.getElementById('scanResults').classList.add('hidden');
+                updateScannedCounter();
             }
         });
 
@@ -1147,6 +1349,5 @@
             }
         });
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9874474524bff171',t:'MTc1OTI0MTE2MC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'987454a175a6cdc3',t:'MTc1OTI0MTcwNy4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
-
