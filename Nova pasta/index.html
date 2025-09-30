@@ -69,7 +69,7 @@
                         <i class="fas fa-clipboard-list text-lg sm:text-base"></i>
                         <span class="hidden sm:inline">Lista</span>
                         <span class="sm:hidden">Lista</span>
-                        <span id="listaTabBadge" class="absolute -top-1 -right-1 sm:static sm:ml-1 bg-blue-500 text-white px-1.5 py-0.5 sm:px-2 sm:py-1 rounded-full text-xs font-bold hidden">0</span>
+                        <span id="listaTabBadge" class="absolute -top-1 -right-1 sm:static sm:ml-1 bg-red-500 text-white px-1.5 py-0.5 sm:px-2 sm:py-1 rounded-full text-xs font-bold hidden animate-pulse">0</span>
                     </button>
                 </div>
             </div>
@@ -293,7 +293,7 @@
             <!-- Bottom Controls (Mobile Optimized) -->
             <div class="bg-black text-white p-3 border-t border-gray-800">
                 <div id="scannerControls" class="grid grid-cols-2 gap-3">
-                    <button id="viewScannedList" class="bg-blue-600 text-white px-4 py-3 rounded-xl hover:bg-blue-700 transition duration-200 text-sm font-medium flex items-center justify-center space-x-2 shadow-lg hidden">
+                    <button onclick="showSection('lista')" class="bg-blue-600 text-white px-4 py-3 rounded-xl hover:bg-blue-700 transition duration-200 text-sm font-medium flex items-center justify-center space-x-2 shadow-lg">
                         <i class="fas fa-list text-lg"></i>
                         <span>Ver Lista</span>
                         <span id="listBadge" class="bg-white text-blue-600 px-2 py-1 rounded-full text-xs font-bold">0</span>
@@ -316,74 +316,6 @@
                     </button>
                 </div>
             </div>
-
-            <!-- Scan Results (Mobile Optimized) -->
-            <div id="scanResults" class="bg-gray-50 min-h-screen hidden">
-                <!-- Header Elegante -->
-                <div class="sticky top-0 bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-xl z-40">
-                    <div class="p-4">
-                        <!-- Linha Principal -->
-                        <div class="flex justify-between items-center mb-4">
-                            <div class="flex items-center space-x-3">
-                                <div class="bg-white bg-opacity-20 p-2 rounded-lg">
-                                    <i class="fas fa-clipboard-list text-xl"></i>
-                                </div>
-                                <div>
-                                    <h4 class="font-bold text-lg">Produtos Escaneados</h4>
-                                    <div class="flex items-center space-x-2 text-sm text-blue-100">
-                                        <span id="resultsCounter" class="bg-white text-blue-600 px-3 py-1 rounded-full text-xs font-bold">0</span>
-                                        <span>itens na lista</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <button onclick="backToScanner()" class="bg-green-500 text-white p-3 rounded-xl hover:bg-green-600 transition duration-200 shadow-lg">
-                                <i class="fas fa-qrcode text-lg"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                
-
-                
-                <!-- Products Container -->
-                <div id="scannedProducts" class="p-2 pb-16">
-                    <!-- Scanned products will appear here -->
-                </div>
-                
-                <!-- Empty State -->
-                <div id="noProductsMessage" class="p-6 text-center hidden">
-                    <div class="bg-white rounded-2xl p-8 shadow-sm border border-gray-200">
-                        <div class="text-gray-400 mb-8">
-                            <div class="bg-gray-100 p-6 rounded-full w-24 h-24 mx-auto mb-6 flex items-center justify-center">
-                                <i class="fas fa-qrcode text-4xl text-gray-400"></i>
-                            </div>
-                            <h3 class="text-xl font-bold text-gray-600 mb-3">Nenhum produto escaneado</h3>
-                            <p class="text-gray-500 text-base mb-8 max-w-sm mx-auto">Use o scanner para adicionar produtos à sua lista de trabalho</p>
-                        </div>
-                        <button onclick="backToScanner()" class="bg-green-500 text-white px-8 py-4 rounded-xl hover:bg-green-600 transition duration-200 flex items-center space-x-3 mx-auto shadow-sm text-base font-medium">
-                            <i class="fas fa-qrcode text-lg"></i>
-                            <span>Iniciar Scanner</span>
-                        </button>
-                    </div>
-                </div>
-                
-                <!-- Barra de Ações Elegante -->
-                <div class="fixed bottom-4 left-4 right-4 z-40">
-                    <div class="bg-white rounded-2xl shadow-2xl border border-gray-200 p-3">
-                        <div class="grid grid-cols-2 gap-3">
-                            <button onclick="exportScannedList()" class="bg-gradient-to-r from-blue-500 to-blue-600 text-white py-3 px-4 rounded-xl hover:from-blue-600 hover:to-blue-700 transition duration-200 flex items-center justify-center space-x-2 text-sm font-medium shadow-lg">
-                                <i class="fas fa-download text-lg"></i>
-                                <span>Exportar CSV</span>
-                            </button>
-                            <button onclick="clearAllScanned()" class="bg-gradient-to-r from-red-500 to-red-600 text-white py-3 px-4 rounded-xl hover:from-red-600 hover:to-red-700 transition duration-200 flex items-center justify-center space-x-2 text-sm font-medium shadow-lg">
-                                <i class="fas fa-trash text-lg"></i>
-                                <span>Limpar Lista</span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            </div>
         </div>
 
         <!-- Lista Section -->
@@ -405,7 +337,7 @@
                                 </div>
                             </div>
                         </div>
-                        <button onclick="backToScanner()" class="bg-green-500 text-white p-3 rounded-xl hover:bg-green-600 transition duration-200 shadow-lg">
+                        <button onclick="showSection('scanner')" class="bg-green-500 text-white p-3 rounded-xl hover:bg-green-600 transition duration-200 shadow-lg">
                             <i class="fas fa-qrcode text-lg"></i>
                         </button>
                     </div>
@@ -450,8 +382,6 @@
                 </div>
             </div>
         </div>
-
-
     </div>
 
     <!-- QR Code Modal -->
@@ -625,8 +555,6 @@
                     showSection('lista');
                 });
             }
-
-
             
             console.log('✅ Eventos configurados!');
         });
@@ -670,8 +598,6 @@
                 syncListaWithScannedProducts();
             }
         }
-
-
 
         // Add product form - CORRIGIDO
         document.addEventListener('DOMContentLoaded', function() {
@@ -1117,8 +1043,6 @@
             });
         }
 
-
-
         // Eventos dos botões - CORRIGIDO
         document.addEventListener('DOMContentLoaded', function() {
             // Generate QR codes for all products
@@ -1229,10 +1153,6 @@
         let scannedProductsSet = new Set();
         let nativeScanner = null;
 
-
-
-
-
         // SCANNER NATIVO DO CELULAR - APENAS NATIVO
         document.getElementById('startCamera').addEventListener('click', async () => {
             try {
@@ -1321,8 +1241,6 @@
                 });
             };
         }
-
-
 
         // Mostrar interface da câmera
         function showCameraInterface() {
@@ -1538,8 +1456,6 @@
             
             console.log('🍎 Scanner iOS ULTRA OTIMIZADO V2 - Zero travamentos!');
         }
-
-
         
         // Atualizar status de escaneamento
         function updateScanningStatus() {
@@ -1636,9 +1552,9 @@
                             }
                         }, 200);
                         
-                        // Auto-mostrar resultados após 1 segundo
+                        // 🔥 CORRIGIDO: Ir para aba Lista após 1 segundo
                         setTimeout(() => {
-                            showScannedResults();
+                            showSection('lista');
                         }, 1000);
                     } else {
                         updateScanStatus('Produto não encontrado');
@@ -1662,15 +1578,10 @@
 
         // Add scanned product to results - CONECTADO AO BD
         function addScannedProduct(productId, product) {
-            const scannedProducts = document.getElementById('scannedProducts');
             const listaProducts = document.getElementById('listaProducts');
-            const noProductsMessage = document.getElementById('noProductsMessage');
             const listaNoProductsMessage = document.getElementById('listaNoProductsMessage');
             
             // Hide no products messages
-            if (noProductsMessage) {
-                noProductsMessage.classList.add('hidden');
-            }
             if (listaNoProductsMessage) {
                 listaNoProductsMessage.classList.add('hidden');
             }
@@ -1704,16 +1615,6 @@
                     console.error('❌ Erro ao salvar scan no BD:', error);
                 });
             
-            // Create product card for scanner results
-            const productCard = document.createElement('div');
-            productCard.setAttribute('data-product-id', productId);
-            createDetailedCard(productCard, productId, product, timeString);
-            
-            // Add to top of scanner results with animation
-            productCard.style.opacity = '0';
-            productCard.style.transform = 'translateY(-20px)';
-            scannedProducts.insertBefore(productCard, scannedProducts.firstChild);
-            
             // Create product card for lista section
             const listaCard = document.createElement('div');
             listaCard.setAttribute('data-product-id', productId);
@@ -1724,12 +1625,8 @@
             listaCard.style.transform = 'translateY(-20px)';
             listaProducts.insertBefore(listaCard, listaProducts.firstChild);
             
-            // Animate in both cards
+            // Animate in card
             setTimeout(() => {
-                productCard.style.transition = 'all 0.4s ease';
-                productCard.style.opacity = '1';
-                productCard.style.transform = 'translateY(0)';
-                
                 listaCard.style.transition = 'all 0.4s ease';
                 listaCard.style.opacity = '1';
                 listaCard.style.transform = 'translateY(0)';
@@ -1796,17 +1693,11 @@
             `;
         }
 
-
-
-
-
         // Clear all scanned products
         function clearAllScanned() {
             if (confirm('Limpar todos os produtos escaneados da lista?')) {
                 scannedProductsSet.clear();
-                document.getElementById('scannedProducts').innerHTML = '';
                 document.getElementById('listaProducts').innerHTML = '';
-                document.getElementById('noProductsMessage').classList.remove('hidden');
                 document.getElementById('listaNoProductsMessage').classList.remove('hidden');
                 updateScannedCounter();
             }
@@ -1824,12 +1715,6 @@
             }
             
             listaNoProductsMessage.classList.add('hidden');
-            
-            // Get all scanned products from the scanner results
-            const scannedProducts = document.getElementById('scannedProducts');
-            if (scannedProducts) {
-                listaProducts.innerHTML = scannedProducts.innerHTML;
-            }
         }
 
         // Export scanned list
@@ -1999,35 +1884,14 @@
                 }
             }, 2000);
         }
-        
-        function showScannedResults() {
-            document.getElementById('cameraContainer').classList.add('hidden');
-            document.getElementById('scanResults').classList.remove('hidden');
-        }
-        
-        function backToScanner() {
-            document.getElementById('scanResults').classList.add('hidden');
-            document.getElementById('cameraContainer').classList.remove('hidden');
-        }
-        
-        // Função para voltar à aba de produtos
-        function backToProducts() {
-            // Parar o scanner primeiro
-            if (scanningInterval) {
-                document.getElementById('stopCamera').click();
-            }
-            
-            // Voltar para a aba de produtos
-            showSection('produtos');
-        }
 
         // Update scanned counter
         function updateScannedCounter() {
             const count = scannedProductsSet.size;
             const scanCounters = document.querySelectorAll('#scanCounter');
-            const resultsCounter = document.getElementById('resultsCounter');
             const listaCounter = document.getElementById('listaCounter');
             const listaTabBadge = document.getElementById('listaTabBadge');
+            const listBadge = document.getElementById('listBadge');
             const extendedControls = document.getElementById('extendedControls');
             const listaActionBar = document.getElementById('listaActionBar');
             
@@ -2035,12 +1899,12 @@
                 counter.textContent = count;
             });
             
-            if (resultsCounter) {
-                resultsCounter.textContent = count;
-            }
-            
             if (listaCounter) {
                 listaCounter.textContent = count;
+            }
+            
+            if (listBadge) {
+                listBadge.textContent = count;
             }
             
             // Update tab badge
@@ -2238,11 +2102,7 @@
             // Show no products message if no items
             if (scannedProductsSet.size === 0) {
                 setTimeout(() => {
-                    const noProductsMessage = document.getElementById('noProductsMessage');
                     const listaNoProductsMessage = document.getElementById('listaNoProductsMessage');
-                    if (noProductsMessage) {
-                        noProductsMessage.classList.remove('hidden');
-                    }
                     if (listaNoProductsMessage) {
                         listaNoProductsMessage.classList.remove('hidden');
                     }
@@ -2299,14 +2159,12 @@
             });
         }
 
-
-
         // Clear scanned products
         document.getElementById('clearScanned').addEventListener('click', () => {
             if (confirm('Limpar todos os produtos escaneados da lista?')) {
                 scannedProductsSet.clear();
-                document.getElementById('scannedProducts').innerHTML = '';
-                document.getElementById('noProductsMessage').classList.remove('hidden');
+                document.getElementById('listaProducts').innerHTML = '';
+                document.getElementById('listaNoProductsMessage').classList.remove('hidden');
                 updateScannedCounter();
             }
         });
@@ -2398,12 +2256,6 @@
             };
             img.src = currentQRData.qrCode;
         });
-
-
-
-
-
-
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9875b27c612df171',t:'MTc1OTI1NjAzOC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9875bfeaf346f171',t:'MTc1OTI1NjU4OC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
