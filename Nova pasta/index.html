@@ -276,48 +276,92 @@
             </div>
 
             <!-- Scan Results (Mobile Optimized) -->
-            <div id="scanResults" class="bg-white min-h-screen hidden">
-                <div class="sticky top-0 bg-white border-b border-gray-200 p-4 z-40">
-                    <div class="flex justify-between items-center">
-                        <div class="flex items-center space-x-2">
-                            <i class="fas fa-list-check text-green-600"></i>
-                            <h4 class="font-bold text-gray-800">Produtos Escaneados</h4>
-                            <span id="resultsCounter" class="bg-green-500 text-white px-2 py-1 rounded-full text-xs font-bold">0</span>
-                        </div>
-                        <div class="flex space-x-2">
-                            <button onclick="backToScanner()" class="bg-blue-500 text-white px-3 py-2 rounded-lg hover:bg-blue-600 transition duration-200 text-sm flex items-center space-x-2">
-                                <i class="fas fa-camera"></i>
-                                <span>Scanner</span>
+            <div id="scanResults" class="bg-gray-50 min-h-screen hidden">
+                <!-- Fixed Header with Better Navigation -->
+                <div class="sticky top-0 bg-white border-b border-gray-200 shadow-sm z-40">
+                    <div class="p-4">
+                        <!-- Top Row: Title and Counter -->
+                        <div class="flex justify-between items-center mb-3">
+                            <div class="flex items-center space-x-3">
+                                <i class="fas fa-list-check text-green-600 text-xl"></i>
+                                <h4 class="font-bold text-gray-800 text-lg">Produtos Escaneados</h4>
+                                <span id="resultsCounter" class="bg-green-500 text-white px-3 py-1 rounded-full text-sm font-bold min-w-[2rem] text-center">0</span>
+                            </div>
+                            <button id="clearAllScanned" class="text-red-500 hover:text-red-700 p-2" onclick="clearAllScanned()">
+                                <i class="fas fa-trash text-lg"></i>
                             </button>
-                            <button onclick="backToProducts()" class="bg-gray-500 text-white px-3 py-2 rounded-lg hover:bg-gray-600 transition duration-200 text-sm flex items-center space-x-2">
-                                <i class="fas fa-boxes"></i>
-                                <span>Produtos</span>
+                        </div>
+                        
+                        <!-- Navigation Buttons -->
+                        <div class="grid grid-cols-3 gap-2">
+                            <button onclick="backToScanner()" class="bg-green-500 text-white py-3 rounded-xl hover:bg-green-600 transition duration-200 flex flex-col items-center space-y-1 shadow-sm">
+                                <i class="fas fa-qrcode text-lg"></i>
+                                <span class="text-sm font-medium">Continuar</span>
+                            </button>
+                            <button onclick="showCompactView()" class="bg-blue-500 text-white py-3 rounded-xl hover:bg-blue-600 transition duration-200 flex flex-col items-center space-y-1 shadow-sm">
+                                <i class="fas fa-th-list text-lg"></i>
+                                <span class="text-sm font-medium">Compacto</span>
+                            </button>
+                            <button onclick="backToProducts()" class="bg-gray-500 text-white py-3 rounded-xl hover:bg-gray-600 transition duration-200 flex flex-col items-center space-y-1 shadow-sm">
+                                <i class="fas fa-boxes text-lg"></i>
+                                <span class="text-sm font-medium">Produtos</span>
                             </button>
                         </div>
                     </div>
                 </div>
-                <div id="scannedProducts" class="p-4 space-y-4">
+                
+                <!-- View Toggle Buttons -->
+                <div class="bg-white border-b border-gray-200 px-4 py-3">
+                    <div class="flex space-x-2">
+                        <button id="detailedViewBtn" onclick="showDetailedView()" class="flex-1 bg-blue-500 text-white py-2 px-4 rounded-lg text-sm font-medium flex items-center justify-center space-x-2">
+                            <i class="fas fa-th-large"></i>
+                            <span>Detalhado</span>
+                        </button>
+                        <button id="compactViewBtn" onclick="showCompactView()" class="flex-1 bg-gray-200 text-gray-700 py-2 px-4 rounded-lg text-sm font-medium flex items-center justify-center space-x-2">
+                            <i class="fas fa-list"></i>
+                            <span>Lista</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Products Container -->
+                <div id="scannedProducts" class="p-4 space-y-3">
                     <!-- Scanned products will appear here -->
                 </div>
                 
-                <!-- Botão para continuar escaneando quando não há produtos -->
+                <!-- Empty State -->
                 <div id="noProductsMessage" class="p-8 text-center hidden">
-                    <div class="text-gray-400 mb-4">
-                        <i class="fas fa-qrcode text-6xl mb-4"></i>
-                        <h3 class="text-xl font-bold text-gray-600 mb-2">Nenhum produto escaneado</h3>
-                        <p class="text-gray-500 mb-6">Escaneie QR codes para ver os produtos aqui</p>
+                    <div class="bg-white rounded-2xl p-8 shadow-sm">
+                        <div class="text-gray-400 mb-6">
+                            <i class="fas fa-qrcode text-8xl mb-4 text-gray-300"></i>
+                            <h3 class="text-2xl font-bold text-gray-600 mb-3">Lista Vazia</h3>
+                            <p class="text-gray-500 text-lg mb-8">Escaneie QR codes para começar a organizar seus produtos</p>
+                        </div>
+                        <button onclick="backToScanner()" class="bg-green-500 text-white px-10 py-4 rounded-2xl hover:bg-green-600 transition duration-200 flex items-center space-x-3 mx-auto shadow-lg text-lg font-medium">
+                            <i class="fas fa-qrcode text-2xl"></i>
+                            <span>Iniciar Scanner</span>
+                        </button>
                     </div>
-                    <button onclick="backToScanner()" class="bg-green-500 text-white px-8 py-4 rounded-full hover:bg-green-600 transition duration-200 flex items-center space-x-3 mx-auto shadow-lg">
-                        <i class="fas fa-camera text-xl"></i>
-                        <span class="text-lg font-medium">Começar a Escanear</span>
-                    </button>
                 </div>
                 
-                <!-- Floating Action Button para voltar ao scanner -->
-                <div class="fixed bottom-6 right-6 z-50">
-                    <button onclick="backToScanner()" class="bg-green-500 text-white w-16 h-16 rounded-full shadow-2xl hover:bg-green-600 transition duration-200 flex items-center justify-center">
-                        <i class="fas fa-qrcode text-2xl"></i>
-                    </button>
+                <!-- Quick Actions Floating Bar -->
+                <div class="fixed bottom-6 left-4 right-4 z-50">
+                    <div class="bg-white rounded-2xl shadow-2xl border border-gray-200 p-4">
+                        <div class="grid grid-cols-3 gap-3">
+                            <button onclick="backToScanner()" class="bg-green-500 text-white py-3 rounded-xl hover:bg-green-600 transition duration-200 flex flex-col items-center space-y-1 shadow-sm">
+                                <i class="fas fa-qrcode text-lg"></i>
+                                <span class="text-xs font-medium">Scanner</span>
+                            </button>
+                            <button onclick="exportScannedList()" class="bg-blue-500 text-white py-3 rounded-xl hover:bg-blue-600 transition duration-200 flex flex-col items-center space-y-1 shadow-sm">
+                                <i class="fas fa-download text-lg"></i>
+                                <span class="text-xs font-medium">Exportar</span>
+                            </button>
+                            <button onclick="clearAllScanned()" class="bg-red-500 text-white py-3 rounded-xl hover:bg-red-600 transition duration-200 flex flex-col items-center space-y-1 shadow-sm">
+                                <i class="fas fa-trash text-lg"></i>
+                                <span class="text-xs font-medium">Limpar</span>
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
             </div>
@@ -1266,6 +1310,9 @@
             }
         }
 
+        // Global view state
+        let currentView = 'detailed'; // 'detailed' or 'compact'
+
         // Add scanned product to results (Mobile Optimized)
         function addScannedProduct(productId, product) {
             const scannedProducts = document.getElementById('scannedProducts');
@@ -1283,10 +1330,32 @@
                 minute: '2-digit'
             });
             
-            // Create clean mobile-optimized product card
+            // Create product card based on current view
             const productCard = document.createElement('div');
-            productCard.className = 'bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden mb-4';
             productCard.setAttribute('data-product-id', productId);
+            
+            if (currentView === 'detailed') {
+                createDetailedCard(productCard, productId, product, timeString);
+            } else {
+                createCompactCard(productCard, productId, product, timeString);
+            }
+            
+            // Add to top of list with animation
+            productCard.style.opacity = '0';
+            productCard.style.transform = 'translateY(-20px)';
+            scannedProducts.insertBefore(productCard, scannedProducts.firstChild);
+            
+            // Animate in
+            setTimeout(() => {
+                productCard.style.transition = 'all 0.4s ease';
+                productCard.style.opacity = '1';
+                productCard.style.transform = 'translateY(0)';
+            }, 10);
+        }
+
+        // Create detailed card view
+        function createDetailedCard(productCard, productId, product, timeString) {
+            productCard.className = 'bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden detailed-card';
             productCard.innerHTML = `
                 <!-- Header com nome e quantidade -->
                 <div class="bg-gradient-to-r from-blue-500 to-blue-600 text-white p-5">
@@ -1296,7 +1365,7 @@
                             <p class="text-blue-100 text-sm">Código: ${product.code}</p>
                         </div>
                         <div class="text-right ml-4">
-                            <div class="text-3xl font-bold">${product.quantity}</div>
+                            <div class="text-3xl font-bold quantity-display">${product.quantity}</div>
                             <div class="text-blue-100 text-sm">unidades</div>
                         </div>
                     </div>
@@ -1330,7 +1399,7 @@
                     <div class="text-center">
                         <div class="bg-gray-50 border border-gray-200 rounded-lg p-3">
                             <div class="text-xs text-gray-500 mb-1">ESCANEADO ÀS</div>
-                            <div class="text-sm font-bold text-gray-700">${timeString}</div>
+                            <div class="text-sm font-bold text-gray-700 timestamp-display">${timeString}</div>
                         </div>
                     </div>
                     
@@ -1351,18 +1420,166 @@
                     </div>
                 </div>
             `;
+        }
+
+        // Create compact card view
+        function createCompactCard(productCard, productId, product, timeString) {
+            productCard.className = 'bg-white border border-gray-200 rounded-xl shadow-sm compact-card';
+            productCard.innerHTML = `
+                <div class="p-4">
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="flex-1">
+                            <h4 class="font-bold text-lg text-gray-800 mb-1">${product.name}</h4>
+                            <div class="flex items-center space-x-4 text-sm text-gray-600">
+                                <span>📦 ${product.code}</span>
+                                <span class="quantity-display font-semibold text-blue-600">${product.quantity} un</span>
+                            </div>
+                        </div>
+                        <div class="text-right text-xs text-gray-500">
+                            <div class="timestamp-display">${timeString}</div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="text-sm text-gray-600">
+                            📍 ${product.location.sector} • ${product.location.corridor} • ${product.location.shelf}
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-4 gap-2">
+                        <button class="bg-red-500 text-white py-2 rounded-lg hover:bg-red-600 transition duration-200 flex items-center justify-center" onclick="quickWithdraw('${productId}')">
+                            <i class="fas fa-minus text-sm"></i>
+                        </button>
+                        <button class="bg-green-500 text-white py-2 rounded-lg hover:bg-green-600 transition duration-200 flex items-center justify-center" onclick="quickReturn('${productId}')">
+                            <i class="fas fa-plus text-sm"></i>
+                        </button>
+                        <button class="bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 transition duration-200 flex items-center justify-center" onclick="openProductModal('${productId}')">
+                            <i class="fas fa-eye text-sm"></i>
+                        </button>
+                        <button class="bg-gray-500 text-white py-2 rounded-lg hover:bg-gray-600 transition duration-200 flex items-center justify-center" onclick="removeFromScanned('${productId}')">
+                            <i class="fas fa-trash text-sm"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Switch to detailed view
+        function showDetailedView() {
+            currentView = 'detailed';
             
-            // Add to top of list with animation
-            productCard.style.opacity = '0';
-            productCard.style.transform = 'translateY(-20px)';
-            scannedProducts.insertBefore(productCard, scannedProducts.firstChild);
+            // Update button states
+            document.getElementById('detailedViewBtn').className = 'flex-1 bg-blue-500 text-white py-2 px-4 rounded-lg text-sm font-medium flex items-center justify-center space-x-2';
+            document.getElementById('compactViewBtn').className = 'flex-1 bg-gray-200 text-gray-700 py-2 px-4 rounded-lg text-sm font-medium flex items-center justify-center space-x-2';
             
-            // Animate in
-            setTimeout(() => {
-                productCard.style.transition = 'all 0.4s ease';
-                productCard.style.opacity = '1';
-                productCard.style.transform = 'translateY(0)';
-            }, 10);
+            // Rebuild all cards
+            rebuildScannedProducts();
+        }
+
+        // Switch to compact view
+        function showCompactView() {
+            currentView = 'compact';
+            
+            // Update button states
+            document.getElementById('compactViewBtn').className = 'flex-1 bg-blue-500 text-white py-2 px-4 rounded-lg text-sm font-medium flex items-center justify-center space-x-2';
+            document.getElementById('detailedViewBtn').className = 'flex-1 bg-gray-200 text-gray-700 py-2 px-4 rounded-lg text-sm font-medium flex items-center justify-center space-x-2';
+            
+            // Rebuild all cards
+            rebuildScannedProducts();
+        }
+
+        // Rebuild all scanned products with current view
+        function rebuildScannedProducts() {
+            const scannedProducts = document.getElementById('scannedProducts');
+            const existingCards = Array.from(scannedProducts.children);
+            
+            // Get all product data from existing cards
+            const productData = [];
+            existingCards.forEach(card => {
+                const productId = card.getAttribute('data-product-id');
+                if (productId && scannedProductsSet.has(productId)) {
+                    // Get product data from Firebase
+                    database.ref(`products/${productId}`).once('value').then((snapshot) => {
+                        const product = snapshot.val();
+                        if (product) {
+                            productData.push({ productId, product });
+                            
+                            // If this is the last product, rebuild
+                            if (productData.length === scannedProductsSet.size) {
+                                // Clear container
+                                scannedProducts.innerHTML = '';
+                                
+                                // Add all products with new view
+                                productData.reverse().forEach(({ productId, product }) => {
+                                    const now = new Date();
+                                    const timeString = now.toLocaleTimeString('pt-BR', { 
+                                        hour: '2-digit', 
+                                        minute: '2-digit'
+                                    });
+                                    
+                                    const productCard = document.createElement('div');
+                                    productCard.setAttribute('data-product-id', productId);
+                                    
+                                    if (currentView === 'detailed') {
+                                        createDetailedCard(productCard, productId, product, timeString);
+                                    } else {
+                                        createCompactCard(productCard, productId, product, timeString);
+                                    }
+                                    
+                                    scannedProducts.appendChild(productCard);
+                                });
+                            }
+                        }
+                    });
+                }
+            });
+        }
+
+        // Clear all scanned products
+        function clearAllScanned() {
+            if (confirm('Limpar todos os produtos escaneados da lista?')) {
+                scannedProductsSet.clear();
+                document.getElementById('scannedProducts').innerHTML = '';
+                document.getElementById('noProductsMessage').classList.remove('hidden');
+                updateScannedCounter();
+            }
+        }
+
+        // Export scanned list
+        function exportScannedList() {
+            if (scannedProductsSet.size === 0) {
+                alert('Nenhum produto escaneado para exportar!');
+                return;
+            }
+            
+            let csv = 'Nome,Código,Quantidade,Setor,Corredor,Prateleira,Escaneado em\n';
+            const now = new Date().toLocaleString('pt-BR');
+            
+            const promises = Array.from(scannedProductsSet).map(productId => {
+                return database.ref(`products/${productId}`).once('value').then((snapshot) => {
+                    const product = snapshot.val();
+                    if (product) {
+                        return `"${product.name}","${product.code}","${product.quantity}","${product.location.sector}","${product.location.corridor}","${product.location.shelf}","${now}"`;
+                    }
+                    return null;
+                });
+            });
+            
+            Promise.all(promises).then(rows => {
+                csv += rows.filter(row => row !== null).join('\n');
+                
+                const blob = new Blob([csv], { type: 'text/csv' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `produtos-escaneados-${new Date().toISOString().split('T')[0]}.csv`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                
+                alert(`Lista de ${scannedProductsSet.size} produtos exportada com sucesso!`);
+            });
         }
 
         // WhatsApp-style instant feedback functions
@@ -1621,15 +1838,19 @@
             const productCard = document.querySelector(`[data-product-id="${productId}"]`);
             
             if (productCard) {
-                // Update quantity display
-                const quantityDiv = productCard.querySelector('.text-3xl.font-bold');
+                // Update quantity display (works for both views)
+                const quantityDiv = productCard.querySelector('.quantity-display');
                 if (quantityDiv) {
-                    quantityDiv.textContent = updatedProduct.quantity;
+                    if (currentView === 'detailed') {
+                        quantityDiv.textContent = updatedProduct.quantity;
+                    } else {
+                        quantityDiv.textContent = `${updatedProduct.quantity} un`;
+                    }
                     
                     // Add visual feedback with pulse animation
                     quantityDiv.style.backgroundColor = '#fef3c7';
-                    quantityDiv.style.borderRadius = '12px';
-                    quantityDiv.style.padding = '8px 12px';
+                    quantityDiv.style.borderRadius = '8px';
+                    quantityDiv.style.padding = '4px 8px';
                     quantityDiv.style.transition = 'all 0.3s ease';
                     
                     // Pulse effect
@@ -1640,12 +1861,12 @@
                     setTimeout(() => {
                         quantityDiv.style.transform = 'scale(1)';
                         quantityDiv.style.backgroundColor = 'transparent';
-                        quantityDiv.style.padding = '0';
+                        quantityDiv.style.padding = currentView === 'detailed' ? '0' : '0';
                     }, 1000);
                 }
                 
-                // Add updated timestamp
-                const timestampDiv = productCard.querySelector('.text-sm.font-bold.text-gray-700');
+                // Update timestamp
+                const timestampDiv = productCard.querySelector('.timestamp-display');
                 if (timestampDiv) {
                     const now = new Date();
                     const timeString = now.toLocaleTimeString('pt-BR', { 
@@ -1657,7 +1878,7 @@
                     // Flash the timestamp
                     timestampDiv.style.color = '#10b981';
                     setTimeout(() => {
-                        timestampDiv.style.color = '#374151';
+                        timestampDiv.style.color = currentView === 'detailed' ? '#374151' : '#6b7280';
                     }, 1500);
                 }
             }
@@ -1767,5 +1988,5 @@
 
 
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9874d0701582f171',t:'MTc1OTI0Njc3OS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9874e82a71ebf171',t:'MTc1OTI0Nzc1MC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
