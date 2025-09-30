@@ -9,7 +9,7 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
-    <script src="https://unpkg.com/qr-scanner@1.4.2/qr-scanner.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
         body {
@@ -812,50 +812,44 @@
         }
 
         // QR Scanner functionality
-        let qrScanner = null;
+        let videoStream = null;
+        let scanningInterval = null;
         let scannedProductsSet = new Set();
+        let canvas = null;
+        let context = null;
 
         // Initialize camera list
         async function initializeCameras() {
             try {
-                // Check if QrScanner is available
-                if (!window.QrScanner) {
-                    console.error('QrScanner não carregado');
-                    return;
-                }
-
-                // Check camera permissions
-                const hasCamera = await QrScanner.hasCamera();
-                if (!hasCamera) {
-                    alert('Nenhuma câmera encontrada no dispositivo!');
-                    return;
-                }
-
                 // Get available cameras
-                const cameras = await QrScanner.listCameras(true);
+                const devices = await navigator.mediaDevices.enumerateDevices();
+                const videoDevices = devices.filter(device => device.kind === 'videoinput');
+                
                 const cameraSelect = document.getElementById('cameraSelect');
                 cameraSelect.innerHTML = '<option value="">Selecionar Câmera</option>';
                 
-                cameras.forEach((camera, index) => {
+                videoDevices.forEach((device, index) => {
                     const option = document.createElement('option');
-                    option.value = camera.id;
-                    option.textContent = camera.label || `Câmera ${index + 1}`;
+                    option.value = device.deviceId;
+                    option.textContent = device.label || `Câmera ${index + 1}`;
                     cameraSelect.appendChild(option);
                 });
 
                 // Auto-select back camera if available
-                const backCamera = cameras.find(camera => 
-                    camera.label.toLowerCase().includes('back') || 
-                    camera.label.toLowerCase().includes('rear') ||
-                    camera.label.toLowerCase().includes('environment')
+                const backCamera = videoDevices.find(device => 
+                    device.label.toLowerCase().includes('back') || 
+                    device.label.toLowerCase().includes('rear') ||
+                    device.label.toLowerCase().includes('environment')
                 );
                 if (backCamera) {
-                    cameraSelect.value = backCamera.id;
-                } else if (cameras.length > 0) {
-                    cameraSelect.value = cameras[0].id;
+                    cameraSelect.value = backCamera.deviceId;
+                } else if (videoDevices.length > 0) {
+                    cameraSelect.value = videoDevices[0].deviceId;
                 }
+
+                console.log('Câmeras encontradas:', videoDevices.length);
             } catch (error) {
-                console.error('Erro ao inicializar câmeras:', error);
+                console.error('Erro ao listar câmeras:', error);
                 alert('Erro ao acessar câmeras. Verifique as permissões.');
             }
         }
@@ -873,23 +867,32 @@
 
                 const videoElement = document.getElementById('cameraPreview');
                 
-                // Create QR Scanner instance
-                qrScanner = new QrScanner(
-                    videoElement,
-                    result => {
-                        console.log('QR detectado:', result.data);
-                        handleQRScan(result.data);
-                    },
-                    {
-                        returnDetailedScanResult: true,
-                        highlightScanRegion: true,
-                        highlightCodeOutline: true,
-                        preferredCamera: selectedCamera
+                // Request camera access
+                const constraints = {
+                    video: {
+                        deviceId: selectedCamera ? { exact: selectedCamera } : undefined,
+                        width: { ideal: 1280 },
+                        height: { ideal: 720 },
+                        facingMode: selectedCamera ? undefined : { ideal: 'environment' }
                     }
-                );
+                };
 
-                // Start scanning
-                await qrScanner.start();
+                videoStream = await navigator.mediaDevices.getUserMedia(constraints);
+                videoElement.srcObject = videoStream;
+                
+                // Wait for video to load
+                videoElement.onloadedmetadata = () => {
+                    videoElement.play();
+                    
+                    // Create canvas for QR scanning
+                    if (!canvas) {
+                        canvas = document.createElement('canvas');
+                        context = canvas.getContext('2d');
+                    }
+                    
+                    // Start QR scanning
+                    startQRScanning(videoElement);
+                };
 
                 // Show camera preview
                 document.getElementById('cameraPlaceholder').classList.add('hidden');
@@ -900,21 +903,50 @@
                 document.getElementById('startCamera').classList.add('hidden');
                 document.getElementById('stopCamera').classList.remove('hidden');
                 
-                console.log('Scanner iniciado com sucesso');
+                console.log('Câmera iniciada com sucesso');
                 
             } catch (error) {
-                console.error('Erro ao iniciar scanner:', error);
-                alert('Erro ao iniciar câmera: ' + error.message + '\n\nVerifique se você deu permissão para usar a câmera.');
+                console.error('Erro ao iniciar câmera:', error);
+                alert('Erro ao acessar câmera: ' + error.message + '\n\nVerifique se você deu permissão para usar a câmera.');
             }
         });
 
+        // Start QR scanning
+        function startQRScanning(videoElement) {
+            scanningInterval = setInterval(() => {
+                if (videoElement.readyState === videoElement.HAVE_ENOUGH_DATA) {
+                    canvas.width = videoElement.videoWidth;
+                    canvas.height = videoElement.videoHeight;
+                    context.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
+                    
+                    const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+                    const code = jsQR(imageData.data, imageData.width, imageData.height);
+                    
+                    if (code) {
+                        console.log('QR detectado:', code.data);
+                        handleQRScan(code.data);
+                    }
+                }
+            }, 100); // Scan every 100ms
+        }
+
         // Stop camera
         document.getElementById('stopCamera').addEventListener('click', () => {
-            if (qrScanner) {
-                qrScanner.stop();
-                qrScanner.destroy();
-                qrScanner = null;
+            // Stop scanning
+            if (scanningInterval) {
+                clearInterval(scanningInterval);
+                scanningInterval = null;
             }
+
+            // Stop video stream
+            if (videoStream) {
+                videoStream.getTracks().forEach(track => track.stop());
+                videoStream = null;
+            }
+
+            // Clear video element
+            const videoElement = document.getElementById('cameraPreview');
+            videoElement.srcObject = null;
 
             // Hide camera preview
             document.getElementById('cameraPreview').classList.add('hidden');
@@ -925,7 +957,7 @@
             document.getElementById('startCamera').classList.remove('hidden');
             document.getElementById('stopCamera').classList.add('hidden');
             
-            console.log('Scanner parado');
+            console.log('Câmera parada');
         });
 
         // Handle QR scan result
@@ -1105,20 +1137,15 @@
 
         // Initialize cameras when page loads
         document.addEventListener('DOMContentLoaded', () => {
-            // Wait a bit for libraries to load
-            setTimeout(() => {
-                initializeCameras();
-            }, 1000);
+            initializeCameras();
         });
 
-        // Also try to initialize when scanner tab is clicked
+        // Also initialize when scanner tab is clicked
         document.getElementById('scannerTab').addEventListener('click', () => {
-            setTimeout(() => {
-                if (document.getElementById('cameraSelect').children.length <= 1) {
-                    initializeCameras();
-                }
-            }, 500);
+            if (document.getElementById('cameraSelect').children.length <= 1) {
+                initializeCameras();
+            }
         });
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'98743dc941accdc3',t:'MTc1OTI0MDc3Mi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9874474524bff171',t:'MTc1OTI0MTE2MC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
