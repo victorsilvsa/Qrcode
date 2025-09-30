@@ -1145,14 +1145,16 @@
             }
         });
 
-        // Scanner QR OTIMIZADO - SEM TRAVAMENTOS
+        // SCANNER QR PROFISSIONAL - QUALIDADE NATIVA DO CELULAR
         function startSimpleQRScanning(videoElement) {
             let lastScanTime = 0;
-            const scanDelay = 150; // Delay maior para evitar travamentos
+            const scanDelay = 80; // Mais rápido para melhor responsividade
             let isProcessing = false;
             let scanStrategy = 0;
             let consecutiveFailures = 0;
             let frameSkipCounter = 0;
+            let adaptiveThreshold = 128;
+            let lastSuccessStrategy = 0;
             
             function scanFrame() {
                 if (isProcessing || !scanningInterval) return;
@@ -1163,9 +1165,9 @@
                     return;
                 }
                 
-                // Skip frames para performance
+                // Skip frames inteligente baseado na performance
                 frameSkipCounter++;
-                if (frameSkipCounter % 3 !== 0) {
+                if (frameSkipCounter % 2 !== 0) {
                     requestAnimationFrame(scanFrame);
                     return;
                 }
@@ -1177,26 +1179,28 @@
                     if (videoElement.readyState === videoElement.HAVE_ENOUGH_DATA) {
                         let qrFound = false;
                         
-                        // Usar apenas 3 estratégias principais para evitar travamentos
-                        if (scanStrategy === 0) {
-                            qrFound = scanBasicArea(videoElement);
-                        } else if (scanStrategy === 1) {
-                            qrFound = scanWithContrast(videoElement);
-                        } else if (scanStrategy === 2) {
-                            qrFound = scanMultipleAreas(videoElement);
+                        // 6 estratégias profissionais como scanner nativo
+                        switch(scanStrategy) {
+                            case 0: qrFound = scanHighResolutionCenter(videoElement); break;
+                            case 1: qrFound = scanAdaptiveContrast(videoElement); break;
+                            case 2: qrFound = scanMultipleZones(videoElement); break;
+                            case 3: qrFound = scanEdgeEnhanced(videoElement); break;
+                            case 4: qrFound = scanBrightnessAdjusted(videoElement); break;
+                            case 5: qrFound = scanFullFrameOptimized(videoElement); break;
                         }
                         
-                        // Rotação mais lenta das estratégias
-                        if (!qrFound) {
-                            consecutiveFailures++;
-                            if (consecutiveFailures > 5) {
-                                scanStrategy = (scanStrategy + 1) % 3;
-                                consecutiveFailures = 0;
-                                console.log(`🔄 Estratégia ${scanStrategy + 1}`);
-                            }
-                        } else {
+                        // Sistema inteligente de rotação de estratégias
+                        if (qrFound) {
                             consecutiveFailures = 0;
-                            scanStrategy = 0;
+                            lastSuccessStrategy = scanStrategy;
+                            scanStrategy = 0; // Voltar para estratégia principal
+                        } else {
+                            consecutiveFailures++;
+                            if (consecutiveFailures > 3) {
+                                scanStrategy = (scanStrategy + 1) % 6;
+                                consecutiveFailures = 0;
+                                console.log(`🔄 Estratégia ${scanStrategy + 1}/6`);
+                            }
                         }
                     }
                 } catch (error) {
@@ -1205,24 +1209,28 @@
                     isProcessing = false;
                 }
                 
-                // Continue scanning com timeout para evitar travamentos
+                // Continue scanning otimizado
                 if (scanningInterval) {
-                    setTimeout(() => requestAnimationFrame(scanFrame), 10);
+                    setTimeout(() => requestAnimationFrame(scanFrame), 5);
                 }
             }
             
-            // Estratégia 1: Área básica otimizada
-            function scanBasicArea(videoElement) {
-                canvas.width = videoElement.videoWidth;
-                canvas.height = videoElement.videoHeight;
+            // Estratégia 1: Centro de alta resolução (como scanner nativo)
+            function scanHighResolutionCenter(videoElement) {
+                const scale = Math.min(videoElement.videoWidth / 640, videoElement.videoHeight / 480);
+                const scaledWidth = Math.floor(videoElement.videoWidth / scale);
+                const scaledHeight = Math.floor(videoElement.videoHeight / scale);
                 
-                context.drawImage(videoElement, 0, 0);
+                canvas.width = scaledWidth;
+                canvas.height = scaledHeight;
                 
-                // Área central simples
-                const centerX = Math.floor(canvas.width * 0.2);
-                const centerY = Math.floor(canvas.height * 0.2);
-                const centerWidth = Math.floor(canvas.width * 0.6);
-                const centerHeight = Math.floor(canvas.height * 0.6);
+                context.drawImage(videoElement, 0, 0, scaledWidth, scaledHeight);
+                
+                // Área central otimizada (60% da tela)
+                const centerX = Math.floor(scaledWidth * 0.2);
+                const centerY = Math.floor(scaledHeight * 0.2);
+                const centerWidth = Math.floor(scaledWidth * 0.6);
+                const centerHeight = Math.floor(scaledHeight * 0.6);
                 
                 const imageData = context.getImageData(centerX, centerY, centerWidth, centerHeight);
                 
@@ -1231,15 +1239,15 @@
                 });
                 
                 if (code && code.data && code.data.trim()) {
-                    console.log('🎯 QR DETECTADO (Básico):', code.data);
+                    console.log('🎯 QR DETECTADO (Alta Resolução):', code.data);
                     handleQRScan(code.data);
                     return true;
                 }
                 return false;
             }
             
-            // Estratégia 2: Contraste melhorado
-            function scanWithContrast(videoElement) {
+            // Estratégia 2: Contraste adaptativo inteligente
+            function scanAdaptiveContrast(videoElement) {
                 canvas.width = videoElement.videoWidth;
                 canvas.height = videoElement.videoHeight;
                 
@@ -1253,10 +1261,18 @@
                 const imageData = context.getImageData(centerX, centerY, centerWidth, centerHeight);
                 const data = imageData.data;
                 
-                // Processamento simples de contraste
+                // Calcular threshold adaptativo baseado na luminosidade média
+                let totalBrightness = 0;
+                for (let i = 0; i < data.length; i += 4) {
+                    totalBrightness += (data[i] + data[i + 1] + data[i + 2]) / 3;
+                }
+                const avgBrightness = totalBrightness / (data.length / 4);
+                adaptiveThreshold = Math.max(80, Math.min(180, avgBrightness * 0.8));
+                
+                // Aplicar contraste adaptativo
                 for (let i = 0; i < data.length; i += 4) {
                     const gray = data[i] * 0.299 + data[i + 1] * 0.587 + data[i + 2] * 0.114;
-                    const enhanced = gray > 140 ? 255 : 0;
+                    const enhanced = gray > adaptiveThreshold ? 255 : 0;
                     
                     data[i] = enhanced;
                     data[i + 1] = enhanced;
@@ -1268,35 +1284,40 @@
                 });
                 
                 if (code && code.data && code.data.trim()) {
-                    console.log('🎯 QR DETECTADO (Contraste):', code.data);
+                    console.log('🎯 QR DETECTADO (Contraste Adaptativo):', code.data);
                     handleQRScan(code.data);
                     return true;
                 }
                 return false;
             }
             
-            // Estratégia 3: Múltiplas áreas pequenas
-            function scanMultipleAreas(videoElement) {
+            // Estratégia 3: Múltiplas zonas inteligentes
+            function scanMultipleZones(videoElement) {
                 canvas.width = videoElement.videoWidth;
                 canvas.height = videoElement.videoHeight;
                 
                 context.drawImage(videoElement, 0, 0);
                 
-                // 4 áreas pequenas para não sobrecarregar
-                const areas = [
-                    { x: 0.2, y: 0.2, w: 0.6, h: 0.6 }, // Centro
-                    { x: 0.1, y: 0.1, w: 0.5, h: 0.5 }, // Superior esquerdo
-                    { x: 0.4, y: 0.1, w: 0.5, h: 0.5 }, // Superior direito
-                    { x: 0.25, y: 0.4, w: 0.5, h: 0.5 }  // Inferior centro
+                // 9 zonas estratégicas como scanner profissional
+                const zones = [
+                    { x: 0.25, y: 0.25, w: 0.5, h: 0.5 },   // Centro principal
+                    { x: 0.1, y: 0.1, w: 0.6, h: 0.6 },     // Superior esquerdo expandido
+                    { x: 0.3, y: 0.1, w: 0.6, h: 0.6 },     // Superior direito expandido
+                    { x: 0.1, y: 0.3, w: 0.6, h: 0.6 },     // Inferior esquerdo expandido
+                    { x: 0.3, y: 0.3, w: 0.6, h: 0.6 },     // Inferior direito expandido
+                    { x: 0.2, y: 0.15, w: 0.6, h: 0.7 },    // Centro superior
+                    { x: 0.05, y: 0.2, w: 0.7, h: 0.6 },    // Centro esquerdo
+                    { x: 0.25, y: 0.2, w: 0.7, h: 0.6 },    // Centro direito
+                    { x: 0.15, y: 0.05, w: 0.7, h: 0.9 }    // Quase tela toda
                 ];
                 
-                for (const area of areas) {
-                    const x = Math.floor(canvas.width * area.x);
-                    const y = Math.floor(canvas.height * area.y);
-                    const w = Math.floor(canvas.width * area.w);
-                    const h = Math.floor(canvas.height * area.h);
+                for (const zone of zones) {
+                    const x = Math.floor(canvas.width * zone.x);
+                    const y = Math.floor(canvas.height * zone.y);
+                    const w = Math.floor(canvas.width * zone.w);
+                    const h = Math.floor(canvas.height * zone.h);
                     
-                    if (w < 100 || h < 100) continue;
+                    if (w < 150 || h < 150) continue;
                     
                     const imageData = context.getImageData(x, y, w, h);
                     
@@ -1305,7 +1326,7 @@
                     });
                     
                     if (code && code.data && code.data.trim()) {
-                        console.log('🎯 QR DETECTADO (Multi-área):', code.data);
+                        console.log('🎯 QR DETECTADO (Multi-zona):', code.data);
                         handleQRScan(code.data);
                         return true;
                     }
@@ -1313,13 +1334,154 @@
                 return false;
             }
             
-            // Funções complexas removidas para evitar travamentos
+            // Estratégia 4: Detecção de bordas melhorada
+            function scanEdgeEnhanced(videoElement) {
+                canvas.width = videoElement.videoWidth;
+                canvas.height = videoElement.videoHeight;
+                
+                context.drawImage(videoElement, 0, 0);
+                
+                const centerX = Math.floor(canvas.width * 0.1);
+                const centerY = Math.floor(canvas.height * 0.1);
+                const centerWidth = Math.floor(canvas.width * 0.8);
+                const centerHeight = Math.floor(canvas.height * 0.8);
+                
+                const imageData = context.getImageData(centerX, centerY, centerWidth, centerHeight);
+                const data = imageData.data;
+                const width = imageData.width;
+                const height = imageData.height;
+                
+                // Aplicar filtro de detecção de bordas simplificado
+                const enhanced = new Uint8ClampedArray(data.length);
+                
+                for (let y = 1; y < height - 1; y++) {
+                    for (let x = 1; x < width - 1; x++) {
+                        const idx = (y * width + x) * 4;
+                        
+                        // Converter para escala de cinza
+                        const gray = data[idx] * 0.299 + data[idx + 1] * 0.587 + data[idx + 2] * 0.114;
+                        
+                        // Aplicar operador Sobel simplificado
+                        const gx = -data[((y-1)*width + (x-1))*4] + data[((y-1)*width + (x+1))*4] +
+                                  -2*data[(y*width + (x-1))*4] + 2*data[(y*width + (x+1))*4] +
+                                  -data[((y+1)*width + (x-1))*4] + data[((y+1)*width + (x+1))*4];
+                        
+                        const gy = -data[((y-1)*width + (x-1))*4] - 2*data[((y-1)*width + x)*4] - data[((y-1)*width + (x+1))*4] +
+                                   data[((y+1)*width + (x-1))*4] + 2*data[((y+1)*width + x)*4] + data[((y+1)*width + (x+1))*4];
+                        
+                        const magnitude = Math.sqrt(gx*gx + gy*gy);
+                        const enhanced_value = magnitude > 50 ? 255 : gray > 128 ? 255 : 0;
+                        
+                        enhanced[idx] = enhanced_value;
+                        enhanced[idx + 1] = enhanced_value;
+                        enhanced[idx + 2] = enhanced_value;
+                        enhanced[idx + 3] = 255;
+                    }
+                }
+                
+                const code = jsQR(enhanced, width, height, {
+                    inversionAttempts: "attemptBoth"
+                });
+                
+                if (code && code.data && code.data.trim()) {
+                    console.log('🎯 QR DETECTADO (Bordas):', code.data);
+                    handleQRScan(code.data);
+                    return true;
+                }
+                return false;
+            }
+            
+            // Estratégia 5: Ajuste de brilho dinâmico
+            function scanBrightnessAdjusted(videoElement) {
+                canvas.width = videoElement.videoWidth;
+                canvas.height = videoElement.videoHeight;
+                
+                context.drawImage(videoElement, 0, 0);
+                
+                const centerX = Math.floor(canvas.width * 0.15);
+                const centerY = Math.floor(canvas.height * 0.15);
+                const centerWidth = Math.floor(canvas.width * 0.7);
+                const centerHeight = Math.floor(canvas.height * 0.7);
+                
+                const imageData = context.getImageData(centerX, centerY, centerWidth, centerHeight);
+                const data = imageData.data;
+                
+                // Calcular histograma para ajuste automático
+                let histogram = new Array(256).fill(0);
+                for (let i = 0; i < data.length; i += 4) {
+                    const gray = Math.floor(data[i] * 0.299 + data[i + 1] * 0.587 + data[i + 2] * 0.114);
+                    histogram[gray]++;
+                }
+                
+                // Encontrar valores min e max significativos
+                let minVal = 0, maxVal = 255;
+                const totalPixels = data.length / 4;
+                let cumSum = 0;
+                
+                for (let i = 0; i < 256; i++) {
+                    cumSum += histogram[i];
+                    if (cumSum > totalPixels * 0.02 && minVal === 0) minVal = i;
+                    if (cumSum > totalPixels * 0.98 && maxVal === 255) { maxVal = i; break; }
+                }
+                
+                // Aplicar normalização de contraste
+                const range = maxVal - minVal;
+                if (range > 0) {
+                    for (let i = 0; i < data.length; i += 4) {
+                        const gray = data[i] * 0.299 + data[i + 1] * 0.587 + data[i + 2] * 0.114;
+                        const normalized = Math.max(0, Math.min(255, ((gray - minVal) / range) * 255));
+                        const enhanced = normalized > 128 ? 255 : 0;
+                        
+                        data[i] = enhanced;
+                        data[i + 1] = enhanced;
+                        data[i + 2] = enhanced;
+                    }
+                }
+                
+                const code = jsQR(data, imageData.width, imageData.height, {
+                    inversionAttempts: "attemptBoth"
+                });
+                
+                if (code && code.data && code.data.trim()) {
+                    console.log('🎯 QR DETECTADO (Brilho Ajustado):', code.data);
+                    handleQRScan(code.data);
+                    return true;
+                }
+                return false;
+            }
+            
+            // Estratégia 6: Frame completo otimizado
+            function scanFullFrameOptimized(videoElement) {
+                // Reduzir resolução para performance mantendo qualidade
+                const targetWidth = 800;
+                const targetHeight = 600;
+                const scaleX = videoElement.videoWidth / targetWidth;
+                const scaleY = videoElement.videoHeight / targetHeight;
+                
+                canvas.width = targetWidth;
+                canvas.height = targetHeight;
+                
+                context.drawImage(videoElement, 0, 0, targetWidth, targetHeight);
+                
+                const imageData = context.getImageData(0, 0, targetWidth, targetHeight);
+                
+                const code = jsQR(imageData.data, imageData.width, imageData.height, {
+                    inversionAttempts: "attemptBoth"
+                });
+                
+                if (code && code.data && code.data.trim()) {
+                    console.log('🎯 QR DETECTADO (Frame Completo):', code.data);
+                    handleQRScan(code.data);
+                    return true;
+                }
+                return false;
+            }
 
             // Start scanning
             scanningInterval = true;
             requestAnimationFrame(scanFrame);
             
-            console.log('🚀 Scanner otimizado iniciado - sem travamentos');
+            console.log('🚀 Scanner PROFISSIONAL iniciado - Qualidade nativa do celular!');
         }
         
         // Atualizar status de escaneamento
@@ -2199,5 +2361,5 @@
 
 
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'987554bbe30cf171',t:'MTc1OTI1MjE5Ny4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'98755b8256a7f171',t:'MTc1OTI1MjQ3NS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
