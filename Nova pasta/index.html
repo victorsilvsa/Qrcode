@@ -51,94 +51,95 @@
             </div>
         </header>
 
-        <!-- Navigation -->
-        <nav class="bg-white shadow-sm">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="flex space-x-8">
-                    <button id="produtosTab" class="py-4 px-2 border-b-2 border-blue-500 text-blue-600 font-medium flex items-center space-x-2">
-                        <i class="fas fa-boxes"></i>
-                        <span>Produtos</span>
+        <!-- Navigation - Mobile First -->
+        <nav class="bg-white shadow-sm sticky top-0 z-30">
+            <div class="px-2 sm:px-4 lg:px-8">
+                <div class="flex justify-around sm:justify-start sm:space-x-8">
+                    <button id="produtosTab" class="flex-1 sm:flex-none py-3 px-2 sm:px-4 border-b-2 border-blue-500 text-blue-600 font-medium flex flex-col sm:flex-row items-center space-y-1 sm:space-y-0 sm:space-x-2 text-xs sm:text-sm">
+                        <i class="fas fa-boxes text-lg sm:text-base"></i>
+                        <span class="hidden sm:inline">Produtos</span>
+                        <span class="sm:hidden">Produtos</span>
                     </button>
-                    <button id="scannerTab" class="py-4 px-2 border-b-2 border-transparent text-gray-500 hover:text-gray-700 flex items-center space-x-2">
-                        <i class="fas fa-qrcode"></i>
-                        <span>Scanner QR</span>
+                    <button id="scannerTab" class="flex-1 sm:flex-none py-3 px-2 sm:px-4 border-b-2 border-transparent text-gray-500 hover:text-gray-700 flex flex-col sm:flex-row items-center space-y-1 sm:space-y-0 sm:space-x-2 text-xs sm:text-sm">
+                        <i class="fas fa-qrcode text-lg sm:text-base"></i>
+                        <span class="hidden sm:inline">Scanner QR</span>
+                        <span class="sm:hidden">Scanner</span>
                     </button>
-                    <button id="listaTab" class="py-4 px-2 border-b-2 border-transparent text-gray-500 hover:text-gray-700 flex items-center space-x-2">
-                        <i class="fas fa-clipboard-list"></i>
-                        <span>Lista</span>
-                        <span id="listaTabBadge" class="bg-blue-500 text-white px-2 py-1 rounded-full text-xs font-bold ml-1 hidden">0</span>
-                    </button>
-                    <button id="relatoriosTab" class="py-4 px-2 border-b-2 border-transparent text-gray-500 hover:text-gray-700 flex items-center space-x-2">
-                        <i class="fas fa-chart-bar"></i>
-                        <span>Relatórios</span>
+                    <button id="listaTab" class="flex-1 sm:flex-none py-3 px-2 sm:px-4 border-b-2 border-transparent text-gray-500 hover:text-gray-700 flex flex-col sm:flex-row items-center space-y-1 sm:space-y-0 sm:space-x-2 text-xs sm:text-sm relative">
+                        <i class="fas fa-clipboard-list text-lg sm:text-base"></i>
+                        <span class="hidden sm:inline">Lista</span>
+                        <span class="sm:hidden">Lista</span>
+                        <span id="listaTabBadge" class="absolute -top-1 -right-1 sm:static sm:ml-1 bg-blue-500 text-white px-1.5 py-0.5 sm:px-2 sm:py-1 rounded-full text-xs font-bold hidden">0</span>
                     </button>
                 </div>
             </div>
         </nav>
 
-        <!-- Products Section -->
-        <div id="produtosSection" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Products Section - Mobile First -->
+        <div id="produtosSection" class="px-2 sm:px-4 lg:px-8 py-4 sm:py-8">
             <!-- Add Product Button -->
-            <div class="mb-6">
-                <button id="showAddForm" class="bg-blue-600 text-white px-6 py-3 rounded-md hover:bg-blue-700 transition duration-200 flex items-center space-x-2">
+            <div class="mb-4 sm:mb-6">
+                <button id="showAddForm" class="w-full sm:w-auto bg-blue-600 text-white px-4 sm:px-6 py-3 rounded-lg hover:bg-blue-700 transition duration-200 flex items-center justify-center space-x-2 text-sm sm:text-base">
                     <i class="fas fa-plus"></i>
                     <span>Adicionar Novo Produto</span>
                 </button>
             </div>
             
-            <!-- Add Product Form -->
-            <div id="addProductForm" class="bg-white rounded-lg shadow-md p-6 mb-8 hidden">
+            <!-- Add Product Form - Mobile Optimized -->
+            <div id="addProductForm" class="bg-white rounded-lg shadow-md p-4 sm:p-6 mb-6 sm:mb-8 hidden">
                 <h3 class="text-lg font-semibold text-gray-800 mb-4">Cadastrar Novo Produto</h3>
-                <form id="productForm" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Nome do Produto</label>
-                        <input type="text" id="productName" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <form id="productForm" class="space-y-4">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div class="sm:col-span-2">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Nome do Produto</label>
+                            <input type="text" id="productName" required class="w-full px-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-base">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Código Interno</label>
+                            <input type="text" id="productCode" required class="w-full px-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-base">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Quantidade</label>
+                            <input type="number" id="productQuantity" required min="0" class="w-full px-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-base">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Setor</label>
+                            <input type="text" id="productSector" required class="w-full px-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-base">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Corredor</label>
+                            <input type="text" id="productCorridor" required class="w-full px-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-base">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Prateleira</label>
+                            <input type="text" id="productShelf" required class="w-full px-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-base">
+                        </div>
                     </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Código Interno</label>
-                        <input type="text" id="productCode" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Quantidade</label>
-                        <input type="number" id="productQuantity" required min="0" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Prateleira</label>
-                        <input type="text" id="productShelf" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Setor</label>
-                        <input type="text" id="productSector" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Corredor</label>
-                        <input type="text" id="productCorridor" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    </div>
-                    <div class="md:col-span-2">
-                        <button type="submit" class="bg-green-600 text-white px-6 py-2 rounded-md hover:bg-green-700 transition duration-200">
+                    <div class="pt-4">
+                        <button type="submit" class="w-full sm:w-auto bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition duration-200 font-medium">
                             Cadastrar Produto
                         </button>
                     </div>
                 </form>
             </div>
 
-            <!-- Products List -->
+            <!-- Products List - Mobile Optimized -->
             <div class="bg-white rounded-lg shadow-md">
-                <div class="p-6 border-b border-gray-200">
-                    <div class="flex justify-between items-center">
+                <div class="p-4 sm:p-6 border-b border-gray-200">
+                    <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center space-y-3 sm:space-y-0">
                         <h3 class="text-lg font-semibold text-gray-800">Lista de Produtos</h3>
-                        <div class="flex space-x-2">
-                            <button id="generateAllQR" class="bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700 transition duration-200">
+                        <div class="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
+                            <button id="generateAllQR" class="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition duration-200 text-sm font-medium">
                                 Gerar QR de Todos
                             </button>
-                            <button id="deleteAllQR" class="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 transition duration-200 flex items-center space-x-2">
+                            <button id="deleteAllQR" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition duration-200 flex items-center justify-center space-x-2 text-sm font-medium">
                                 <i class="fas fa-trash"></i>
                                 <span>Apagar Todos QR</span>
                             </button>
                         </div>
                     </div>
                 </div>
-                <div id="productsList" class="p-6">
+                <div id="productsList" class="p-4 sm:p-6">
                     <div class="text-center text-gray-500">Carregando produtos...</div>
                 </div>
             </div>
@@ -450,26 +451,7 @@
             </div>
         </div>
 
-        <!-- Reports Section -->
-        <div id="relatoriosSection" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 hidden">
-            <div class="bg-white rounded-lg shadow-md p-6">
-                <h3 class="text-lg font-semibold text-gray-800 mb-4">Relatórios de Movimentação</h3>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                    <button id="dailyReport" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition duration-200">
-                        Relatório Diário
-                    </button>
-                    <button id="weeklyReport" class="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition duration-200">
-                        Relatório Semanal
-                    </button>
-                    <button id="monthlyReport" class="bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700 transition duration-200">
-                        Relatório Mensal
-                    </button>
-                </div>
-                <div id="reportContent" class="border-t pt-4">
-                    <p class="text-gray-500">Selecione um período para gerar o relatório</p>
-                </div>
-            </div>
-        </div>
+
     </div>
 
     <!-- QR Code Modal -->
@@ -622,7 +604,6 @@
             const produtosTab = document.getElementById('produtosTab');
             const scannerTab = document.getElementById('scannerTab');
             const listaTab = document.getElementById('listaTab');
-            const relatoriosTab = document.getElementById('relatoriosTab');
             
             if (produtosTab) {
                 produtosTab.addEventListener('click', () => {
@@ -645,12 +626,7 @@
                 });
             }
 
-            if (relatoriosTab) {
-                relatoriosTab.addEventListener('click', () => {
-                    console.log('🔄 Mudando para aba Relatórios');
-                    showSection('relatorios');
-                });
-            }
+
             
             console.log('✅ Eventos configurados!');
         });
@@ -658,7 +634,7 @@
         // Função para mostrar seções - NOVA
         function showSection(section) {
             // Esconder todas as seções
-            const sections = ['produtosSection', 'scannerSection', 'listaSection', 'relatoriosSection'];
+            const sections = ['produtosSection', 'scannerSection', 'listaSection'];
             sections.forEach(sectionId => {
                 const element = document.getElementById(sectionId);
                 if (element) {
@@ -673,7 +649,7 @@
             }
             
             // Atualizar estilos das abas
-            const tabs = ['produtosTab', 'scannerTab', 'listaTab', 'relatoriosTab'];
+            const tabs = ['produtosTab', 'scannerTab', 'listaTab'];
             tabs.forEach(tabId => {
                 const tab = document.getElementById(tabId);
                 if (tab) {
@@ -1141,118 +1117,7 @@
             });
         }
 
-        // Report functions
-        document.getElementById('dailyReport').addEventListener('click', () => generateReport('daily'));
-        document.getElementById('weeklyReport').addEventListener('click', () => generateReport('weekly'));
-        document.getElementById('monthlyReport').addEventListener('click', () => generateReport('monthly'));
 
-        function generateReport(period) {
-            const now = new Date();
-            let startDate;
-            
-            switch(period) {
-                case 'daily':
-                    startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-                    break;
-                case 'weekly':
-                    startDate = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-                    break;
-                case 'monthly':
-                    startDate = new Date(now.getFullYear(), now.getMonth(), 1);
-                    break;
-            }
-
-            database.ref('movements').once('value').then((snapshot) => {
-                const allMovements = snapshot.val();
-                if (!allMovements) {
-                    document.getElementById('reportContent').innerHTML = '<p class="text-gray-500">Nenhuma movimentação encontrada</p>';
-                    return;
-                }
-
-                let filteredMovements = [];
-                Object.entries(allMovements).forEach(([productId, movements]) => {
-                    Object.values(movements).forEach(movement => {
-                        const movementDate = new Date(movement.timestamp);
-                        if (movementDate >= startDate) {
-                            filteredMovements.push({...movement, productId});
-                        }
-                    });
-                });
-
-                displayReport(filteredMovements, period);
-            });
-        }
-
-        function displayReport(movements, period) {
-            const reportContent = document.getElementById('reportContent');
-            
-            if (movements.length === 0) {
-                reportContent.innerHTML = '<p class="text-gray-500">Nenhuma movimentação encontrada no período</p>';
-                return;
-            }
-
-            let html = `
-                <div class="mb-4">
-                    <h4 class="font-semibold text-gray-800 mb-2">Relatório ${period === 'daily' ? 'Diário' : period === 'weekly' ? 'Semanal' : 'Mensal'}</h4>
-                    <button onclick="exportReport()" class="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition duration-200 mb-4">
-                        Exportar CSV
-                    </button>
-                </div>
-                <div class="overflow-x-auto">
-                    <table class="min-w-full divide-y divide-gray-200">
-                        <thead class="bg-gray-50">
-                            <tr>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Data</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tipo</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Quantidade</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Usuário</th>
-                            </tr>
-                        </thead>
-                        <tbody class="bg-white divide-y divide-gray-200">
-            `;
-
-            movements.forEach(movement => {
-                const date = new Date(movement.timestamp).toLocaleString('pt-BR');
-                const typeText = movement.type === 'withdraw' ? 'Retirada' : 'Devolução';
-                const typeClass = movement.type === 'withdraw' ? 'text-red-600' : 'text-green-600';
-                
-                html += `
-                    <tr>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${date}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm ${typeClass}">${typeText}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${movement.quantity}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${movement.userEmail}</td>
-                    </tr>
-                `;
-            });
-
-            html += '</tbody></table></div>';
-            reportContent.innerHTML = html;
-            
-            // Store movements for export
-            window.currentReportData = movements;
-        }
-
-        function exportReport() {
-            if (!window.currentReportData) return;
-            
-            let csv = 'Data,Tipo,Quantidade,Usuário\n';
-            window.currentReportData.forEach(movement => {
-                const date = new Date(movement.timestamp).toLocaleString('pt-BR');
-                const type = movement.type === 'withdraw' ? 'Retirada' : 'Devolução';
-                csv += `"${date}","${type}","${movement.quantity}","${movement.userEmail}"\n`;
-            });
-
-            const blob = new Blob([csv], { type: 'text/csv' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `relatorio-${new Date().toISOString().split('T')[0]}.csv`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-        }
 
         // Eventos dos botões - CORRIGIDO
         document.addEventListener('DOMContentLoaded', function() {
@@ -1795,7 +1660,7 @@
         // Global view state
         let currentView = 'detailed'; // 'detailed' or 'compact'
 
-        // Add scanned product to results
+        // Add scanned product to results - CONECTADO AO BD
         function addScannedProduct(productId, product) {
             const scannedProducts = document.getElementById('scannedProducts');
             const listaProducts = document.getElementById('listaProducts');
@@ -1816,6 +1681,28 @@
                 hour: '2-digit', 
                 minute: '2-digit'
             });
+            
+            // 🔥 SALVAR NO BANCO DE DADOS - PRODUTO ESCANEADO
+            const scanData = {
+                productId: productId,
+                productName: product.name,
+                productCode: product.code,
+                scannedAt: new Date().toISOString(),
+                scannedTime: timeString,
+                quantity: product.quantity,
+                location: product.location,
+                userAgent: navigator.userAgent,
+                timestamp: firebase.database.ServerValue.TIMESTAMP
+            };
+            
+            // Salvar no Firebase
+            database.ref('scannedProducts').push(scanData)
+                .then(() => {
+                    console.log('✅ Produto escaneado salvo no BD:', product.name);
+                })
+                .catch(error => {
+                    console.error('❌ Erro ao salvar scan no BD:', error);
+                });
             
             // Create product card for scanner results
             const productCard = document.createElement('div');
@@ -2131,17 +2018,7 @@
             }
             
             // Voltar para a aba de produtos
-            document.getElementById('produtosSection').classList.remove('hidden');
-            document.getElementById('scannerSection').classList.add('hidden');
-            document.getElementById('relatoriosSection').classList.add('hidden');
-            
-            // Update tab styles
-            document.getElementById('produtosTab').classList.add('border-blue-500', 'text-blue-600');
-            document.getElementById('produtosTab').classList.remove('border-transparent', 'text-gray-500');
-            document.getElementById('scannerTab').classList.add('border-transparent', 'text-gray-500');
-            document.getElementById('scannerTab').classList.remove('border-blue-500', 'text-blue-600');
-            document.getElementById('relatoriosTab').classList.add('border-transparent', 'text-gray-500');
-            document.getElementById('relatoriosTab').classList.remove('border-blue-500', 'text-blue-600');
+            showSection('produtos');
         }
 
         // Update scanned counter
@@ -2150,9 +2027,7 @@
             const scanCounters = document.querySelectorAll('#scanCounter');
             const resultsCounter = document.getElementById('resultsCounter');
             const listaCounter = document.getElementById('listaCounter');
-            const listBadge = document.getElementById('listBadge');
             const listaTabBadge = document.getElementById('listaTabBadge');
-            const viewListBtn = document.getElementById('viewScannedList');
             const extendedControls = document.getElementById('extendedControls');
             const listaActionBar = document.getElementById('listaActionBar');
             
@@ -2168,10 +2043,6 @@
                 listaCounter.textContent = count;
             }
             
-            if (listBadge) {
-                listBadge.textContent = count;
-            }
-            
             // Update tab badge
             if (listaTabBadge) {
                 listaTabBadge.textContent = count;
@@ -2184,11 +2055,9 @@
             
             // Show/hide controls based on count
             if (count > 0) {
-                if (viewListBtn) viewListBtn.classList.remove('hidden');
                 if (extendedControls) extendedControls.classList.remove('hidden');
                 if (listaActionBar) listaActionBar.classList.remove('hidden');
             } else {
-                if (viewListBtn) viewListBtn.classList.add('hidden');
                 if (extendedControls) extendedControls.classList.add('hidden');
                 if (listaActionBar) listaActionBar.classList.add('hidden');
             }
@@ -2247,7 +2116,7 @@
             }
         });
 
-        // Quick withdraw function
+        // Quick withdraw function - CONECTADO AO BD
         function quickWithdraw(productId) {
             const quantity = parseInt(prompt('Quantidade a retirar:'));
             if (quantity && quantity > 0) {
@@ -2261,17 +2130,33 @@
                     const newQuantity = product.quantity - quantity;
                     database.ref(`products/${productId}/quantity`).set(newQuantity);
 
-                    // Record movement
-                    const movementData = {
+                    // 🔥 SALVAR RETIRADA NO BD - HISTÓRICO COMPLETO
+                    const withdrawData = {
                         type: 'withdraw',
+                        productId: productId,
+                        productName: product.name,
+                        productCode: product.code,
                         quantity: quantity,
-                        timestamp: new Date().toISOString(),
-                        userEmail: 'Scanner',
                         previousQuantity: product.quantity,
-                        newQuantity: newQuantity
+                        newQuantity: newQuantity,
+                        timestamp: new Date().toISOString(),
+                        withdrawnAt: firebase.database.ServerValue.TIMESTAMP,
+                        userEmail: 'Scanner Mobile',
+                        location: product.location,
+                        method: 'quick_withdraw_scanner',
+                        userAgent: navigator.userAgent
                     };
 
-                    database.ref(`movements/${productId}`).push(movementData);
+                    // Salvar em movements E em withdrawals para histórico completo
+                    database.ref(`movements/${productId}`).push(withdrawData);
+                    database.ref('withdrawals').push(withdrawData)
+                        .then(() => {
+                            console.log('✅ Retirada salva no BD:', product.name, quantity);
+                        })
+                        .catch(error => {
+                            console.error('❌ Erro ao salvar retirada:', error);
+                        });
+                    
                     alert(`${quantity} unidades retiradas com sucesso!`);
                     
                     // Update the scanned item display
@@ -2285,7 +2170,7 @@
             }
         }
 
-        // Quick return function
+        // Quick return function - CONECTADO AO BD
         function quickReturn(productId) {
             const quantity = parseInt(prompt('Quantidade a devolver:'));
             if (quantity && quantity > 0) {
@@ -2294,17 +2179,33 @@
                     const newQuantity = product.quantity + quantity;
                     database.ref(`products/${productId}/quantity`).set(newQuantity);
 
-                    // Record movement
-                    const movementData = {
+                    // 🔥 SALVAR DEVOLUÇÃO NO BD - HISTÓRICO COMPLETO
+                    const returnData = {
                         type: 'return',
+                        productId: productId,
+                        productName: product.name,
+                        productCode: product.code,
                         quantity: quantity,
-                        timestamp: new Date().toISOString(),
-                        userEmail: 'Scanner',
                         previousQuantity: product.quantity,
-                        newQuantity: newQuantity
+                        newQuantity: newQuantity,
+                        timestamp: new Date().toISOString(),
+                        returnedAt: firebase.database.ServerValue.TIMESTAMP,
+                        userEmail: 'Scanner Mobile',
+                        location: product.location,
+                        method: 'quick_return_scanner',
+                        userAgent: navigator.userAgent
                     };
 
-                    database.ref(`movements/${productId}`).push(movementData);
+                    // Salvar em movements E em returns para histórico completo
+                    database.ref(`movements/${productId}`).push(returnData);
+                    database.ref('returns').push(returnData)
+                        .then(() => {
+                            console.log('✅ Devolução salva no BD:', product.name, quantity);
+                        })
+                        .catch(error => {
+                            console.error('❌ Erro ao salvar devolução:', error);
+                        });
+                    
                     alert(`${quantity} unidades devolvidas com sucesso!`);
                     
                     // Update the scanned item display
@@ -2398,10 +2299,7 @@
             });
         }
 
-        // View scanned list button
-        document.getElementById('viewScannedList').addEventListener('click', () => {
-            showScannedResults();
-        });
+
 
         // Clear scanned products
         document.getElementById('clearScanned').addEventListener('click', () => {
@@ -2507,5 +2405,5 @@
 
 
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9875a77823cacdc3',t:'MTc1OTI1NTU4Ni4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9875b27c612df171',t:'MTc1OTI1NjAzOC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
