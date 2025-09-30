@@ -199,11 +199,11 @@
                 
                 <!-- QR Scanning Overlay with Perfect Frame -->
                 <div id="scanningOverlay" class="absolute inset-0 hidden">
-                    <!-- Top header -->
+                    <!-- Top header com indicador melhorado -->
                     <div class="absolute top-4 left-4 right-4 flex justify-between items-center z-50">
-                        <div class="bg-black bg-opacity-90 text-white px-4 py-3 rounded-xl text-sm flex items-center space-x-3 backdrop-blur-sm border border-gray-600">
-                            <div class="w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
-                            <span class="font-medium">Procurando QR Code</span>
+                        <div id="scanningIndicator" class="bg-black bg-opacity-90 text-white px-4 py-3 rounded-xl text-sm flex items-center space-x-3 backdrop-blur-sm border border-gray-600 transition-all duration-300">
+                            <div id="scanningDot" class="w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
+                            <span id="scanningText" class="font-medium">Procurando QR Code</span>
                         </div>
                         <button id="stopCamera" class="bg-red-500 text-white p-3 rounded-xl hover:bg-red-600 transition duration-200 shadow-lg border border-red-400">
                             <i class="fas fa-times text-lg"></i>
@@ -1141,100 +1141,62 @@
             }
         });
 
-        // Scanner QR Ultra-Melhorado com Múltiplas Estratégias
+        // Scanner QR Otimizado - Performance Máxima
         function startSimpleQRScanning(videoElement) {
             let lastScanTime = 0;
-            const scanDelay = 80; // Mais rápido para melhor detecção
-            let scanAttempts = 0;
-            let consecutiveFailures = 0;
+            const scanDelay = 120; // Otimizado para evitar travamentos
+            let isProcessing = false;
             
             function scanFrame() {
+                if (isProcessing || !scanningInterval) return;
+                
                 const now = Date.now();
                 if (now - lastScanTime < scanDelay) {
-                    if (scanningInterval) {
-                        requestAnimationFrame(scanFrame);
-                    }
+                    requestAnimationFrame(scanFrame);
                     return;
                 }
+                
                 lastScanTime = now;
-                scanAttempts++;
+                isProcessing = true;
                 
                 try {
                     if (videoElement.readyState === videoElement.HAVE_ENOUGH_DATA) {
-                        // Set canvas size to match video
-                        canvas.width = videoElement.videoWidth;
-                        canvas.height = videoElement.videoHeight;
+                        // Usar resolução menor para melhor performance
+                        const scale = 0.5; // Reduz pela metade para performance
+                        canvas.width = videoElement.videoWidth * scale;
+                        canvas.height = videoElement.videoHeight * scale;
                         
-                        // Draw video frame to canvas
+                        // Draw video frame redimensionado
                         context.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
                         
-                        // Múltiplas áreas de detecção para maior precisão
-                        const areas = [
-                            // Área central (principal)
-                            {
-                                x: Math.floor(canvas.width * 0.2),
-                                y: Math.floor(canvas.height * 0.2),
-                                width: Math.floor(canvas.width * 0.6),
-                                height: Math.floor(canvas.height * 0.6)
-                            },
-                            // Área um pouco maior
-                            {
-                                x: Math.floor(canvas.width * 0.1),
-                                y: Math.floor(canvas.height * 0.1),
-                                width: Math.floor(canvas.width * 0.8),
-                                height: Math.floor(canvas.height * 0.8)
-                            },
-                            // Área menor (para QRs pequenos)
-                            {
-                                x: Math.floor(canvas.width * 0.35),
-                                y: Math.floor(canvas.height * 0.35),
-                                width: Math.floor(canvas.width * 0.3),
-                                height: Math.floor(canvas.height * 0.3)
-                            },
-                            // Área tela inteira (para QRs grandes)
-                            {
-                                x: 0,
-                                y: 0,
-                                width: canvas.width,
-                                height: canvas.height
+                        // Área central otimizada - foco na região principal
+                        const centerX = Math.floor(canvas.width * 0.25);
+                        const centerY = Math.floor(canvas.height * 0.25);
+                        const centerWidth = Math.floor(canvas.width * 0.5);
+                        const centerHeight = Math.floor(canvas.height * 0.5);
+                        
+                        const imageData = context.getImageData(centerX, centerY, centerWidth, centerHeight);
+                        
+                        // Configuração otimizada para velocidade
+                        const code = jsQR(imageData.data, imageData.width, imageData.height, {
+                            inversionAttempts: "dontInvert", // Mais rápido
+                            locateOptions: {
+                                tryHarder: false // Prioriza velocidade
                             }
-                        ];
+                        });
                         
-                        // Tentar detectar em cada área
-                        for (let area of areas) {
-                            const imageData = context.getImageData(area.x, area.y, area.width, area.height);
-                            
-                            // Configurações otimizadas para melhor detecção
-                            const code = jsQR(imageData.data, imageData.width, imageData.height, {
-                                inversionAttempts: "attemptBoth",
-                                locateOptions: {
-                                    tryHarder: true,
-                                    assumeGS1: false
-                                }
-                            });
-                            
-                            if (code && code.data && code.data.trim()) {
-                                console.log('QR detectado com sucesso:', code.data);
-                                consecutiveFailures = 0; // Reset contador de falhas
-                                handleQRScan(code.data);
-                                // NÃO retornar - continuar escaneando para permitir múltiplos QRs
-                                break; // Sair do loop de áreas, mas continuar escaneando
-                            }
-                        }
-                        
-                        consecutiveFailures++;
-                        
-                        // Feedback visual do status de escaneamento
-                        if (scanAttempts % 25 === 0) { // A cada 2 segundos aproximadamente
-                            updateScanningStatus();
+                        if (code && code.data && code.data.trim()) {
+                            console.log('🎯 QR DETECTADO:', code.data);
+                            handleQRScan(code.data);
                         }
                     }
                 } catch (error) {
-                    console.error('Erro no escaneamento:', error);
-                    consecutiveFailures++;
+                    console.error('Erro no scan:', error);
+                } finally {
+                    isProcessing = false;
                 }
                 
-                // Continue scanning sempre
+                // Continue scanning
                 if (scanningInterval) {
                     requestAnimationFrame(scanFrame);
                 }
@@ -1244,7 +1206,7 @@
             scanningInterval = true;
             requestAnimationFrame(scanFrame);
             
-            console.log('Scanner ultra-melhorado iniciado - Escaneamento contínuo');
+            console.log('🚀 Scanner otimizado iniciado');
         }
         
         // Atualizar status de escaneamento
@@ -1283,7 +1245,7 @@
             console.log('Scanner QR parado');
         });
 
-        // Handle QR scan result with instant feedback
+        // Handle QR scan com feedback instantâneo melhorado
         let lastScannedQR = '';
         let lastScannedTime = 0;
         
@@ -1291,9 +1253,9 @@
             try {
                 const now = Date.now();
                 
-                // Permitir re-escaneamento do mesmo QR após 2 segundos
-                if (qrText === lastScannedQR && now - lastScannedTime < 2000) {
-                    return; // Evitar spam do mesmo QR
+                // Permitir re-escaneamento após 1.5 segundos
+                if (qrText === lastScannedQR && now - lastScannedTime < 1500) {
+                    return;
                 }
                 
                 // Extract product ID from URL
@@ -1301,42 +1263,54 @@
                 const productId = url.searchParams.get('product');
                 
                 if (!productId) {
-                    console.log('QR Code não é do sistema:', qrText);
+                    console.log('❌ QR não é do sistema');
+                    showInvalidQRFeedback();
                     return;
                 }
 
-                // Atualizar controle de re-escaneamento
+                // Atualizar controle
                 lastScannedQR = qrText;
                 lastScannedTime = now;
                 
-                // Instant visual feedback
+                // FEEDBACK INSTANTÂNEO PRIMEIRO
                 showScanSuccessFeedback();
+                updateScanStatus('✅ QR Detectado!');
                 
-                // Get product info and add to results
+                // Buscar produto e processar
                 database.ref(`products/${productId}`).once('value').then((snapshot) => {
                     const product = snapshot.val();
                     if (product) {
-                        // Se já foi escaneado, atualizar. Se não, adicionar novo
-                        if (scannedProductsSet.has(productId)) {
-                            updateScannedProductDisplay(productId, product);
-                            updateScanStatus(`${product.name} atualizado!`);
-                            showAlreadyScannedFeedback();
-                        } else {
-                            scannedProductsSet.add(productId);
-                            addScannedProduct(productId, product);
-                            updateScanStatus(`${product.name} adicionado!`);
-                            updateScannedCounter();
-                        }
+                        // Feedback específico do produto
+                        setTimeout(() => {
+                            if (scannedProductsSet.has(productId)) {
+                                updateScannedProductDisplay(productId, product);
+                                updateScanStatus(`🔄 ${product.name} atualizado!`);
+                                showAlreadyScannedFeedback();
+                            } else {
+                                scannedProductsSet.add(productId);
+                                addScannedProduct(productId, product);
+                                updateScanStatus(`➕ ${product.name} adicionado!`);
+                                updateScannedCounter();
+                            }
+                        }, 200);
                         
-                        // Auto-show results IMEDIATAMENTE após qualquer scan
+                        // Auto-mostrar resultados após 1 segundo
                         setTimeout(() => {
                             showScannedResults();
-                        }, 800);
+                        }, 1000);
+                    } else {
+                        updateScanStatus('❌ Produto não encontrado');
+                        showInvalidQRFeedback();
                     }
+                }).catch(error => {
+                    console.error('Erro ao buscar produto:', error);
+                    updateScanStatus('❌ Erro ao buscar produto');
+                    showInvalidQRFeedback();
                 });
 
             } catch (error) {
-                console.log('QR Code inválido:', qrText);
+                console.log('❌ QR inválido:', qrText);
+                updateScanStatus('❌ QR Code inválido');
                 showInvalidQRFeedback();
             }
         }
@@ -1662,28 +1636,41 @@
             });
         }
 
-        // WhatsApp-style instant feedback functions
+        // Feedback visual otimizado e mais rápido
         function showScanSuccessFeedback() {
             const successDiv = document.getElementById('scanSuccess');
+            
+            // Reset para estado inicial
+            successDiv.innerHTML = `
+                <div class="flex items-center space-x-3">
+                    <div class="bg-white bg-opacity-20 p-2 rounded-full animate-pulse">
+                        <i class="fas fa-check text-xl"></i>
+                    </div>
+                    <span class="font-bold">✅ QR DETECTADO!</span>
+                </div>
+            `;
+            successDiv.className = 'absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-green-500 text-white px-6 py-4 rounded-2xl text-lg font-bold shadow-2xl z-50 backdrop-blur-sm border-2 border-green-300';
+            
+            // Mostrar imediatamente
             successDiv.classList.remove('hidden');
-            successDiv.style.transform = 'translate(-50%, -50%) scale(0.8)';
+            successDiv.style.transform = 'translate(-50%, -50%) scale(0.9)';
             successDiv.style.opacity = '0';
             
-            // Animate in
+            // Animação rápida de entrada
             setTimeout(() => {
-                successDiv.style.transition = 'all 0.3s ease';
+                successDiv.style.transition = 'all 0.2s ease-out';
                 successDiv.style.transform = 'translate(-50%, -50%) scale(1)';
                 successDiv.style.opacity = '1';
             }, 10);
             
-            // Animate out
+            // Esconder após tempo menor
             setTimeout(() => {
-                successDiv.style.transform = 'translate(-50%, -50%) scale(1.2)';
                 successDiv.style.opacity = '0';
+                successDiv.style.transform = 'translate(-50%, -50%) scale(1.1)';
                 setTimeout(() => {
                     successDiv.classList.add('hidden');
-                }, 300);
-            }, 1200);
+                }, 200);
+            }, 800);
         }
         
         function showAlreadyScannedFeedback() {
@@ -1758,14 +1745,60 @@
         }
         
         function updateScanStatus(message) {
+            // Atualizar status no header
             const statusDiv = document.getElementById('scanStatus');
-            statusDiv.textContent = message;
-            statusDiv.style.color = '#10b981';
+            if (statusDiv) {
+                statusDiv.style.transition = 'all 0.2s ease';
+                statusDiv.style.transform = 'scale(0.95)';
+                
+                setTimeout(() => {
+                    statusDiv.textContent = message;
+                    statusDiv.style.color = message.includes('❌') ? '#ef4444' : 
+                                          message.includes('🔄') ? '#f59e0b' : '#10b981';
+                    statusDiv.style.transform = 'scale(1)';
+                }, 100);
+            }
             
+            // Atualizar indicador no overlay de escaneamento
+            const scanningText = document.getElementById('scanningText');
+            const scanningDot = document.getElementById('scanningDot');
+            const scanningIndicator = document.getElementById('scanningIndicator');
+            
+            if (scanningText && scanningDot && scanningIndicator) {
+                scanningText.textContent = message;
+                
+                // Mudar cor do indicador baseado no status
+                if (message.includes('✅')) {
+                    scanningDot.className = 'w-3 h-3 bg-green-400 rounded-full animate-bounce';
+                    scanningIndicator.className = 'bg-green-600 bg-opacity-90 text-white px-4 py-3 rounded-xl text-sm flex items-center space-x-3 backdrop-blur-sm border border-green-400 transition-all duration-300';
+                } else if (message.includes('❌')) {
+                    scanningDot.className = 'w-3 h-3 bg-red-400 rounded-full animate-pulse';
+                    scanningIndicator.className = 'bg-red-600 bg-opacity-90 text-white px-4 py-3 rounded-xl text-sm flex items-center space-x-3 backdrop-blur-sm border border-red-400 transition-all duration-300';
+                } else if (message.includes('🔄')) {
+                    scanningDot.className = 'w-3 h-3 bg-yellow-400 rounded-full animate-spin';
+                    scanningIndicator.className = 'bg-yellow-600 bg-opacity-90 text-white px-4 py-3 rounded-xl text-sm flex items-center space-x-3 backdrop-blur-sm border border-yellow-400 transition-all duration-300';
+                } else {
+                    scanningDot.className = 'w-3 h-3 bg-green-400 rounded-full animate-pulse';
+                    scanningIndicator.className = 'bg-black bg-opacity-90 text-white px-4 py-3 rounded-xl text-sm flex items-center space-x-3 backdrop-blur-sm border border-gray-600 transition-all duration-300';
+                }
+            }
+            
+            // Voltar ao estado padrão após 3 segundos
             setTimeout(() => {
-                statusDiv.textContent = 'Procurando QR...';
-                statusDiv.style.color = '#10b981';
-            }, 2000);
+                if (scanningInterval) {
+                    if (statusDiv) {
+                        statusDiv.style.transition = 'all 0.3s ease';
+                        statusDiv.textContent = 'Procurando QR Code...';
+                        statusDiv.style.color = '#10b981';
+                    }
+                    
+                    if (scanningText && scanningDot && scanningIndicator) {
+                        scanningText.textContent = 'Procurando QR Code';
+                        scanningDot.className = 'w-3 h-3 bg-green-400 rounded-full animate-pulse';
+                        scanningIndicator.className = 'bg-black bg-opacity-90 text-white px-4 py-3 rounded-xl text-sm flex items-center space-x-3 backdrop-blur-sm border border-gray-600 transition-all duration-300';
+                    }
+                }
+            }, 3000);
         }
         
         function showScannedResults() {
@@ -2096,5 +2129,5 @@
 
 
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'98751dd233c6cdc3',t:'MTc1OTI0OTk0OC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'987525e562aacdc3',t:'MTc1OTI1MDI3OS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
