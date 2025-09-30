@@ -1,0 +1,1124 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Almoxarifado</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+    <script src="https://unpkg.com/qr-scanner@1.4.2/qr-scanner.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        body {
+            box-sizing: border-box;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen">
+    <!-- Main App -->
+    <div id="mainApp">
+        <!-- Header -->
+        <header class="bg-white shadow-sm border-b">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between items-center py-4">
+                    <h1 class="text-2xl font-bold text-gray-900">Sistema de Almoxarifado</h1>
+                    <div class="flex items-center space-x-4">
+                        <span class="text-sm text-gray-600">Sistema Ativo</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Navigation -->
+        <nav class="bg-white shadow-sm">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex space-x-8">
+                    <button id="produtosTab" class="py-4 px-2 border-b-2 border-blue-500 text-blue-600 font-medium">
+                        Produtos
+                    </button>
+                    <button id="scannerTab" class="py-4 px-2 border-b-2 border-transparent text-gray-500 hover:text-gray-700">
+                        Scanner QR
+                    </button>
+                    <button id="relatoriosTab" class="py-4 px-2 border-b-2 border-transparent text-gray-500 hover:text-gray-700">
+                        Relatórios
+                    </button>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Products Section -->
+        <div id="produtosSection" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <!-- Add Product Button -->
+            <div class="mb-6">
+                <button id="showAddForm" class="bg-blue-600 text-white px-6 py-3 rounded-md hover:bg-blue-700 transition duration-200">
+                    ➕ Adicionar Novo Produto
+                </button>
+            </div>
+            
+            <!-- Add Product Form -->
+            <div id="addProductForm" class="bg-white rounded-lg shadow-md p-6 mb-8 hidden">
+                <h3 class="text-lg font-semibold text-gray-800 mb-4">Cadastrar Novo Produto</h3>
+                <form id="productForm" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Nome do Produto</label>
+                        <input type="text" id="productName" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Código Interno</label>
+                        <input type="text" id="productCode" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Quantidade</label>
+                        <input type="number" id="productQuantity" required min="0" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Prateleira</label>
+                        <input type="text" id="productShelf" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Setor</label>
+                        <input type="text" id="productSector" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Corredor</label>
+                        <input type="text" id="productCorridor" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div class="md:col-span-2">
+                        <button type="submit" class="bg-green-600 text-white px-6 py-2 rounded-md hover:bg-green-700 transition duration-200">
+                            Cadastrar Produto
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Products List -->
+            <div class="bg-white rounded-lg shadow-md">
+                <div class="p-6 border-b border-gray-200">
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-lg font-semibold text-gray-800">Lista de Produtos</h3>
+                        <div class="flex space-x-2">
+                            <button id="generateAllQR" class="bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700 transition duration-200">
+                                Gerar QR de Todos
+                            </button>
+                            <button id="deleteAllQR" class="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 transition duration-200">
+                                🗑️ Apagar Todos QR
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div id="productsList" class="p-6">
+                    <div class="text-center text-gray-500">Carregando produtos...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Scanner Section -->
+        <div id="scannerSection" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 hidden">
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h3 class="text-lg font-semibold text-gray-800 mb-4">Scanner de QR Code</h3>
+                
+                <!-- Camera Controls -->
+                <div class="mb-6">
+                    <div class="flex space-x-4 mb-4">
+                        <button id="startCamera" class="bg-green-600 text-white px-6 py-2 rounded-md hover:bg-green-700 transition duration-200">
+                            📷 Iniciar Câmera
+                        </button>
+                        <button id="stopCamera" class="bg-red-600 text-white px-6 py-2 rounded-md hover:bg-red-700 transition duration-200 hidden">
+                            ⏹️ Parar Câmera
+                        </button>
+                        <select id="cameraSelect" class="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option value="">Selecionar Câmera</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Camera Preview -->
+                <div class="mb-6">
+                    <div id="cameraContainer" class="relative bg-gray-100 rounded-lg overflow-hidden" style="height: 400px;">
+                        <video id="cameraPreview" class="w-full h-full object-cover hidden"></video>
+                        <div id="cameraPlaceholder" class="flex items-center justify-center h-full text-gray-500">
+                            <div class="text-center">
+                                <svg class="w-16 h-16 mx-auto mb-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                </svg>
+                                <p>Clique em "Iniciar Câmera" para começar a escanear</p>
+                            </div>
+                        </div>
+                        <!-- Scanning overlay -->
+                        <div id="scanningOverlay" class="absolute inset-0 hidden">
+                            <div class="absolute inset-0 bg-black bg-opacity-30"></div>
+                            <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                                <div class="w-64 h-64 border-4 border-green-500 rounded-lg relative">
+                                    <div class="absolute top-0 left-0 w-8 h-8 border-t-4 border-l-4 border-green-500"></div>
+                                    <div class="absolute top-0 right-0 w-8 h-8 border-t-4 border-r-4 border-green-500"></div>
+                                    <div class="absolute bottom-0 left-0 w-8 h-8 border-b-4 border-l-4 border-green-500"></div>
+                                    <div class="absolute bottom-0 right-0 w-8 h-8 border-b-4 border-r-4 border-green-500"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Scan Results -->
+                <div id="scanResults" class="hidden">
+                    <div class="flex justify-between items-center mb-3">
+                        <h4 class="font-semibold text-gray-800">Produtos Escaneados</h4>
+                        <button id="clearScanned" class="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 transition duration-200 text-sm">
+                            🗑️ Limpar Lista
+                        </button>
+                    </div>
+                    <div id="scannedProducts" class="space-y-2">
+                        <!-- Scanned products will appear here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Reports Section -->
+        <div id="relatoriosSection" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 hidden">
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h3 class="text-lg font-semibold text-gray-800 mb-4">Relatórios de Movimentação</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                    <button id="dailyReport" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition duration-200">
+                        Relatório Diário
+                    </button>
+                    <button id="weeklyReport" class="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition duration-200">
+                        Relatório Semanal
+                    </button>
+                    <button id="monthlyReport" class="bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700 transition duration-200">
+                        Relatório Mensal
+                    </button>
+                </div>
+                <div id="reportContent" class="border-t pt-4">
+                    <p class="text-gray-500">Selecione um período para gerar o relatório</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- QR Code Modal -->
+    <div id="qrModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-lg max-w-md w-full mx-4">
+            <div class="p-6 border-b border-gray-200">
+                <div class="flex justify-between items-center">
+                    <h2 id="qrModalTitle" class="text-xl font-bold text-gray-800">QR Code</h2>
+                    <button id="closeQRModal" class="text-gray-400 hover:text-gray-600">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            <div class="p-6 text-center">
+                <div id="qrCodeDisplay" class="mb-6 flex justify-center">
+                    <!-- QR Code will be displayed here -->
+                </div>
+                <div class="space-y-3">
+                    <button id="downloadQRImage" class="w-full bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition duration-200">
+                        📱 Baixar como Imagem
+                    </button>
+                    <button id="downloadQRPDF" class="w-full bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition duration-200">
+                        📄 Baixar como PDF
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Product Modal -->
+    <div id="productModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-lg max-w-2xl w-full mx-4 max-h-screen overflow-y-auto">
+            <div class="p-6 border-b border-gray-200">
+                <div class="flex justify-between items-center">
+                    <h2 id="modalProductName" class="text-xl font-bold text-gray-800"></h2>
+                    <button id="closeModal" class="text-gray-400 hover:text-gray-600">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            <div class="p-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <h3 class="font-semibold text-gray-800 mb-3">Informações do Produto</h3>
+                        <div class="space-y-2">
+                            <p><span class="font-medium">Código:</span> <span id="modalProductCode"></span></p>
+                            <p><span class="font-medium">Quantidade:</span> <span id="modalProductQuantity"></span></p>
+                            <p><span class="font-medium">Localização:</span> <span id="modalProductLocation"></span></p>
+                        </div>
+                        <div class="mt-6 space-y-3">
+                            <button id="withdrawBtn" class="w-full bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 transition duration-200">
+                                Retirar Item
+                            </button>
+                            <button id="returnBtn" class="w-full bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition duration-200">
+                                Devolver Item
+                            </button>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold text-gray-800 mb-3">Histórico de Movimentações</h3>
+                        <div id="movementHistory" class="max-h-64 overflow-y-auto space-y-2">
+                            <!-- History will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBOqTvYZsNqVAs3FgKY6YvCuSOUQ4tZ7EE",
+            authDomain: "almoxarifado-92b48.firebaseapp.com",
+            databaseURL: "https://almoxarifado-92b48-default-rtdb.firebaseio.com",
+            projectId: "almoxarifado-92b48",
+            storageBucket: "almoxarifado-92b48.firebasestorage.app",
+            messagingSenderId: "679630067662",
+            appId: "1:679630067662:web:ea49487dc75ff21c627d9f",
+            measurementId: "G-W8KZKH2FTM"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const database = firebase.database();
+
+        let currentProductId = null;
+        let qrGenerationQueue = [];
+        let isGeneratingQR = false;
+
+        // Check URL parameters for product ID
+        const urlParams = new URLSearchParams(window.location.search);
+        const productId = urlParams.get('product');
+
+        // Initialize app without authentication
+        loadProducts();
+
+        // If product ID in URL, open that product
+        if (productId) {
+            setTimeout(() => openProductModal(productId), 1000);
+        }
+
+        // Show/hide add product form
+        document.getElementById('showAddForm').addEventListener('click', () => {
+            const form = document.getElementById('addProductForm');
+            if (form.classList.contains('hidden')) {
+                form.classList.remove('hidden');
+                document.getElementById('showAddForm').textContent = '❌ Cancelar';
+            } else {
+                form.classList.add('hidden');
+                document.getElementById('showAddForm').textContent = '➕ Adicionar Novo Produto';
+                document.getElementById('productForm').reset();
+            }
+        });
+
+
+
+        // Navigation tabs
+        document.getElementById('produtosTab').addEventListener('click', () => {
+            document.getElementById('produtosSection').classList.remove('hidden');
+            document.getElementById('scannerSection').classList.add('hidden');
+            document.getElementById('relatoriosSection').classList.add('hidden');
+            
+            // Update tab styles
+            document.getElementById('produtosTab').classList.add('border-blue-500', 'text-blue-600');
+            document.getElementById('produtosTab').classList.remove('border-transparent', 'text-gray-500');
+            document.getElementById('scannerTab').classList.add('border-transparent', 'text-gray-500');
+            document.getElementById('scannerTab').classList.remove('border-blue-500', 'text-blue-600');
+            document.getElementById('relatoriosTab').classList.add('border-transparent', 'text-gray-500');
+            document.getElementById('relatoriosTab').classList.remove('border-blue-500', 'text-blue-600');
+        });
+
+        document.getElementById('scannerTab').addEventListener('click', () => {
+            document.getElementById('produtosSection').classList.add('hidden');
+            document.getElementById('scannerSection').classList.remove('hidden');
+            document.getElementById('relatoriosSection').classList.add('hidden');
+            
+            // Update tab styles
+            document.getElementById('scannerTab').classList.add('border-blue-500', 'text-blue-600');
+            document.getElementById('scannerTab').classList.remove('border-transparent', 'text-gray-500');
+            document.getElementById('produtosTab').classList.add('border-transparent', 'text-gray-500');
+            document.getElementById('produtosTab').classList.remove('border-blue-500', 'text-blue-600');
+            document.getElementById('relatoriosTab').classList.add('border-transparent', 'text-gray-500');
+            document.getElementById('relatoriosTab').classList.remove('border-blue-500', 'text-blue-600');
+        });
+
+        document.getElementById('relatoriosTab').addEventListener('click', () => {
+            document.getElementById('produtosSection').classList.add('hidden');
+            document.getElementById('scannerSection').classList.add('hidden');
+            document.getElementById('relatoriosSection').classList.remove('hidden');
+            
+            // Update tab styles
+            document.getElementById('relatoriosTab').classList.add('border-blue-500', 'text-blue-600');
+            document.getElementById('relatoriosTab').classList.remove('border-transparent', 'text-gray-500');
+            document.getElementById('produtosTab').classList.add('border-transparent', 'text-gray-500');
+            document.getElementById('produtosTab').classList.remove('border-blue-500', 'text-blue-600');
+            document.getElementById('scannerTab').classList.add('border-transparent', 'text-gray-500');
+            document.getElementById('scannerTab').classList.remove('border-blue-500', 'text-blue-600');
+        });
+
+
+
+        // Add product form
+        document.getElementById('productForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const productData = {
+                name: document.getElementById('productName').value,
+                code: document.getElementById('productCode').value,
+                quantity: parseInt(document.getElementById('productQuantity').value),
+                location: {
+                    shelf: document.getElementById('productShelf').value,
+                    sector: document.getElementById('productSector').value,
+                    corridor: document.getElementById('productCorridor').value
+                },
+                createdAt: new Date().toISOString()
+            };
+
+            const newProductRef = database.ref('products').push();
+            newProductRef.set(productData).then(() => {
+                // Generate QR Code immediately
+                generateQRCodeForProduct(newProductRef.key, productData);
+                
+                // Reset form and hide it
+                document.getElementById('productForm').reset();
+                document.getElementById('addProductForm').classList.add('hidden');
+                document.getElementById('showAddForm').textContent = '➕ Adicionar Novo Produto';
+                
+                alert('Produto cadastrado com sucesso! QR Code sendo gerado...');
+                loadProducts();
+            });
+        });
+
+        // Simple QR Code Generation
+        function generateQRCodeForProduct(productId, productData) {
+            const currentUrl = window.location.origin + window.location.pathname;
+            const qrUrl = `${currentUrl}?product=${productId}`;
+            
+            console.log('Gerando QR para:', productData.name, 'URL:', qrUrl);
+            
+            try {
+                // Create QR code using qrcode-generator library
+                const qr = qrcode(0, 'M');
+                qr.addData(qrUrl);
+                qr.make();
+                
+                // Create canvas and draw QR code
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                const size = 256;
+                const cellSize = size / qr.getModuleCount();
+                
+                canvas.width = size;
+                canvas.height = size;
+                
+                // Fill background white
+                ctx.fillStyle = '#FFFFFF';
+                ctx.fillRect(0, 0, size, size);
+                
+                // Draw QR modules
+                ctx.fillStyle = '#000000';
+                for (let row = 0; row < qr.getModuleCount(); row++) {
+                    for (let col = 0; col < qr.getModuleCount(); col++) {
+                        if (qr.isDark(row, col)) {
+                            ctx.fillRect(col * cellSize, row * cellSize, cellSize, cellSize);
+                        }
+                    }
+                }
+                
+                console.log('QR gerado com sucesso para:', productData.name);
+                const qrDataUrl = canvas.toDataURL('image/png');
+                
+                // Salvar no Firebase
+                database.ref(`products/${productId}/qrCode`).set(qrDataUrl).then(() => {
+                    console.log('QR salvo no Firebase para:', productData.name);
+                    loadProducts(); // Atualizar lista
+                }).catch((error) => {
+                    console.error('Erro ao salvar QR no Firebase:', error);
+                });
+                
+            } catch (error) {
+                console.error('Erro ao gerar QR:', error);
+                alert('Erro ao gerar QR Code: ' + error.message);
+            }
+        }
+
+        // Generate QR for existing product
+        function generateQRForExisting(productId, productData) {
+            generateQRCodeForProduct(productId, productData);
+        }
+
+        // Load products
+        function loadProducts() {
+            database.ref('products').on('value', (snapshot) => {
+                const products = snapshot.val();
+                const productsList = document.getElementById('productsList');
+                
+                if (!products) {
+                    productsList.innerHTML = '<div class="text-center text-gray-500">Nenhum produto cadastrado</div>';
+                    return;
+                }
+
+                let html = '<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">';
+                
+                Object.entries(products).forEach(([id, product]) => {
+                    const qrCodeHtml = product.qrCode ? 
+                        `<img src="${product.qrCode}" alt="QR Code" class="w-16 h-16 border border-gray-300 rounded">` : 
+                        '<div class="w-16 h-16 bg-gray-100 border border-gray-300 rounded flex items-center justify-center text-xs text-gray-500">Sem QR</div>';
+                    
+                    html += `
+                        <div class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition duration-200">
+                            <div class="flex justify-between items-start mb-3">
+                                <div class="flex-1 cursor-pointer" onclick="openProductModal('${id}')">
+                                    <h4 class="font-semibold text-gray-800 mb-2">${product.name}</h4>
+                                    <p class="text-sm text-gray-600 mb-1">Código: ${product.code}</p>
+                                    <p class="text-sm text-gray-600 mb-1">Quantidade: ${product.quantity}</p>
+                                    <p class="text-sm text-gray-600">Local: ${product.location.sector} - ${product.location.corridor} - ${product.location.shelf}</p>
+                                </div>
+                                <div class="ml-4 cursor-pointer" onclick="openQRModal('${id}', '${product.name}', '${product.code}')">
+                                    ${qrCodeHtml}
+                                </div>
+                            </div>
+                            <div class="flex space-x-2">
+                                ${!product.qrCode ? `
+                                    <button onclick="generateQRForExisting('${id}', ${JSON.stringify(product).replace(/"/g, '&quot;')});" 
+                                            class="text-blue-600 hover:text-blue-800 text-sm">
+                                        📱 Gerar QR
+                                    </button>
+                                ` : `
+                                    <button onclick="downloadQR('${product.qrCode}', '${product.code}', '${product.name}')" 
+                                            class="text-green-600 hover:text-green-800 text-sm">
+                                        💾 Baixar QR
+                                    </button>
+                                `}
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                html += '</div>';
+                productsList.innerHTML = html;
+            });
+        }
+
+        // Open product modal
+        function openProductModal(productId) {
+            currentProductId = productId;
+            
+            database.ref(`products/${productId}`).once('value').then((snapshot) => {
+                const product = snapshot.val();
+                if (!product) return;
+
+                document.getElementById('modalProductName').textContent = product.name;
+                document.getElementById('modalProductCode').textContent = product.code;
+                document.getElementById('modalProductQuantity').textContent = product.quantity;
+                document.getElementById('modalProductLocation').textContent = 
+                    `${product.location.sector} - ${product.location.corridor} - ${product.location.shelf}`;
+
+                loadMovementHistory(productId);
+                document.getElementById('productModal').classList.remove('hidden');
+            });
+        }
+
+        // Load movement history
+        function loadMovementHistory(productId) {
+            database.ref(`movements/${productId}`).orderByChild('timestamp').limitToLast(10).once('value').then((snapshot) => {
+                const movements = snapshot.val();
+                const historyDiv = document.getElementById('movementHistory');
+                
+                if (!movements) {
+                    historyDiv.innerHTML = '<p class="text-gray-500 text-sm">Nenhuma movimentação registrada</p>';
+                    return;
+                }
+
+                let html = '';
+                Object.values(movements).reverse().forEach((movement) => {
+                    const date = new Date(movement.timestamp).toLocaleString('pt-BR');
+                    const typeClass = movement.type === 'withdraw' ? 'text-red-600' : 'text-green-600';
+                    const typeText = movement.type === 'withdraw' ? 'Retirada' : 'Devolução';
+                    
+                    html += `
+                        <div class="bg-gray-50 p-3 rounded-md">
+                            <div class="flex justify-between items-start">
+                                <span class="${typeClass} font-medium">${typeText}</span>
+                                <span class="text-xs text-gray-500">${date}</span>
+                            </div>
+                            <p class="text-sm text-gray-600 mt-1">Quantidade: ${movement.quantity}</p>
+                            <p class="text-xs text-gray-500">Por: ${movement.userEmail}</p>
+                        </div>
+                    `;
+                });
+                
+                historyDiv.innerHTML = html;
+            });
+        }
+
+        // Close modal
+        document.getElementById('closeModal').addEventListener('click', () => {
+            document.getElementById('productModal').classList.add('hidden');
+        });
+
+        // Withdraw item
+        document.getElementById('withdrawBtn').addEventListener('click', () => {
+            const quantity = parseInt(prompt('Quantidade a retirar:'));
+            if (quantity && quantity > 0) {
+                processMovement('withdraw', quantity);
+            }
+        });
+
+        // Return item
+        document.getElementById('returnBtn').addEventListener('click', () => {
+            const quantity = parseInt(prompt('Quantidade a devolver:'));
+            if (quantity && quantity > 0) {
+                processMovement('return', quantity);
+            }
+        });
+
+        // Process movement
+        function processMovement(type, quantity) {
+            database.ref(`products/${currentProductId}`).once('value').then((snapshot) => {
+                const product = snapshot.val();
+                let newQuantity = product.quantity;
+                
+                if (type === 'withdraw') {
+                    if (quantity > product.quantity) {
+                        alert('Quantidade insuficiente em estoque!');
+                        return;
+                    }
+                    newQuantity -= quantity;
+                } else {
+                    newQuantity += quantity;
+                }
+
+                // Update product quantity
+                database.ref(`products/${currentProductId}/quantity`).set(newQuantity);
+
+                // Record movement
+                const movementData = {
+                    type: type,
+                    quantity: quantity,
+                    timestamp: new Date().toISOString(),
+                    userEmail: 'Sistema',
+                    previousQuantity: product.quantity,
+                    newQuantity: newQuantity
+                };
+
+                database.ref(`movements/${currentProductId}`).push(movementData);
+
+                // Refresh modal
+                openProductModal(currentProductId);
+                alert(`${type === 'withdraw' ? 'Retirada' : 'Devolução'} registrada com sucesso!`);
+            });
+        }
+
+        // Report functions
+        document.getElementById('dailyReport').addEventListener('click', () => generateReport('daily'));
+        document.getElementById('weeklyReport').addEventListener('click', () => generateReport('weekly'));
+        document.getElementById('monthlyReport').addEventListener('click', () => generateReport('monthly'));
+
+        function generateReport(period) {
+            const now = new Date();
+            let startDate;
+            
+            switch(period) {
+                case 'daily':
+                    startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+                    break;
+                case 'weekly':
+                    startDate = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+                    break;
+                case 'monthly':
+                    startDate = new Date(now.getFullYear(), now.getMonth(), 1);
+                    break;
+            }
+
+            database.ref('movements').once('value').then((snapshot) => {
+                const allMovements = snapshot.val();
+                if (!allMovements) {
+                    document.getElementById('reportContent').innerHTML = '<p class="text-gray-500">Nenhuma movimentação encontrada</p>';
+                    return;
+                }
+
+                let filteredMovements = [];
+                Object.entries(allMovements).forEach(([productId, movements]) => {
+                    Object.values(movements).forEach(movement => {
+                        const movementDate = new Date(movement.timestamp);
+                        if (movementDate >= startDate) {
+                            filteredMovements.push({...movement, productId});
+                        }
+                    });
+                });
+
+                displayReport(filteredMovements, period);
+            });
+        }
+
+        function displayReport(movements, period) {
+            const reportContent = document.getElementById('reportContent');
+            
+            if (movements.length === 0) {
+                reportContent.innerHTML = '<p class="text-gray-500">Nenhuma movimentação encontrada no período</p>';
+                return;
+            }
+
+            let html = `
+                <div class="mb-4">
+                    <h4 class="font-semibold text-gray-800 mb-2">Relatório ${period === 'daily' ? 'Diário' : period === 'weekly' ? 'Semanal' : 'Mensal'}</h4>
+                    <button onclick="exportReport()" class="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition duration-200 mb-4">
+                        Exportar CSV
+                    </button>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Data</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tipo</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Quantidade</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Usuário</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+            `;
+
+            movements.forEach(movement => {
+                const date = new Date(movement.timestamp).toLocaleString('pt-BR');
+                const typeText = movement.type === 'withdraw' ? 'Retirada' : 'Devolução';
+                const typeClass = movement.type === 'withdraw' ? 'text-red-600' : 'text-green-600';
+                
+                html += `
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${date}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm ${typeClass}">${typeText}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${movement.quantity}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${movement.userEmail}</td>
+                    </tr>
+                `;
+            });
+
+            html += '</tbody></table></div>';
+            reportContent.innerHTML = html;
+            
+            // Store movements for export
+            window.currentReportData = movements;
+        }
+
+        function exportReport() {
+            if (!window.currentReportData) return;
+            
+            let csv = 'Data,Tipo,Quantidade,Usuário\n';
+            window.currentReportData.forEach(movement => {
+                const date = new Date(movement.timestamp).toLocaleString('pt-BR');
+                const type = movement.type === 'withdraw' ? 'Retirada' : 'Devolução';
+                csv += `"${date}","${type}","${movement.quantity}","${movement.userEmail}"\n`;
+            });
+
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `relatorio-${new Date().toISOString().split('T')[0]}.csv`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        // Generate QR codes for all products
+        document.getElementById('generateAllQR').addEventListener('click', () => {
+            if (confirm('Gerar QR codes para todos os produtos sem QR?')) {
+                database.ref('products').once('value').then((snapshot) => {
+                    const products = snapshot.val();
+                    if (!products) return;
+                    
+                    let productsToProcess = [];
+                    
+                    Object.entries(products).forEach(([id, product]) => {
+                        if (!product.qrCode) {
+                            productsToProcess.push({ productId: id, productData: product });
+                        }
+                    });
+                    
+                    if (productsToProcess.length === 0) {
+                        alert('Todos os produtos já possuem QR codes!');
+                        return;
+                    }
+                    
+                    // Generate QR codes one by one
+                    let processed = 0;
+                    productsToProcess.forEach(({ productId, productData }, index) => {
+                        setTimeout(() => {
+                            generateQRCodeForProduct(productId, productData);
+                            processed++;
+                            if (processed === productsToProcess.length) {
+                                alert(`${productsToProcess.length} QR codes gerados com sucesso!`);
+                            }
+                        }, index * 500); // 500ms delay between each
+                    });
+                });
+            }
+        });
+
+        // Delete all QR codes
+        document.getElementById('deleteAllQR').addEventListener('click', () => {
+            if (confirm('Apagar TODOS os QR codes dos produtos? Esta ação não pode ser desfeita!')) {
+                database.ref('products').once('value').then((snapshot) => {
+                    const products = snapshot.val();
+                    if (!products) return;
+                    
+                    let productsWithQR = [];
+                    
+                    Object.entries(products).forEach(([id, product]) => {
+                        if (product.qrCode) {
+                            productsWithQR.push(id);
+                        }
+                    });
+                    
+                    if (productsWithQR.length === 0) {
+                        alert('Nenhum produto possui QR code para apagar!');
+                        return;
+                    }
+                    
+                    // Delete QR codes from all products
+                    const updates = {};
+                    productsWithQR.forEach(productId => {
+                        updates[`products/${productId}/qrCode`] = null;
+                    });
+                    
+                    database.ref().update(updates).then(() => {
+                        alert(`${productsWithQR.length} QR codes foram apagados com sucesso!`);
+                        loadProducts(); // Refresh the list
+                    }).catch((error) => {
+                        alert('Erro ao apagar QR codes: ' + error.message);
+                    });
+                });
+            }
+        });
+
+        // Download QR code
+        function downloadQR(qrDataUrl, productCode, productName) {
+            const a = document.createElement('a');
+            a.href = qrDataUrl;
+            a.download = `qr-${productCode}-${productName}.png`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }
+
+        // QR Scanner functionality
+        let qrScanner = null;
+        let scannedProductsSet = new Set();
+
+        // Initialize camera list
+        async function initializeCameras() {
+            try {
+                // Check if QrScanner is available
+                if (!window.QrScanner) {
+                    console.error('QrScanner não carregado');
+                    return;
+                }
+
+                // Check camera permissions
+                const hasCamera = await QrScanner.hasCamera();
+                if (!hasCamera) {
+                    alert('Nenhuma câmera encontrada no dispositivo!');
+                    return;
+                }
+
+                // Get available cameras
+                const cameras = await QrScanner.listCameras(true);
+                const cameraSelect = document.getElementById('cameraSelect');
+                cameraSelect.innerHTML = '<option value="">Selecionar Câmera</option>';
+                
+                cameras.forEach((camera, index) => {
+                    const option = document.createElement('option');
+                    option.value = camera.id;
+                    option.textContent = camera.label || `Câmera ${index + 1}`;
+                    cameraSelect.appendChild(option);
+                });
+
+                // Auto-select back camera if available
+                const backCamera = cameras.find(camera => 
+                    camera.label.toLowerCase().includes('back') || 
+                    camera.label.toLowerCase().includes('rear') ||
+                    camera.label.toLowerCase().includes('environment')
+                );
+                if (backCamera) {
+                    cameraSelect.value = backCamera.id;
+                } else if (cameras.length > 0) {
+                    cameraSelect.value = cameras[0].id;
+                }
+            } catch (error) {
+                console.error('Erro ao inicializar câmeras:', error);
+                alert('Erro ao acessar câmeras. Verifique as permissões.');
+            }
+        }
+
+        // Start camera
+        document.getElementById('startCamera').addEventListener('click', async () => {
+            try {
+                const cameraSelect = document.getElementById('cameraSelect');
+                const selectedCamera = cameraSelect.value;
+                
+                if (!selectedCamera) {
+                    alert('Por favor, selecione uma câmera primeiro!');
+                    return;
+                }
+
+                const videoElement = document.getElementById('cameraPreview');
+                
+                // Create QR Scanner instance
+                qrScanner = new QrScanner(
+                    videoElement,
+                    result => {
+                        console.log('QR detectado:', result.data);
+                        handleQRScan(result.data);
+                    },
+                    {
+                        returnDetailedScanResult: true,
+                        highlightScanRegion: true,
+                        highlightCodeOutline: true,
+                        preferredCamera: selectedCamera
+                    }
+                );
+
+                // Start scanning
+                await qrScanner.start();
+
+                // Show camera preview
+                document.getElementById('cameraPlaceholder').classList.add('hidden');
+                document.getElementById('cameraPreview').classList.remove('hidden');
+                document.getElementById('scanningOverlay').classList.remove('hidden');
+                
+                // Update buttons
+                document.getElementById('startCamera').classList.add('hidden');
+                document.getElementById('stopCamera').classList.remove('hidden');
+                
+                console.log('Scanner iniciado com sucesso');
+                
+            } catch (error) {
+                console.error('Erro ao iniciar scanner:', error);
+                alert('Erro ao iniciar câmera: ' + error.message + '\n\nVerifique se você deu permissão para usar a câmera.');
+            }
+        });
+
+        // Stop camera
+        document.getElementById('stopCamera').addEventListener('click', () => {
+            if (qrScanner) {
+                qrScanner.stop();
+                qrScanner.destroy();
+                qrScanner = null;
+            }
+
+            // Hide camera preview
+            document.getElementById('cameraPreview').classList.add('hidden');
+            document.getElementById('scanningOverlay').classList.add('hidden');
+            document.getElementById('cameraPlaceholder').classList.remove('hidden');
+            
+            // Update buttons
+            document.getElementById('startCamera').classList.remove('hidden');
+            document.getElementById('stopCamera').classList.add('hidden');
+            
+            console.log('Scanner parado');
+        });
+
+        // Handle QR scan result
+        function handleQRScan(qrText) {
+            try {
+                // Extract product ID from URL
+                const url = new URL(qrText);
+                const productId = url.searchParams.get('product');
+                
+                if (!productId) {
+                    console.log('QR Code não é do sistema:', qrText);
+                    return;
+                }
+
+                // Check if already scanned
+                if (scannedProductsSet.has(productId)) {
+                    return;
+                }
+
+                // Add to scanned set
+                scannedProductsSet.add(productId);
+
+                // Get product info and add to results
+                database.ref(`products/${productId}`).once('value').then((snapshot) => {
+                    const product = snapshot.val();
+                    if (product) {
+                        addScannedProduct(productId, product);
+                        
+                        // Visual feedback
+                        showScanFeedback();
+                    }
+                });
+
+            } catch (error) {
+                console.log('QR Code inválido:', qrText);
+            }
+        }
+
+        // Add scanned product to results
+        function addScannedProduct(productId, product) {
+            const scannedProducts = document.getElementById('scannedProducts');
+            const scanResults = document.getElementById('scanResults');
+            
+            // Show results section
+            scanResults.classList.remove('hidden');
+            
+            // Create product button
+            const productButton = document.createElement('button');
+            productButton.className = 'w-full text-left bg-green-50 border border-green-200 rounded-lg p-4 hover:bg-green-100 transition duration-200';
+            productButton.innerHTML = `
+                <div class="flex justify-between items-center">
+                    <div>
+                        <h5 class="font-semibold text-gray-800">${product.name}</h5>
+                        <p class="text-sm text-gray-600">Código: ${product.code} | Qtd: ${product.quantity}</p>
+                        <p class="text-xs text-gray-500">${product.location.sector} - ${product.location.corridor} - ${product.location.shelf}</p>
+                    </div>
+                    <div class="text-green-600">
+                        ✅ Escaneado
+                    </div>
+                </div>
+            `;
+            
+            productButton.addEventListener('click', () => {
+                openProductModal(productId);
+            });
+            
+            // Add to top of list
+            scannedProducts.insertBefore(productButton, scannedProducts.firstChild);
+        }
+
+        // Visual scan feedback
+        function showScanFeedback() {
+            const overlay = document.getElementById('scanningOverlay');
+            overlay.style.backgroundColor = 'rgba(34, 197, 94, 0.3)';
+            
+            setTimeout(() => {
+                overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.3)';
+            }, 300);
+        }
+
+        // Clear scanned products
+        document.getElementById('clearScanned').addEventListener('click', () => {
+            if (confirm('Limpar todos os produtos escaneados da lista?')) {
+                scannedProductsSet.clear();
+                document.getElementById('scannedProducts').innerHTML = '';
+                document.getElementById('scanResults').classList.add('hidden');
+            }
+        });
+
+        // QR Modal functionality
+        let currentQRData = null;
+
+        function openQRModal(productId, productName, productCode) {
+            database.ref(`products/${productId}/qrCode`).once('value').then((snapshot) => {
+                const qrCode = snapshot.val();
+                if (!qrCode) {
+                    alert('Este produto não possui QR code!');
+                    return;
+                }
+
+                // Store current QR data
+                currentQRData = {
+                    productId,
+                    productName,
+                    productCode,
+                    qrCode
+                };
+
+                // Update modal content
+                document.getElementById('qrModalTitle').textContent = `QR Code - ${productName}`;
+                document.getElementById('qrCodeDisplay').innerHTML = `
+                    <img src="${qrCode}" alt="QR Code" class="w-64 h-64 border border-gray-300 rounded-lg shadow-md">
+                `;
+
+                // Show modal
+                document.getElementById('qrModal').classList.remove('hidden');
+            });
+        }
+
+        // Close QR modal
+        document.getElementById('closeQRModal').addEventListener('click', () => {
+            document.getElementById('qrModal').classList.add('hidden');
+            currentQRData = null;
+        });
+
+        // Download QR as image
+        document.getElementById('downloadQRImage').addEventListener('click', () => {
+            if (!currentQRData) return;
+            
+            const a = document.createElement('a');
+            a.href = currentQRData.qrCode;
+            a.download = `qr-${currentQRData.productCode}-${currentQRData.productName}.png`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        });
+
+        // Download QR as PDF
+        document.getElementById('downloadQRPDF').addEventListener('click', () => {
+            if (!currentQRData) return;
+            
+            const { jsPDF } = window.jspdf;
+            const pdf = new jsPDF();
+            
+            // Add title
+            pdf.setFontSize(16);
+            pdf.text(`QR Code - ${currentQRData.productName}`, 20, 20);
+            
+            // Add product info
+            pdf.setFontSize(12);
+            pdf.text(`Código: ${currentQRData.productCode}`, 20, 35);
+            pdf.text(`Produto: ${currentQRData.productName}`, 20, 45);
+            
+            // Add QR code image
+            const img = new Image();
+            img.onload = function() {
+                // Convert to base64 if needed
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                canvas.width = img.width;
+                canvas.height = img.height;
+                ctx.drawImage(img, 0, 0);
+                
+                // Add to PDF (centered)
+                const imgData = canvas.toDataURL('image/png');
+                pdf.addImage(imgData, 'PNG', 60, 60, 90, 90);
+                
+                // Add instructions
+                pdf.setFontSize(10);
+                pdf.text('Escaneie este QR code para acessar as informações do produto', 20, 170);
+                
+                // Save PDF
+                pdf.save(`qr-${currentQRData.productCode}-${currentQRData.productName}.pdf`);
+            };
+            img.src = currentQRData.qrCode;
+        });
+
+        // Initialize cameras when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            // Wait a bit for libraries to load
+            setTimeout(() => {
+                initializeCameras();
+            }, 1000);
+        });
+
+        // Also try to initialize when scanner tab is clicked
+        document.getElementById('scannerTab').addEventListener('click', () => {
+            setTimeout(() => {
+                if (document.getElementById('cameraSelect').children.length <= 1) {
+                    initializeCameras();
+                }
+            }, 500);
+        });
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'98743dc941accdc3',t:'MTc1OTI0MDc3Mi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
