@@ -280,14 +280,22 @@
             
             <!-- Bottom Controls (Mobile Optimized) -->
             <div class="bg-black text-white p-4 border-t border-gray-800">
-                <div class="flex justify-center space-x-4">
-                    <button id="clearScanned" class="bg-gray-700 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition duration-200 text-sm flex items-center space-x-2">
+                <div class="grid grid-cols-4 gap-2">
+                    <button id="viewScannedList" class="bg-blue-600 text-white px-3 py-2 rounded-lg hover:bg-blue-700 transition duration-200 text-sm flex items-center justify-center space-x-1">
+                        <i class="fas fa-list"></i>
+                        <span>Lista</span>
+                    </button>
+                    <button id="clearScanned" class="bg-gray-700 text-white px-3 py-2 rounded-lg hover:bg-gray-600 transition duration-200 text-sm flex items-center justify-center space-x-1">
                         <i class="fas fa-trash"></i>
                         <span>Limpar</span>
                     </button>
-                    <button id="toggleFlash" class="bg-gray-700 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition duration-200 text-sm flex items-center space-x-2">
+                    <button id="toggleFlash" class="bg-gray-700 text-white px-3 py-2 rounded-lg hover:bg-gray-600 transition duration-200 text-sm flex items-center justify-center space-x-1">
                         <i class="fas fa-flashlight"></i>
                         <span>Flash</span>
+                    </button>
+                    <button onclick="exportScannedList()" class="bg-green-600 text-white px-3 py-2 rounded-lg hover:bg-green-700 transition duration-200 text-sm flex items-center justify-center space-x-1">
+                        <i class="fas fa-download"></i>
+                        <span>CSV</span>
                     </button>
                 </div>
             </div>
@@ -316,9 +324,9 @@
                         
                         <!-- Navegação Compacta -->
                         <div class="grid grid-cols-3 gap-2">
-                            <button onclick="backToScanner()" class="bg-white bg-opacity-20 text-white py-2 rounded-lg hover:bg-opacity-30 transition duration-200 flex items-center justify-center space-x-1 text-sm">
+                            <button onclick="backToScanner()" class="bg-green-500 text-white py-2 rounded-lg hover:bg-green-600 transition duration-200 flex items-center justify-center space-x-1 text-sm font-medium">
                                 <i class="fas fa-qrcode"></i>
-                                <span>Scanner</span>
+                                <span>Continuar Escaneando</span>
                             </button>
                             <button onclick="exportScannedList()" class="bg-white bg-opacity-20 text-white py-2 rounded-lg hover:bg-opacity-30 transition duration-200 flex items-center justify-center space-x-1 text-sm">
                                 <i class="fas fa-download"></i>
@@ -372,9 +380,9 @@
                 <div class="fixed bottom-3 left-3 right-3 z-40">
                     <div class="bg-white rounded-xl shadow-lg border border-gray-200 p-2">
                         <div class="grid grid-cols-3 gap-1">
-                            <button onclick="backToScanner()" class="bg-green-500 text-white py-2 rounded-lg hover:bg-green-600 transition duration-200 flex items-center justify-center space-x-1 text-xs font-medium">
+                            <button onclick="backToScanner()" class="bg-green-500 text-white py-3 rounded-lg hover:bg-green-600 transition duration-200 flex items-center justify-center space-x-1 text-xs font-bold shadow-lg">
                                 <i class="fas fa-qrcode"></i>
-                                <span>Scanner</span>
+                                <span>Continuar Escaneando</span>
                             </button>
                             <button onclick="exportScannedList()" class="bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 transition duration-200 flex items-center justify-center space-x-1 text-xs font-medium">
                                 <i class="fas fa-download"></i>
@@ -1137,10 +1145,10 @@
             }
         });
 
-        // Scanner QR Ultra-Otimizado para Papel - Múltiplas Estratégias
+        // Scanner QR ULTRA-Otimizado + DETECÇÃO DE QR DANIFICADO/CORTADO
         function startSimpleQRScanning(videoElement) {
             let lastScanTime = 0;
-            const scanDelay = 80; // Mais rápido para papel
+            const scanDelay = 50; // Ainda mais rápido para QR pequenos
             let isProcessing = false;
             let scanStrategy = 0; // Rotaciona entre estratégias
             let consecutiveFailures = 0;
@@ -1161,34 +1169,58 @@
                     if (videoElement.readyState === videoElement.HAVE_ENOUGH_DATA) {
                         let qrFound = false;
                         
-                        // Estratégia 1: Resolução alta para papel (principal)
+                        // Estratégia 1: ZOOM DIGITAL para QR pequenos (NOVA - Principal)
                         if (scanStrategy === 0) {
-                            qrFound = scanHighResolution(videoElement);
+                            qrFound = scanWithDigitalZoom(videoElement);
                         }
-                        // Estratégia 2: Múltiplas áreas
+                        // Estratégia 2: Múltiplas escalas para QR pequenos (NOVA)
                         else if (scanStrategy === 1) {
-                            qrFound = scanMultipleAreas(videoElement);
+                            qrFound = scanWithMultipleScales(videoElement);
                         }
-                        // Estratégia 3: Processamento de imagem avançado
+                        // Estratégia 3: Processamento EXTREMO para tinta fraca
                         else if (scanStrategy === 2) {
-                            qrFound = scanWithImageProcessing(videoElement);
+                            qrFound = scanWithExtremeProcessing(videoElement);
                         }
-                        // Estratégia 4: Tela inteira com alta qualidade
+                        // Estratégia 4: Detecção de micro-áreas (NOVA para QR pequenos)
                         else if (scanStrategy === 3) {
-                            qrFound = scanFullScreen(videoElement);
+                            qrFound = scanMicroAreas(videoElement);
+                        }
+                        // Estratégia 5: Super-resolução para QR pequenos (NOVA)
+                        else if (scanStrategy === 4) {
+                            qrFound = scanWithSuperResolution(videoElement);
+                        }
+                        // Estratégia 6: Múltiplos filtros de contraste
+                        else if (scanStrategy === 5) {
+                            qrFound = scanWithMultipleFilters(videoElement);
+                        }
+                        // Estratégia 7: Detecção por bordas para tinta fraca
+                        else if (scanStrategy === 6) {
+                            qrFound = scanWithEdgeDetection(videoElement);
+                        }
+                        // Estratégia 8: Amplificação de sinal
+                        else if (scanStrategy === 7) {
+                            qrFound = scanWithSignalAmplification(videoElement);
+                        }
+                        // Estratégia 9: NOVA - Detecção de QR DANIFICADO/CORTADO
+                        else if (scanStrategy === 8) {
+                            qrFound = scanDamagedQR(videoElement);
+                        }
+                        // Estratégia 10: NOVA - Reconstrução de QR parcial
+                        else if (scanStrategy === 9) {
+                            qrFound = scanPartialQR(videoElement);
                         }
                         
-                        // Rotacionar estratégia se não encontrou
+                        // Rotacionar estratégia rapidamente para QR pequenos
                         if (!qrFound) {
                             consecutiveFailures++;
-                            if (consecutiveFailures > 5) {
-                                scanStrategy = (scanStrategy + 1) % 4;
+                            if (consecutiveFailures > 2) { // Mudança ainda mais rápida
+                                scanStrategy = (scanStrategy + 1) % 10; // 10 estratégias agora
                                 consecutiveFailures = 0;
-                                console.log(`🔄 Mudando para estratégia ${scanStrategy + 1}`);
+                                console.log(`🔄 Mudando para estratégia ${scanStrategy + 1} (QR danificado)`);
                             }
                         } else {
                             consecutiveFailures = 0;
-                            scanStrategy = 0; // Volta para estratégia principal
+                            scanStrategy = 0; // Volta para estratégia principal (zoom)
                         }
                     }
                 } catch (error) {
@@ -1203,79 +1235,57 @@
                 }
             }
             
-            // Estratégia 1: Alta resolução para papel
-            function scanHighResolution(videoElement) {
-                const scale = 1.0; // Resolução máxima para papel
-                canvas.width = videoElement.videoWidth * scale;
-                canvas.height = videoElement.videoHeight * scale;
+            // NOVA Estratégia 1: ZOOM DIGITAL para QR pequenos (Principal)
+            function scanWithDigitalZoom(videoElement) {
+                // Múltiplos níveis de zoom para capturar QR pequenos
+                const zoomLevels = [2.0, 2.5, 3.0, 3.5, 4.0]; // Zoom agressivo
                 
-                // Desenhar com máxima qualidade
-                context.imageSmoothingEnabled = false;
-                context.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
-                
-                // Área central maior para papel
-                const centerX = Math.floor(canvas.width * 0.15);
-                const centerY = Math.floor(canvas.height * 0.15);
-                const centerWidth = Math.floor(canvas.width * 0.7);
-                const centerHeight = Math.floor(canvas.height * 0.7);
-                
-                const imageData = context.getImageData(centerX, centerY, centerWidth, centerHeight);
-                
-                const code = jsQR(imageData.data, imageData.width, imageData.height, {
-                    inversionAttempts: "attemptBoth", // Importante para papel
-                    locateOptions: {
-                        tryHarder: true, // Máxima precisão para papel
-                        skipDiagonalScan: false
+                for (const zoom of zoomLevels) {
+                    const scale = zoom;
+                    canvas.width = videoElement.videoWidth * scale;
+                    canvas.height = videoElement.videoHeight * scale;
+                    
+                    context.imageSmoothingEnabled = false; // Pixels nítidos
+                    context.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
+                    
+                    // Área central ampliada
+                    const centerX = Math.floor(canvas.width * 0.3);
+                    const centerY = Math.floor(canvas.height * 0.3);
+                    const centerWidth = Math.floor(canvas.width * 0.4);
+                    const centerHeight = Math.floor(canvas.height * 0.4);
+                    
+                    const imageData = context.getImageData(centerX, centerY, centerWidth, centerHeight);
+                    const data = imageData.data;
+                    
+                    // Processamento específico para QR pequenos
+                    for (let i = 0; i < data.length; i += 4) {
+                        const gray = data[i] * 0.299 + data[i + 1] * 0.587 + data[i + 2] * 0.114;
+                        
+                        // Contraste extremo para QR pequenos
+                        const contrast = 5.0;
+                        const brightness = 30;
+                        let enhanced = (gray - 128) * contrast + 128 + brightness;
+                        enhanced = Math.min(255, Math.max(0, enhanced));
+                        
+                        // Threshold binário agressivo
+                        const threshold = enhanced > 128 ? 255 : 0;
+                        
+                        data[i] = threshold;
+                        data[i + 1] = threshold;
+                        data[i + 2] = threshold;
                     }
-                });
-                
-                if (code && code.data && code.data.trim()) {
-                    console.log('🎯 QR DETECTADO (Alta Res):', code.data);
-                    handleQRScan(code.data);
-                    return true;
-                }
-                return false;
-            }
-            
-            // Estratégia 2: Múltiplas áreas de detecção
-            function scanMultipleAreas(videoElement) {
-                const scale = 0.8;
-                canvas.width = videoElement.videoWidth * scale;
-                canvas.height = videoElement.videoHeight * scale;
-                
-                context.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
-                
-                // Definir 9 áreas de escaneamento
-                const areas = [
-                    // Centro
-                    { x: 0.25, y: 0.25, w: 0.5, h: 0.5 },
-                    // Cantos
-                    { x: 0.1, y: 0.1, w: 0.4, h: 0.4 },
-                    { x: 0.5, y: 0.1, w: 0.4, h: 0.4 },
-                    { x: 0.1, y: 0.5, w: 0.4, h: 0.4 },
-                    { x: 0.5, y: 0.5, w: 0.4, h: 0.4 },
-                    // Bordas
-                    { x: 0.2, y: 0.0, w: 0.6, h: 0.4 },
-                    { x: 0.2, y: 0.6, w: 0.6, h: 0.4 },
-                    { x: 0.0, y: 0.2, w: 0.4, h: 0.6 },
-                    { x: 0.6, y: 0.2, w: 0.4, h: 0.6 }
-                ];
-                
-                for (const area of areas) {
-                    const x = Math.floor(canvas.width * area.x);
-                    const y = Math.floor(canvas.height * area.y);
-                    const w = Math.floor(canvas.width * area.w);
-                    const h = Math.floor(canvas.height * area.h);
                     
-                    const imageData = context.getImageData(x, y, w, h);
-                    
-                    const code = jsQR(imageData.data, imageData.width, imageData.height, {
+                    const code = jsQR(data, imageData.width, imageData.height, {
                         inversionAttempts: "attemptBoth",
-                        locateOptions: { tryHarder: true }
+                        locateOptions: {
+                            tryHarder: true,
+                            skipDiagonalScan: false,
+                            assumeSquareModules: false // Importante para QR pequenos
+                        }
                     });
                     
                     if (code && code.data && code.data.trim()) {
-                        console.log('🎯 QR DETECTADO (Multi-área):', code.data);
+                        console.log(`🎯 QR PEQUENO DETECTADO (Zoom ${zoom}x):`, code.data);
                         handleQRScan(code.data);
                         return true;
                     }
@@ -1283,15 +1293,138 @@
                 return false;
             }
             
-            // Estratégia 3: Processamento de imagem para papel
-            function scanWithImageProcessing(videoElement) {
-                const scale = 0.9;
+            // NOVA Estratégia 2: Múltiplas escalas para QR pequenos
+            function scanWithMultipleScales(videoElement) {
+                // Testar diferentes escalas simultaneamente
+                const scales = [1.5, 2.0, 2.8, 3.5, 4.2];
+                
+                for (const scale of scales) {
+                    canvas.width = videoElement.videoWidth * scale;
+                    canvas.height = videoElement.videoHeight * scale;
+                    
+                    context.imageSmoothingEnabled = false;
+                    context.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
+                    
+                    // Múltiplas áreas em cada escala
+                    const areas = [
+                        { x: 0.25, y: 0.25, w: 0.5, h: 0.5 }, // Centro
+                        { x: 0.1, y: 0.1, w: 0.4, h: 0.4 },   // Superior esquerdo
+                        { x: 0.5, y: 0.1, w: 0.4, h: 0.4 },   // Superior direito
+                        { x: 0.1, y: 0.5, w: 0.4, h: 0.4 },   // Inferior esquerdo
+                        { x: 0.5, y: 0.5, w: 0.4, h: 0.4 }    // Inferior direito
+                    ];
+                    
+                    for (const area of areas) {
+                        const x = Math.floor(canvas.width * area.x);
+                        const y = Math.floor(canvas.height * area.y);
+                        const w = Math.floor(canvas.width * area.w);
+                        const h = Math.floor(canvas.height * area.h);
+                        
+                        const imageData = context.getImageData(x, y, w, h);
+                        const data = imageData.data;
+                        
+                        // Processamento otimizado para QR pequenos
+                        for (let i = 0; i < data.length; i += 4) {
+                            const gray = data[i] * 0.299 + data[i + 1] * 0.587 + data[i + 2] * 0.114;
+                            const enhanced = gray > 140 ? 255 : 0; // Threshold simples mas eficaz
+                            
+                            data[i] = enhanced;
+                            data[i + 1] = enhanced;
+                            data[i + 2] = enhanced;
+                        }
+                        
+                        const code = jsQR(data, imageData.width, imageData.height, {
+                            inversionAttempts: "attemptBoth",
+                            locateOptions: { tryHarder: true }
+                        });
+                        
+                        if (code && code.data && code.data.trim()) {
+                            console.log(`🎯 QR PEQUENO DETECTADO (Escala ${scale}x):`, code.data);
+                            handleQRScan(code.data);
+                            return true;
+                        }
+                    }
+                }
+                return false;
+            }
+            
+            // NOVA Estratégia 4: Detecção de micro-áreas para QR pequenos
+            function scanMicroAreas(videoElement) {
+                const scale = 3.0; // Zoom fixo alto
                 canvas.width = videoElement.videoWidth * scale;
                 canvas.height = videoElement.videoHeight * scale;
                 
+                context.imageSmoothingEnabled = false;
                 context.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
                 
-                // Área central
+                // 20 micro-áreas pequenas para capturar QR pequenos
+                const microAreas = [];
+                for (let row = 0; row < 4; row++) {
+                    for (let col = 0; col < 5; col++) {
+                        microAreas.push({
+                            x: 0.1 + (col * 0.15),
+                            y: 0.1 + (row * 0.2),
+                            w: 0.25,
+                            h: 0.25
+                        });
+                    }
+                }
+                
+                for (const area of microAreas) {
+                    const x = Math.floor(canvas.width * area.x);
+                    const y = Math.floor(canvas.height * area.y);
+                    const w = Math.floor(canvas.width * area.w);
+                    const h = Math.floor(canvas.height * area.h);
+                    
+                    if (w < 50 || h < 50) continue; // Área muito pequena
+                    
+                    const imageData = context.getImageData(x, y, w, h);
+                    const data = imageData.data;
+                    
+                    // Processamento específico para micro QR
+                    for (let i = 0; i < data.length; i += 4) {
+                        const gray = data[i] * 0.299 + data[i + 1] * 0.587 + data[i + 2] * 0.114;
+                        
+                        // Amplificação para QR muito pequenos
+                        let enhanced = gray;
+                        if (gray < 100) enhanced = 0;
+                        else if (gray > 180) enhanced = 255;
+                        else enhanced = gray > 140 ? 255 : 0;
+                        
+                        data[i] = enhanced;
+                        data[i + 1] = enhanced;
+                        data[i + 2] = enhanced;
+                    }
+                    
+                    const code = jsQR(data, imageData.width, imageData.height, {
+                        inversionAttempts: "attemptBoth",
+                        locateOptions: {
+                            tryHarder: true,
+                            skipDiagonalScan: false
+                        }
+                    });
+                    
+                    if (code && code.data && code.data.trim()) {
+                        console.log('🎯 MICRO QR DETECTADO:', code.data);
+                        handleQRScan(code.data);
+                        return true;
+                    }
+                }
+                return false;
+            }
+            
+            // NOVA Estratégia 5: Super-resolução para QR pequenos
+            function scanWithSuperResolution(videoElement) {
+                const scale = 4.5; // Máximo zoom
+                canvas.width = videoElement.videoWidth * scale;
+                canvas.height = videoElement.videoHeight * scale;
+                
+                // Usar interpolação bicúbica simulada
+                context.imageSmoothingEnabled = true;
+                context.imageSmoothingQuality = 'high';
+                context.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
+                
+                // Área central com super-resolução
                 const centerX = Math.floor(canvas.width * 0.2);
                 const centerY = Math.floor(canvas.height * 0.2);
                 const centerWidth = Math.floor(canvas.width * 0.6);
@@ -1299,22 +1432,270 @@
                 
                 const imageData = context.getImageData(centerX, centerY, centerWidth, centerHeight);
                 const data = imageData.data;
+                const width = imageData.width;
+                const height = imageData.height;
                 
-                // Melhorar contraste para papel (importante!)
+                // Aplicar filtro de nitidez para QR pequenos
+                const sharpenedData = new Uint8ClampedArray(data.length);
+                const sharpenKernel = [
+                    0, -1, 0,
+                    -1, 5, -1,
+                    0, -1, 0
+                ];
+                
+                for (let y = 1; y < height - 1; y++) {
+                    for (let x = 1; x < width - 1; x++) {
+                        const idx = (y * width + x) * 4;
+                        
+                        let r = 0, g = 0, b = 0;
+                        for (let ky = -1; ky <= 1; ky++) {
+                            for (let kx = -1; kx <= 1; kx++) {
+                                const kidx = ((y + ky) * width + (x + kx)) * 4;
+                                const weight = sharpenKernel[(ky + 1) * 3 + (kx + 1)];
+                                r += data[kidx] * weight;
+                                g += data[kidx + 1] * weight;
+                                b += data[kidx + 2] * weight;
+                            }
+                        }
+                        
+                        // Converter para escala de cinza e aplicar threshold
+                        const gray = Math.max(0, Math.min(255, r * 0.299 + g * 0.587 + b * 0.114));
+                        const threshold = gray > 130 ? 255 : 0;
+                        
+                        sharpenedData[idx] = threshold;
+                        sharpenedData[idx + 1] = threshold;
+                        sharpenedData[idx + 2] = threshold;
+                        sharpenedData[idx + 3] = 255;
+                    }
+                }
+                
+                const code = jsQR(sharpenedData, width, height, {
+                    inversionAttempts: "attemptBoth",
+                    locateOptions: {
+                        tryHarder: true,
+                        skipDiagonalScan: false,
+                        assumeSquareModules: false
+                    }
+                });
+                
+                if (code && code.data && code.data.trim()) {
+                    console.log('🎯 QR SUPER-RESOLUÇÃO DETECTADO:', code.data);
+                    handleQRScan(code.data);
+                    return true;
+                }
+                return false;
+            }
+            
+            // Estratégia 3: Processamento EXTREMO para tinta fraca
+            function scanWithExtremeProcessing(videoElement) {
+                const scale = 1.2; // Resolução ainda maior
+                canvas.width = videoElement.videoWidth * scale;
+                canvas.height = videoElement.videoHeight * scale;
+                
+                context.imageSmoothingEnabled = false;
+                context.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
+                
+                // Área central otimizada
+                const centerX = Math.floor(canvas.width * 0.1);
+                const centerY = Math.floor(canvas.height * 0.1);
+                const centerWidth = Math.floor(canvas.width * 0.8);
+                const centerHeight = Math.floor(canvas.height * 0.8);
+                
+                const imageData = context.getImageData(centerX, centerY, centerWidth, centerHeight);
+                const data = imageData.data;
+                
+                // PROCESSAMENTO EXTREMO PARA TINTA FRACA
                 for (let i = 0; i < data.length; i += 4) {
-                    // Converter para escala de cinza
+                    // Converter para escala de cinza com pesos otimizados
                     const gray = data[i] * 0.299 + data[i + 1] * 0.587 + data[i + 2] * 0.114;
                     
-                    // Aumentar contraste drasticamente para papel
-                    const contrast = 2.5; // Muito alto para papel
-                    const enhanced = Math.min(255, Math.max(0, (gray - 128) * contrast + 128));
+                    // AMPLIFICAÇÃO EXTREMA DE CONTRASTE para tinta fraca
+                    const contrast = 4.0; // Contraste máximo
+                    const brightness = 50; // Aumentar brilho
+                    let enhanced = (gray - 128) * contrast + 128 + brightness;
+                    enhanced = Math.min(255, Math.max(0, enhanced));
                     
-                    // Aplicar threshold para binarização
-                    const threshold = enhanced > 140 ? 255 : 0;
+                    // THRESHOLD ADAPTATIVO para tinta fraca
+                    // Se o pixel está próximo do cinza médio, decidir baseado nos vizinhos
+                    let threshold;
+                    if (enhanced > 180) {
+                        threshold = 255; // Branco puro
+                    } else if (enhanced < 100) {
+                        threshold = 0; // Preto puro
+                    } else {
+                        // Zona crítica - aplicar threshold mais agressivo
+                        threshold = enhanced > 140 ? 255 : 0;
+                    }
                     
-                    data[i] = threshold;     // R
-                    data[i + 1] = threshold; // G
-                    data[i + 2] = threshold; // B
+                    data[i] = threshold;
+                    data[i + 1] = threshold;
+                    data[i + 2] = threshold;
+                }
+                
+                const code = jsQR(data, imageData.width, imageData.height, {
+                    inversionAttempts: "attemptBoth",
+                    locateOptions: {
+                        tryHarder: true,
+                        skipDiagonalScan: false,
+                        assumeSquareModules: true
+                    }
+                });
+                
+                if (code && code.data && code.data.trim()) {
+                    console.log('🎯 QR DETECTADO (Extremo):', code.data);
+                    handleQRScan(code.data);
+                    return true;
+                }
+                return false;
+            }
+            
+            // Estratégia 2: Múltiplos filtros de contraste
+            function scanWithMultipleFilters(videoElement) {
+                const scale = 1.0;
+                canvas.width = videoElement.videoWidth * scale;
+                canvas.height = videoElement.videoHeight * scale;
+                
+                context.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
+                
+                const centerX = Math.floor(canvas.width * 0.15);
+                const centerY = Math.floor(canvas.height * 0.15);
+                const centerWidth = Math.floor(canvas.width * 0.7);
+                const centerHeight = Math.floor(canvas.height * 0.7);
+                
+                // Testar 3 filtros diferentes para tinta fraca
+                const filters = [
+                    { contrast: 3.5, brightness: 40, threshold: 130 },
+                    { contrast: 4.5, brightness: 60, threshold: 150 },
+                    { contrast: 5.0, brightness: 80, threshold: 120 }
+                ];
+                
+                for (const filter of filters) {
+                    const imageData = context.getImageData(centerX, centerY, centerWidth, centerHeight);
+                    const data = imageData.data;
+                    
+                    for (let i = 0; i < data.length; i += 4) {
+                        const gray = data[i] * 0.299 + data[i + 1] * 0.587 + data[i + 2] * 0.114;
+                        let enhanced = (gray - 128) * filter.contrast + 128 + filter.brightness;
+                        enhanced = Math.min(255, Math.max(0, enhanced));
+                        const threshold = enhanced > filter.threshold ? 255 : 0;
+                        
+                        data[i] = threshold;
+                        data[i + 1] = threshold;
+                        data[i + 2] = threshold;
+                    }
+                    
+                    const code = jsQR(data, imageData.width, imageData.height, {
+                        inversionAttempts: "attemptBoth",
+                        locateOptions: { tryHarder: true }
+                    });
+                    
+                    if (code && code.data && code.data.trim()) {
+                        console.log('🎯 QR DETECTADO (Multi-filtro):', code.data);
+                        handleQRScan(code.data);
+                        return true;
+                    }
+                }
+                return false;
+            }
+            
+            // Estratégia 3: Detecção por bordas para tinta fraca
+            function scanWithEdgeDetection(videoElement) {
+                const scale = 1.1;
+                canvas.width = videoElement.videoWidth * scale;
+                canvas.height = videoElement.videoHeight * scale;
+                
+                context.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
+                
+                const centerX = Math.floor(canvas.width * 0.2);
+                const centerY = Math.floor(canvas.height * 0.2);
+                const centerWidth = Math.floor(canvas.width * 0.6);
+                const centerHeight = Math.floor(canvas.height * 0.6);
+                
+                const imageData = context.getImageData(centerX, centerY, centerWidth, centerHeight);
+                const data = imageData.data;
+                const width = imageData.width;
+                const height = imageData.height;
+                
+                // Aplicar filtro Sobel para detectar bordas (importante para tinta fraca)
+                const sobelData = new Uint8ClampedArray(data.length);
+                
+                for (let y = 1; y < height - 1; y++) {
+                    for (let x = 1; x < width - 1; x++) {
+                        const idx = (y * width + x) * 4;
+                        
+                        // Converter vizinhos para escala de cinza
+                        const getGray = (dx, dy) => {
+                            const i = ((y + dy) * width + (x + dx)) * 4;
+                            return data[i] * 0.299 + data[i + 1] * 0.587 + data[i + 2] * 0.114;
+                        };
+                        
+                        // Operadores Sobel
+                        const gx = -getGray(-1, -1) + getGray(1, -1) +
+                                  -2 * getGray(-1, 0) + 2 * getGray(1, 0) +
+                                  -getGray(-1, 1) + getGray(1, 1);
+                        
+                        const gy = -getGray(-1, -1) - 2 * getGray(0, -1) - getGray(1, -1) +
+                                   getGray(-1, 1) + 2 * getGray(0, 1) + getGray(1, 1);
+                        
+                        const magnitude = Math.sqrt(gx * gx + gy * gy);
+                        const enhanced = magnitude > 50 ? 0 : 255; // Bordas em preto
+                        
+                        sobelData[idx] = enhanced;
+                        sobelData[idx + 1] = enhanced;
+                        sobelData[idx + 2] = enhanced;
+                        sobelData[idx + 3] = 255;
+                    }
+                }
+                
+                const code = jsQR(sobelData, width, height, {
+                    inversionAttempts: "attemptBoth",
+                    locateOptions: { tryHarder: true }
+                });
+                
+                if (code && code.data && code.data.trim()) {
+                    console.log('🎯 QR DETECTADO (Bordas):', code.data);
+                    handleQRScan(code.data);
+                    return true;
+                }
+                return false;
+            }
+            
+            // Estratégia 4: Amplificação de sinal
+            function scanWithSignalAmplification(videoElement) {
+                const scale = 1.3; // Resolução máxima
+                canvas.width = videoElement.videoWidth * scale;
+                canvas.height = videoElement.videoHeight * scale;
+                
+                context.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
+                
+                const centerX = Math.floor(canvas.width * 0.05);
+                const centerY = Math.floor(canvas.height * 0.05);
+                const centerWidth = Math.floor(canvas.width * 0.9);
+                const centerHeight = Math.floor(canvas.height * 0.9);
+                
+                const imageData = context.getImageData(centerX, centerY, centerWidth, centerHeight);
+                const data = imageData.data;
+                
+                // AMPLIFICAÇÃO EXTREMA DE SINAL para tinta muito fraca
+                for (let i = 0; i < data.length; i += 4) {
+                    const gray = data[i] * 0.299 + data[i + 1] * 0.587 + data[i + 2] * 0.114;
+                    
+                    // Amplificação não-linear para tinta fraca
+                    let amplified;
+                    if (gray < 128) {
+                        // Escurecer ainda mais os tons escuros
+                        amplified = Math.pow(gray / 128, 2) * 128;
+                    } else {
+                        // Clarear ainda mais os tons claros
+                        amplified = 128 + Math.pow((gray - 128) / 127, 0.5) * 127;
+                    }
+                    
+                    // Threshold final ultra-agressivo
+                    const final = amplified > 100 ? 255 : 0;
+                    
+                    data[i] = final;
+                    data[i + 1] = final;
+                    data[i + 2] = final;
                 }
                 
                 const code = jsQR(data, imageData.width, imageData.height, {
@@ -1326,45 +1707,208 @@
                 });
                 
                 if (code && code.data && code.data.trim()) {
-                    console.log('🎯 QR DETECTADO (Processado):', code.data);
+                    console.log('🎯 QR DETECTADO (Amplificado):', code.data);
                     handleQRScan(code.data);
                     return true;
                 }
                 return false;
             }
             
-            // Estratégia 4: Tela inteira com máxima qualidade
-            function scanFullScreen(videoElement) {
-                canvas.width = videoElement.videoWidth;
-                canvas.height = videoElement.videoHeight;
+
+            
+
+            
+            // NOVA Estratégia 9: Detecção de QR DANIFICADO/CORTADO
+            function scanDamagedQR(videoElement) {
+                const scale = 2.5;
+                canvas.width = videoElement.videoWidth * scale;
+                canvas.height = videoElement.videoHeight * scale;
                 
                 context.imageSmoothingEnabled = false;
-                context.drawImage(videoElement, 0, 0);
+                context.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
                 
-                const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+                // Múltiplas áreas sobrepostas para capturar QR cortado
+                const overlappingAreas = [
+                    // Área central expandida
+                    { x: 0.1, y: 0.1, w: 0.8, h: 0.8 },
+                    // Áreas que se estendem além das bordas (para QR cortado)
+                    { x: 0.0, y: 0.0, w: 0.7, h: 0.7 }, // Superior esquerdo expandido
+                    { x: 0.3, y: 0.0, w: 0.7, h: 0.7 }, // Superior direito expandido
+                    { x: 0.0, y: 0.3, w: 0.7, h: 0.7 }, // Inferior esquerdo expandido
+                    { x: 0.3, y: 0.3, w: 0.7, h: 0.7 }, // Inferior direito expandido
+                    // Áreas específicas para bordas cortadas
+                    { x: -0.1, y: 0.2, w: 0.8, h: 0.6 }, // Esquerda cortada
+                    { x: 0.3, y: 0.2, w: 0.8, h: 0.6 }, // Direita cortada
+                    { x: 0.2, y: -0.1, w: 0.6, h: 0.8 }, // Topo cortado
+                    { x: 0.2, y: 0.3, w: 0.6, h: 0.8 }   // Base cortada
+                ];
                 
-                const code = jsQR(imageData.data, imageData.width, imageData.height, {
-                    inversionAttempts: "attemptBoth",
-                    locateOptions: {
-                        tryHarder: true,
-                        skipDiagonalScan: false,
-                        assumeSquareModules: true // Melhor para QR impressos
+                for (const area of overlappingAreas) {
+                    const x = Math.max(0, Math.floor(canvas.width * area.x));
+                    const y = Math.max(0, Math.floor(canvas.height * area.y));
+                    const w = Math.min(canvas.width - x, Math.floor(canvas.width * area.w));
+                    const h = Math.min(canvas.height - y, Math.floor(canvas.height * area.h));
+                    
+                    if (w < 50 || h < 50) continue;
+                    
+                    const imageData = context.getImageData(x, y, w, h);
+                    const data = imageData.data;
+                    
+                    // Processamento específico para QR danificado
+                    for (let i = 0; i < data.length; i += 4) {
+                        const gray = data[i] * 0.299 + data[i + 1] * 0.587 + data[i + 2] * 0.114;
+                        
+                        // Contraste extremo para compensar danos
+                        const contrast = 6.0; // Máximo contraste
+                        const brightness = 40;
+                        let enhanced = (gray - 128) * contrast + 128 + brightness;
+                        enhanced = Math.min(255, Math.max(0, enhanced));
+                        
+                        // Threshold agressivo para QR danificado
+                        const threshold = enhanced > 120 ? 255 : 0;
+                        
+                        data[i] = threshold;
+                        data[i + 1] = threshold;
+                        data[i + 2] = threshold;
                     }
-                });
-                
-                if (code && code.data && code.data.trim()) {
-                    console.log('🎯 QR DETECTADO (Tela Inteira):', code.data);
-                    handleQRScan(code.data);
-                    return true;
+                    
+                    // Configuração especial para QR danificado
+                    const code = jsQR(data, imageData.width, imageData.height, {
+                        inversionAttempts: "attemptBoth",
+                        locateOptions: {
+                            tryHarder: true,
+                            skipDiagonalScan: false,
+                            assumeSquareModules: false,
+                            // Configurações específicas para QR danificado
+                            minFinderPatternRatio: 0.5, // Aceitar padrões menos perfeitos
+                            maxFinderPatternRatio: 2.0
+                        }
+                    });
+                    
+                    if (code && code.data && code.data.trim()) {
+                        console.log('🩹 QR DANIFICADO DETECTADO:', code.data);
+                        handleQRScan(code.data);
+                        return true;
+                    }
                 }
                 return false;
             }
             
+            // NOVA Estratégia 10: Reconstrução de QR parcial
+            function scanPartialQR(videoElement) {
+                const scale = 3.0;
+                canvas.width = videoElement.videoWidth * scale;
+                canvas.height = videoElement.videoHeight * scale;
+                
+                context.imageSmoothingEnabled = false;
+                context.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
+                
+                // Tentar reconstruir QR com partes faltando
+                const reconstructionAreas = [
+                    // Área completa primeiro
+                    { x: 0.15, y: 0.15, w: 0.7, h: 0.7 },
+                    // Áreas parciais que podem conter QR cortado
+                    { x: 0.05, y: 0.05, w: 0.6, h: 0.6 }, // Canto superior esquerdo
+                    { x: 0.35, y: 0.05, w: 0.6, h: 0.6 }, // Canto superior direito
+                    { x: 0.05, y: 0.35, w: 0.6, h: 0.6 }, // Canto inferior esquerdo
+                    { x: 0.35, y: 0.35, w: 0.6, h: 0.6 }, // Canto inferior direito
+                    // Faixas para QR cortado nas bordas
+                    { x: 0.0, y: 0.2, w: 0.8, h: 0.6 },   // Faixa horizontal
+                    { x: 0.2, y: 0.0, w: 0.6, h: 0.8 }    // Faixa vertical
+                ];
+                
+                for (const area of reconstructionAreas) {
+                    const x = Math.floor(canvas.width * area.x);
+                    const y = Math.floor(canvas.height * area.y);
+                    const w = Math.floor(canvas.width * area.w);
+                    const h = Math.floor(canvas.height * area.h);
+                    
+                    if (w < 80 || h < 80) continue;
+                    
+                    const imageData = context.getImageData(x, y, w, h);
+                    const data = imageData.data;
+                    const width = imageData.width;
+                    const height = imageData.height;
+                    
+                    // Aplicar filtro de reconstrução para QR parcial
+                    const reconstructedData = new Uint8ClampedArray(data.length);
+                    
+                    for (let py = 0; py < height; py++) {
+                        for (let px = 0; px < width; px++) {
+                            const idx = (py * width + px) * 4;
+                            const gray = data[idx] * 0.299 + data[idx + 1] * 0.587 + data[idx + 2] * 0.114;
+                            
+                            // Reconstrução inteligente baseada em vizinhos
+                            let reconstructed = gray;
+                            
+                            // Se o pixel está em uma área muito clara ou escura, tentar reconstruir
+                            if (gray > 240 || gray < 15) {
+                                // Analisar vizinhos para reconstruir padrão
+                                let neighborSum = 0;
+                                let neighborCount = 0;
+                                
+                                for (let dy = -2; dy <= 2; dy++) {
+                                    for (let dx = -2; dx <= 2; dx++) {
+                                        const nx = px + dx;
+                                        const ny = py + dy;
+                                        
+                                        if (nx >= 0 && nx < width && ny >= 0 && ny < height) {
+                                            const nidx = (ny * width + nx) * 4;
+                                            const ngray = data[nidx] * 0.299 + data[nidx + 1] * 0.587 + data[nidx + 2] * 0.114;
+                                            
+                                            if (ngray > 15 && ngray < 240) { // Vizinho válido
+                                                neighborSum += ngray;
+                                                neighborCount++;
+                                            }
+                                        }
+                                    }
+                                }
+                                
+                                if (neighborCount > 0) {
+                                    reconstructed = neighborSum / neighborCount;
+                                }
+                            }
+                            
+                            // Aplicar contraste extremo após reconstrução
+                            const contrast = 5.0;
+                            const brightness = 30;
+                            let enhanced = (reconstructed - 128) * contrast + 128 + brightness;
+                            enhanced = Math.min(255, Math.max(0, enhanced));
+                            
+                            // Threshold final
+                            const final = enhanced > 130 ? 255 : 0;
+                            
+                            reconstructedData[idx] = final;
+                            reconstructedData[idx + 1] = final;
+                            reconstructedData[idx + 2] = final;
+                            reconstructedData[idx + 3] = 255;
+                        }
+                    }
+                    
+                    // Tentar decodificar QR reconstruído
+                    const code = jsQR(reconstructedData, width, height, {
+                        inversionAttempts: "attemptBoth",
+                        locateOptions: {
+                            tryHarder: true,
+                            skipDiagonalScan: false,
+                            assumeSquareModules: false
+                        }
+                    });
+                    
+                    if (code && code.data && code.data.trim()) {
+                        console.log('🔧 QR RECONSTRUÍDO DETECTADO:', code.data);
+                        handleQRScan(code.data);
+                        return true;
+                    }
+                }
+                return false;
+            }
+
             // Start scanning
             scanningInterval = true;
             requestAnimationFrame(scanFrame);
             
-            console.log('🚀 Scanner multi-estratégia iniciado para papel');
+            console.log('🚀 Scanner multi-estratégia iniciado para QR danificado');
         }
         
         // Atualizar status de escaneamento
@@ -2135,6 +2679,11 @@
             }
         }
 
+        // View scanned list button
+        document.getElementById('viewScannedList').addEventListener('click', () => {
+            showScannedResults();
+        });
+
         // Clear scanned products
         document.getElementById('clearScanned').addEventListener('click', () => {
             if (confirm('Limpar todos os produtos escaneados da lista?')) {
@@ -2239,5 +2788,5 @@
 
 
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'98753c330160cdc3',t:'MTc1OTI1MTE5My4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'98754cb4f531f171',t:'MTc1OTI1MTg2OS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
