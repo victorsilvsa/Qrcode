@@ -121,101 +121,107 @@
         </div>
 
         <!-- Scanner Section -->
-        <div id="scannerSection" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 hidden">
-            <div class="bg-white rounded-lg shadow-lg p-6">
-                <div class="flex items-center space-x-3 mb-6">
-                    <i class="fas fa-qrcode text-2xl text-blue-600"></i>
-                    <h3 class="text-xl font-bold text-gray-800">Scanner QR Code Avançado</h3>
+        <div id="scannerSection" class="w-full min-h-screen bg-black hidden">
+            <!-- Mobile-First Header -->
+            <div class="bg-black text-white p-4 flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <i class="fas fa-qrcode text-2xl text-green-400"></i>
+                    <h3 class="text-lg font-bold">Scanner QR</h3>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <div id="scanStatus" class="text-green-400 text-sm font-medium">Pronto</div>
+                    <div id="scanCounter" class="bg-green-500 text-white px-2 py-1 rounded-full text-xs font-bold">0</div>
+                </div>
+            </div>
+            
+            <!-- Full Screen Camera Container -->
+            <div id="cameraContainer" class="relative w-full bg-black" style="height: calc(100vh - 80px);">
+                <video id="cameraPreview" class="w-full h-full object-cover hidden"></video>
+                <canvas id="enhancedCanvas" class="w-full h-full object-cover hidden"></canvas>
+                
+                <!-- Camera Placeholder -->
+                <div id="cameraPlaceholder" class="flex items-center justify-center h-full text-gray-300">
+                    <div class="text-center px-4">
+                        <i class="fas fa-qrcode text-8xl mb-6 text-green-400"></i>
+                        <h2 class="text-2xl font-bold mb-4 text-white">Scanner QR Instantâneo</h2>
+                        <p class="text-gray-400 mb-8 text-lg">Igual ao WhatsApp - Detecção automática</p>
+                        
+                        <!-- Start Button -->
+                        <button id="startCamera" class="bg-green-500 text-white px-8 py-4 rounded-full hover:bg-green-600 transition duration-200 flex items-center space-x-3 shadow-lg text-lg font-medium mx-auto mb-6">
+                            <i class="fas fa-camera text-xl"></i>
+                            <span>Iniciar Scanner</span>
+                        </button>
+                        
+                        <div class="grid grid-cols-1 gap-3 text-sm text-gray-400 max-w-xs mx-auto">
+                            <div class="flex items-center space-x-2">
+                                <i class="fas fa-bolt text-yellow-400"></i>
+                                <span>Detecção instantânea</span>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <i class="fas fa-expand text-blue-400"></i>
+                                <span>Não precisa enquadrar</span>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <i class="fas fa-mobile-alt text-green-400"></i>
+                                <span>Otimizado para mobile</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 
-                <!-- Simple Camera Controls -->
-                <div class="mb-6">
-                    <div class="flex justify-center">
-                        <button id="startCamera" class="bg-green-600 text-white px-8 py-4 rounded-xl hover:bg-green-700 transition duration-200 flex items-center space-x-3 shadow-lg text-lg font-medium">
-                            <i class="fas fa-qrcode text-xl"></i>
-                            <span>Iniciar Scanner QR</span>
-                        </button>
-                        <button id="stopCamera" class="bg-red-600 text-white px-8 py-4 rounded-xl hover:bg-red-700 transition duration-200 flex items-center space-x-3 shadow-lg text-lg font-medium hidden">
-                            <i class="fas fa-stop text-xl"></i>
-                            <span>Parar Scanner</span>
+                <!-- WhatsApp-Style Scanning Overlay -->
+                <div id="scanningOverlay" class="absolute inset-0 hidden">
+                    <!-- Minimal scanning indicator -->
+                    <div class="absolute top-4 left-4 right-4 flex justify-between items-center z-50">
+                        <div class="bg-black bg-opacity-50 text-white px-3 py-2 rounded-full text-sm flex items-center space-x-2">
+                            <div class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                            <span>Procurando QR...</span>
+                        </div>
+                        <button id="stopCamera" class="bg-red-500 text-white p-3 rounded-full hover:bg-red-600 transition duration-200 shadow-lg">
+                            <i class="fas fa-times text-lg"></i>
                         </button>
                     </div>
-                </div>
-
-                <!-- Camera Preview -->
-                <div class="mb-6">
-                    <div id="cameraContainer" class="relative bg-gradient-to-br from-gray-900 to-gray-700 rounded-xl overflow-hidden shadow-2xl" style="height: 500px;">
-                        <video id="cameraPreview" class="w-full h-full object-cover hidden"></video>
-                        <canvas id="enhancedCanvas" class="w-full h-full object-cover hidden"></canvas>
-                        
-                        <div id="cameraPlaceholder" class="flex items-center justify-center h-full text-gray-300">
-                            <div class="text-center">
-                                <i class="fas fa-camera text-6xl mb-4 text-gray-400"></i>
-                                <p class="text-lg mb-2">Scanner QR Profissional</p>
-                                <p class="text-sm text-gray-400">Selecione uma câmera e clique em "Iniciar Câmera"</p>
-                                <div class="mt-4 flex justify-center space-x-4 text-sm text-gray-500">
-                                    <div class="flex items-center space-x-1">
-                                        <i class="fas fa-check text-green-400"></i>
-                                        <span>Detecção Ultra-Rápida</span>
-                                    </div>
-                                    <div class="flex items-center space-x-1">
-                                        <i class="fas fa-check text-green-400"></i>
-                                        <span>Múltiplas Estratégias</span>
-                                    </div>
-                                    <div class="flex items-center space-x-1">
-                                        <i class="fas fa-check text-green-400"></i>
-                                        <span>Melhoria Automática</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Clean Scanning Overlay -->
-                        <div id="scanningOverlay" class="absolute inset-0 hidden">
-                            <!-- Main scanning frame -->
-                            <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-                                <div class="w-80 h-80 relative">
-                                    <!-- Animated corners -->
-                                    <div class="absolute top-0 left-0 w-12 h-12 border-t-4 border-l-4 border-green-400 rounded-tl-lg animate-pulse"></div>
-                                    <div class="absolute top-0 right-0 w-12 h-12 border-t-4 border-r-4 border-green-400 rounded-tr-lg animate-pulse"></div>
-                                    <div class="absolute bottom-0 left-0 w-12 h-12 border-b-4 border-l-4 border-green-400 rounded-bl-lg animate-pulse"></div>
-                                    <div class="absolute bottom-0 right-0 w-12 h-12 border-b-4 border-r-4 border-green-400 rounded-br-lg animate-pulse"></div>
-                                    
-                                    <!-- Scanning line animation -->
-                                    <div class="absolute inset-0 overflow-hidden rounded-lg">
-                                        <div id="scanLine" class="absolute w-full h-1 bg-gradient-to-r from-transparent via-green-400 to-transparent opacity-80" style="top: 0; animation: scanAnimation 2s ease-in-out infinite;"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <style>
-                            @keyframes scanAnimation {
-                                0% { top: 0; opacity: 0; }
-                                50% { opacity: 1; }
-                                100% { top: calc(100% - 4px); opacity: 0; }
-                            }
-                        </style>
+                    
+                    <!-- Success feedback -->
+                    <div id="scanSuccess" class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-green-500 text-white px-6 py-3 rounded-full text-lg font-bold shadow-2xl hidden z-50">
+                        <i class="fas fa-check mr-2"></i>
+                        QR Detectado!
                     </div>
                 </div>
+            </div>
+            
+            <!-- Bottom Controls (Mobile Optimized) -->
+            <div class="bg-black text-white p-4 border-t border-gray-800">
+                <div class="flex justify-center space-x-4">
+                    <button id="clearScanned" class="bg-gray-700 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition duration-200 text-sm flex items-center space-x-2">
+                        <i class="fas fa-trash"></i>
+                        <span>Limpar</span>
+                    </button>
+                    <button id="toggleFlash" class="bg-gray-700 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition duration-200 text-sm flex items-center space-x-2">
+                        <i class="fas fa-flashlight"></i>
+                        <span>Flash</span>
+                    </button>
+                </div>
+            </div>
 
-                <!-- Scan Results -->
-                <div id="scanResults" class="hidden">
-                    <div class="flex justify-between items-center mb-4">
+            <!-- Scan Results (Mobile Optimized) -->
+            <div id="scanResults" class="bg-white min-h-screen hidden">
+                <div class="sticky top-0 bg-white border-b border-gray-200 p-4 z-40">
+                    <div class="flex justify-between items-center">
                         <div class="flex items-center space-x-2">
                             <i class="fas fa-list-check text-green-600"></i>
                             <h4 class="font-bold text-gray-800">Produtos Escaneados</h4>
-                            <span id="scanCounter" class="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs font-medium">0</span>
                         </div>
-                        <button id="clearScanned" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition duration-200 text-sm flex items-center space-x-2 shadow-md">
-                            <i class="fas fa-trash"></i>
-                            <span>Limpar Lista</span>
+                        <button onclick="backToScanner()" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition duration-200 text-sm flex items-center space-x-2">
+                            <i class="fas fa-camera"></i>
+                            <span>Voltar</span>
                         </button>
                     </div>
-                    <div id="scannedProducts" class="space-y-3">
-                        <!-- Scanned products will appear here -->
-                    </div>
                 </div>
+                <div id="scannedProducts" class="p-4 space-y-4">
+                    <!-- Scanned products will appear here -->
+                </div>
+            </div>
             </div>
         </div>
 
@@ -929,148 +935,120 @@
             }
         });
 
-        // Enhanced QR scanning with 7 advanced strategies
+        // WhatsApp-Style Ultra-Fast QR Detection
         function startEnhancedQRScanning(videoElement) {
-            scanningInterval = setInterval(() => {
+            let lastScanTime = 0;
+            const scanDelay = 50; // 20 FPS para economizar bateria
+            
+            function scanFrame() {
+                const now = Date.now();
+                if (now - lastScanTime < scanDelay) {
+                    requestAnimationFrame(scanFrame);
+                    return;
+                }
+                lastScanTime = now;
+                
                 if (videoElement.readyState === videoElement.HAVE_ENOUGH_DATA) {
-                    // Use higher resolution for better detection
-                    canvas.width = videoElement.videoWidth;
-                    canvas.height = videoElement.videoHeight;
+                    // Usar resolução otimizada para velocidade
+                    const scale = 0.5; // Reduzir resolução para velocidade
+                    canvas.width = videoElement.videoWidth * scale;
+                    canvas.height = videoElement.videoHeight * scale;
                     context.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
                     
-                    // Advanced detection strategies with brightness enhancement
-                    const detectionStrategies = [
-                        // Strategy 1: Full image, normal
+                    // Estratégias otimizadas para detecção instantânea
+                    const quickStrategies = [
+                        // Estratégia 1: Imagem completa com configurações otimizadas
                         () => {
                             const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
-                            return jsQR(imageData.data, imageData.width, imageData.height, {
-                                inversionAttempts: "dontInvert",
-                            });
-                        },
-                        
-                        // Strategy 2: Full image, inverted
-                        () => {
-                            const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
-                            return jsQR(imageData.data, imageData.width, imageData.height, {
-                                inversionAttempts: "onlyInvert",
-                            });
-                        },
-                        
-                        // Strategy 3: Center crop (for close-up QRs)
-                        () => {
-                            const cropSize = Math.min(canvas.width, canvas.height) * 0.8;
-                            const startX = (canvas.width - cropSize) / 2;
-                            const startY = (canvas.height - cropSize) / 2;
-                            const imageData = context.getImageData(startX, startY, cropSize, cropSize);
                             return jsQR(imageData.data, imageData.width, imageData.height, {
                                 inversionAttempts: "attemptBoth",
                             });
                         },
                         
-                        // Strategy 4: Enhanced contrast + brightness (máximo)
-                        () => {
-                            const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
-                            const data = imageData.data;
-                            const brightnessFactor = 2.0; // Brilho máximo fixo
-                            
-                            for (let i = 0; i < data.length; i += 4) {
-                                // Apply maximum brightness
-                                let r = data[i] * brightnessFactor;
-                                let g = data[i + 1] * brightnessFactor;
-                                let b = data[i + 2] * brightnessFactor;
-                                
-                                // Enhance contrast
-                                const gray = (r + g + b) / 3;
-                                const enhanced = gray > 128 ? 255 : 0;
-                                data[i] = data[i + 1] = data[i + 2] = Math.min(255, enhanced);
-                            }
-                            return jsQR(data, imageData.width, imageData.height, {
-                                inversionAttempts: "attemptBoth",
-                            });
-                        },
-                        
-                        // Strategy 5: Scaled down for distant QRs
-                        () => {
-                            const scale = 0.5;
-                            const scaledWidth = canvas.width * scale;
-                            const scaledHeight = canvas.height * scale;
-                            
-                            const tempCanvas = document.createElement('canvas');
-                            const tempContext = tempCanvas.getContext('2d');
-                            tempCanvas.width = scaledWidth;
-                            tempCanvas.height = scaledHeight;
-                            
-                            tempContext.drawImage(canvas, 0, 0, scaledWidth, scaledHeight);
-                            const imageData = tempContext.getImageData(0, 0, scaledWidth, scaledHeight);
-                            
-                            return jsQR(imageData.data, imageData.width, imageData.height, {
-                                inversionAttempts: "attemptBoth",
-                            });
-                        },
-                        
-                        // Strategy 6: Edge detection enhancement
-                        () => {
-                            const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
-                            const data = imageData.data;
-                            
-                            // Apply edge detection filter
-                            for (let i = 0; i < data.length; i += 4) {
-                                const gray = (data[i] + data[i + 1] + data[i + 2]) / 3;
-                                // Sharpen edges
-                                const sharpened = Math.min(255, Math.max(0, gray * 1.5 - 64));
-                                data[i] = data[i + 1] = data[i + 2] = sharpened;
-                            }
-                            
-                            return jsQR(data, imageData.width, imageData.height, {
-                                inversionAttempts: "attemptBoth",
-                            });
-                        },
-                        
-                        // Strategy 7: Multi-region scanning
+                        // Estratégia 2: Múltiplas regiões simultâneas (WhatsApp style)
                         () => {
                             const regions = [
-                                { x: 0, y: 0, w: canvas.width / 2, h: canvas.height / 2 },
-                                { x: canvas.width / 2, y: 0, w: canvas.width / 2, h: canvas.height / 2 },
-                                { x: 0, y: canvas.height / 2, w: canvas.width / 2, h: canvas.height / 2 },
-                                { x: canvas.width / 2, y: canvas.height / 2, w: canvas.width / 2, h: canvas.height / 2 }
+                                // Centro (mais comum)
+                                { x: canvas.width * 0.2, y: canvas.height * 0.2, w: canvas.width * 0.6, h: canvas.height * 0.6 },
+                                // Quadrantes
+                                { x: 0, y: 0, w: canvas.width * 0.7, h: canvas.height * 0.7 },
+                                { x: canvas.width * 0.3, y: 0, w: canvas.width * 0.7, h: canvas.height * 0.7 },
+                                { x: 0, y: canvas.height * 0.3, w: canvas.width * 0.7, h: canvas.height * 0.7 },
+                                { x: canvas.width * 0.3, y: canvas.height * 0.3, w: canvas.width * 0.7, h: canvas.height * 0.7 }
                             ];
                             
                             for (const region of regions) {
-                                const imageData = context.getImageData(region.x, region.y, region.w, region.h);
-                                const result = jsQR(imageData.data, imageData.width, imageData.height, {
-                                    inversionAttempts: "attemptBoth",
-                                });
-                                if (result) return result;
+                                try {
+                                    const imageData = context.getImageData(region.x, region.y, region.w, region.h);
+                                    const result = jsQR(imageData.data, imageData.width, imageData.height, {
+                                        inversionAttempts: "attemptBoth",
+                                    });
+                                    if (result) return result;
+                                } catch (e) {
+                                    continue;
+                                }
                             }
                             return null;
+                        },
+                        
+                        // Estratégia 3: Contraste automático
+                        () => {
+                            const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+                            const data = imageData.data;
+                            
+                            // Auto-ajuste de contraste
+                            let min = 255, max = 0;
+                            for (let i = 0; i < data.length; i += 4) {
+                                const gray = (data[i] + data[i + 1] + data[i + 2]) / 3;
+                                min = Math.min(min, gray);
+                                max = Math.max(max, gray);
+                            }
+                            
+                            const range = max - min;
+                            if (range > 50) { // Só aplicar se houver contraste suficiente
+                                for (let i = 0; i < data.length; i += 4) {
+                                    const gray = (data[i] + data[i + 1] + data[i + 2]) / 3;
+                                    const enhanced = ((gray - min) / range) * 255;
+                                    data[i] = data[i + 1] = data[i + 2] = enhanced;
+                                }
+                            }
+                            
+                            return jsQR(data, imageData.width, imageData.height, {
+                                inversionAttempts: "attemptBoth",
+                            });
                         }
                     ];
                     
-                    // Try each strategy until one works
-                    for (let i = 0; i < detectionStrategies.length; i++) {
+                    // Tentar estratégias em paralelo para máxima velocidade
+                    for (const strategy of quickStrategies) {
                         try {
-                            const code = detectionStrategies[i]();
+                            const code = strategy();
                             if (code) {
-                                console.log(`QR detectado com estratégia ${i + 1}:`, code.data);
+                                console.log('QR detectado instantaneamente:', code.data);
                                 handleQRScan(code.data);
-                                return; // Stop trying other strategies
+                                return;
                             }
                         } catch (error) {
-                            // Continue to next strategy if this one fails
-                            console.log(`Estratégia ${i + 1} falhou:`, error);
+                            // Continuar para próxima estratégia
                         }
                     }
                 }
-            }, 16); // Ultra-fast scanning - 60 FPS
+                
+                // Continuar escaneamento
+                if (scanningInterval) {
+                    requestAnimationFrame(scanFrame);
+                }
+            }
+            
+            // Iniciar escaneamento
+            scanningInterval = true;
+            requestAnimationFrame(scanFrame);
         }
 
         // Stop camera
         document.getElementById('stopCamera').addEventListener('click', () => {
             // Stop scanning
-            if (scanningInterval) {
-                clearInterval(scanningInterval);
-                scanningInterval = null;
-            }
+            scanningInterval = false;
 
             // Stop video stream
             if (videoStream) {
@@ -1082,19 +1060,19 @@
             const videoElement = document.getElementById('cameraPreview');
             videoElement.srcObject = null;
 
-            // Hide camera preview
+            // Hide camera preview and show placeholder
             document.getElementById('cameraPreview').classList.add('hidden');
             document.getElementById('scanningOverlay').classList.add('hidden');
             document.getElementById('cameraPlaceholder').classList.remove('hidden');
             
-            // Update buttons
-            document.getElementById('startCamera').classList.remove('hidden');
-            document.getElementById('stopCamera').classList.add('hidden');
+            // Update status
+            document.getElementById('scanStatus').textContent = 'Parado';
+            document.getElementById('scanStatus').style.color = '#ef4444';
             
             console.log('Scanner QR parado');
         });
 
-        // Handle QR scan result
+        // Handle QR scan result with instant feedback
         function handleQRScan(qrText) {
             try {
                 // Extract product ID from URL
@@ -1108,9 +1086,13 @@
 
                 // Check if already scanned
                 if (scannedProductsSet.has(productId)) {
+                    showAlreadyScannedFeedback();
                     return;
                 }
 
+                // Instant visual feedback
+                showScanSuccessFeedback();
+                
                 // Add to scanned set
                 scannedProductsSet.add(productId);
 
@@ -1119,24 +1101,27 @@
                     const product = snapshot.val();
                     if (product) {
                         addScannedProduct(productId, product);
+                        updateScanStatus(`${product.name} adicionado!`);
+                        updateScannedCounter();
                         
-                        // Visual feedback
-                        showScanFeedback();
+                        // Auto-show results after first scan
+                        if (scannedProductsSet.size === 1) {
+                            setTimeout(() => {
+                                showScannedResults();
+                            }, 1500);
+                        }
                     }
                 });
 
             } catch (error) {
                 console.log('QR Code inválido:', qrText);
+                showInvalidQRFeedback();
             }
         }
 
-        // Add scanned product to results
+        // Add scanned product to results (Mobile Optimized)
         function addScannedProduct(productId, product) {
             const scannedProducts = document.getElementById('scannedProducts');
-            const scanResults = document.getElementById('scanResults');
-            
-            // Show results section
-            scanResults.classList.remove('hidden');
             
             // Get current timestamp
             const now = new Date();
@@ -1146,130 +1131,194 @@
                 second: '2-digit' 
             });
             
-            // Create product card with enhanced design
+            // Create mobile-optimized product card
             const productCard = document.createElement('div');
-            productCard.className = 'bg-gradient-to-r from-green-50 to-emerald-50 border-l-4 border-green-500 rounded-xl p-5 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer transform hover:scale-[1.02]';
+            productCard.className = 'bg-white border border-gray-200 rounded-xl shadow-lg overflow-hidden';
             productCard.innerHTML = `
-                <div class="flex justify-between items-start mb-3">
-                    <div class="flex-1">
-                        <div class="flex items-center space-x-3 mb-2">
-                            <div class="bg-green-500 text-white rounded-full p-2">
-                                <i class="fas fa-check text-sm"></i>
+                <div class="bg-gradient-to-r from-green-500 to-emerald-600 text-white p-4">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-3">
+                            <div class="bg-white bg-opacity-20 rounded-full p-2">
+                                <i class="fas fa-check text-lg"></i>
                             </div>
-                            <h5 class="font-bold text-gray-800 text-xl">${product.name}</h5>
-                        </div>
-                        <div class="grid grid-cols-2 gap-3 text-sm mb-3">
-                            <div class="bg-white rounded-lg p-2 shadow-sm">
-                                <div class="flex items-center space-x-2">
-                                    <i class="fas fa-barcode text-blue-500"></i>
-                                    <span class="font-medium text-gray-600">Código:</span>
-                                </div>
-                                <span class="text-gray-800 font-mono bg-gray-100 px-2 py-1 rounded mt-1 block">${product.code}</span>
-                            </div>
-                            <div class="bg-white rounded-lg p-2 shadow-sm">
-                                <div class="flex items-center space-x-2">
-                                    <i class="fas fa-cubes text-purple-500"></i>
-                                    <span class="font-medium text-gray-600">Quantidade:</span>
-                                </div>
-                                <span class="text-gray-800 font-bold text-lg mt-1 block">${product.quantity}</span>
+                            <div>
+                                <h3 class="font-bold text-lg">${product.name}</h3>
+                                <p class="text-green-100 text-sm">Código: ${product.code}</p>
                             </div>
                         </div>
-                        <div class="bg-white rounded-lg p-2 shadow-sm">
-                            <div class="flex items-center space-x-2 mb-1">
-                                <i class="fas fa-map-marker-alt text-red-500"></i>
-                                <span class="font-medium text-gray-600">Localização:</span>
-                            </div>
-                            <div class="flex items-center space-x-2 text-sm">
-                                <span class="bg-blue-100 text-blue-800 px-2 py-1 rounded">${product.location.sector}</span>
-                                <i class="fas fa-arrow-right text-gray-400"></i>
-                                <span class="bg-green-100 text-green-800 px-2 py-1 rounded">${product.location.corridor}</span>
-                                <i class="fas fa-arrow-right text-gray-400"></i>
-                                <span class="bg-purple-100 text-purple-800 px-2 py-1 rounded">${product.location.shelf}</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="text-right ml-4">
-                        <div class="bg-white rounded-lg p-3 shadow-sm text-center">
-                            <div class="text-xs text-gray-500 mb-1">Escaneado às</div>
-                            <div class="text-sm font-bold text-green-600">${timeString}</div>
-                            <button class="mt-2 bg-blue-500 text-white px-3 py-1 rounded-full text-xs hover:bg-blue-600 transition duration-200 flex items-center space-x-1">
-                                <i class="fas fa-eye"></i>
-                                <span>Detalhes</span>
-                            </button>
+                        <div class="text-right">
+                            <div class="text-2xl font-bold">${product.quantity}</div>
+                            <div class="text-green-100 text-xs">unidades</div>
                         </div>
                     </div>
                 </div>
-                <div class="flex justify-between items-center mt-4 pt-4 border-t border-green-200">
-                    <div class="flex space-x-3">
-                        <button class="bg-red-500 text-white px-4 py-2 rounded-lg text-sm hover:bg-red-600 transition duration-200 flex items-center space-x-2 shadow-md" onclick="quickWithdraw('${productId}')">
-                            <i class="fas fa-minus"></i>
-                            <span>Retirar</span>
+                
+                <div class="p-4">
+                    <!-- Location -->
+                    <div class="mb-4">
+                        <div class="flex items-center space-x-2 mb-2">
+                            <i class="fas fa-map-marker-alt text-red-500"></i>
+                            <span class="font-medium text-gray-700">Localização</span>
+                        </div>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">${product.location.sector}</span>
+                            <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium">${product.location.corridor}</span>
+                            <span class="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-sm font-medium">${product.location.shelf}</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Timestamp -->
+                    <div class="mb-4 text-center">
+                        <div class="bg-gray-100 rounded-lg p-2">
+                            <div class="text-xs text-gray-500">Escaneado às</div>
+                            <div class="text-sm font-bold text-gray-700">${timeString}</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Action Buttons -->
+                    <div class="grid grid-cols-3 gap-3">
+                        <button class="bg-red-500 text-white py-3 rounded-lg hover:bg-red-600 transition duration-200 flex flex-col items-center space-y-1" onclick="quickWithdraw('${productId}')">
+                            <i class="fas fa-minus text-lg"></i>
+                            <span class="text-xs font-medium">Retirar</span>
                         </button>
-                        <button class="bg-green-500 text-white px-4 py-2 rounded-lg text-sm hover:bg-green-600 transition duration-200 flex items-center space-x-2 shadow-md" onclick="quickReturn('${productId}')">
-                            <i class="fas fa-plus"></i>
-                            <span>Devolver</span>
+                        <button class="bg-green-500 text-white py-3 rounded-lg hover:bg-green-600 transition duration-200 flex flex-col items-center space-y-1" onclick="quickReturn('${productId}')">
+                            <i class="fas fa-plus text-lg"></i>
+                            <span class="text-xs font-medium">Devolver</span>
+                        </button>
+                        <button class="bg-gray-500 text-white py-3 rounded-lg hover:bg-gray-600 transition duration-200 flex flex-col items-center space-y-1" onclick="removeFromScanned('${productId}')">
+                            <i class="fas fa-trash text-lg"></i>
+                            <span class="text-xs font-medium">Remover</span>
                         </button>
                     </div>
-                    <button class="text-red-500 hover:text-red-700 text-sm flex items-center space-x-1 hover:bg-red-50 px-2 py-1 rounded transition duration-200" onclick="removeFromScanned('${productId}')">
-                        <i class="fas fa-trash"></i>
-                        <span>Remover</span>
-                    </button>
                 </div>
             `;
             
-            productCard.addEventListener('click', (e) => {
-                // Don't open modal if clicking on buttons
-                if (e.target.tagName === 'BUTTON') return;
-                openProductModal(productId);
-            });
-            
             // Add to top of list with animation
             productCard.style.opacity = '0';
-            productCard.style.transform = 'translateY(-10px)';
+            productCard.style.transform = 'translateY(-20px)';
             scannedProducts.insertBefore(productCard, scannedProducts.firstChild);
             
             // Animate in
             setTimeout(() => {
-                productCard.style.transition = 'all 0.3s ease';
+                productCard.style.transition = 'all 0.4s ease';
                 productCard.style.opacity = '1';
                 productCard.style.transform = 'translateY(0)';
             }, 10);
-            
-            // Update counter
-            updateScannedCounter();
         }
 
-        // Visual scan feedback
-        function showScanFeedback() {
-            const overlay = document.getElementById('scanningOverlay');
+        // WhatsApp-style instant feedback functions
+        function showScanSuccessFeedback() {
+            const successDiv = document.getElementById('scanSuccess');
+            successDiv.classList.remove('hidden');
+            successDiv.style.transform = 'translate(-50%, -50%) scale(0.8)';
+            successDiv.style.opacity = '0';
             
-            // Green flash for successful scan
-            overlay.style.backgroundColor = 'rgba(34, 197, 94, 0.5)';
+            // Animate in
+            setTimeout(() => {
+                successDiv.style.transition = 'all 0.3s ease';
+                successDiv.style.transform = 'translate(-50%, -50%) scale(1)';
+                successDiv.style.opacity = '1';
+            }, 10);
             
-            // Add success sound effect (visual)
-            const successIndicator = document.createElement('div');
-            successIndicator.className = 'absolute top-4 left-1/2 transform -translate-x-1/2 bg-green-500 text-white px-4 py-2 rounded-full text-sm font-bold z-50';
-            successIndicator.textContent = '✅ QR DETECTADO!';
-            successIndicator.style.animation = 'bounce 0.5s ease-in-out';
-            overlay.appendChild(successIndicator);
+            // Animate out
+            setTimeout(() => {
+                successDiv.style.transform = 'translate(-50%, -50%) scale(1.2)';
+                successDiv.style.opacity = '0';
+                setTimeout(() => {
+                    successDiv.classList.add('hidden');
+                }, 300);
+            }, 1200);
+        }
+        
+        function showAlreadyScannedFeedback() {
+            const successDiv = document.getElementById('scanSuccess');
+            successDiv.innerHTML = '<i class="fas fa-info-circle mr-2"></i>Já escaneado!';
+            successDiv.className = 'absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-yellow-500 text-white px-6 py-3 rounded-full text-lg font-bold shadow-2xl hidden z-50';
+            
+            successDiv.classList.remove('hidden');
+            setTimeout(() => {
+                successDiv.classList.add('hidden');
+                // Reset to original
+                successDiv.innerHTML = '<i class="fas fa-check mr-2"></i>QR Detectado!';
+                successDiv.className = 'absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-green-500 text-white px-6 py-3 rounded-full text-lg font-bold shadow-2xl hidden z-50';
+            }, 1000);
+        }
+        
+        function showInvalidQRFeedback() {
+            const successDiv = document.getElementById('scanSuccess');
+            successDiv.innerHTML = '<i class="fas fa-times mr-2"></i>QR Inválido!';
+            successDiv.className = 'absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-red-500 text-white px-6 py-3 rounded-full text-lg font-bold shadow-2xl hidden z-50';
+            
+            successDiv.classList.remove('hidden');
+            setTimeout(() => {
+                successDiv.classList.add('hidden');
+                // Reset to original
+                successDiv.innerHTML = '<i class="fas fa-check mr-2"></i>QR Detectado!';
+                successDiv.className = 'absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-green-500 text-white px-6 py-3 rounded-full text-lg font-bold shadow-2xl hidden z-50';
+            }, 1000);
+        }
+        
+        function updateScanStatus(message) {
+            const statusDiv = document.getElementById('scanStatus');
+            statusDiv.textContent = message;
+            statusDiv.style.color = '#10b981';
             
             setTimeout(() => {
-                overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.3)';
-                if (successIndicator.parentNode) {
-                    successIndicator.remove();
-                }
-            }, 800);
+                statusDiv.textContent = 'Procurando QR...';
+                statusDiv.style.color = '#10b981';
+            }, 2000);
+        }
+        
+        function showScannedResults() {
+            document.getElementById('cameraContainer').classList.add('hidden');
+            document.getElementById('scanResults').classList.remove('hidden');
+        }
+        
+        function backToScanner() {
+            document.getElementById('scanResults').classList.add('hidden');
+            document.getElementById('cameraContainer').classList.remove('hidden');
         }
 
         // Update scanned counter
         function updateScannedCounter() {
             const count = scannedProductsSet.size;
-            const clearButton = document.getElementById('clearScanned');
-            const scanCounter = document.getElementById('scanCounter');
+            const scanCounters = document.querySelectorAll('#scanCounter');
             
-            clearButton.innerHTML = `<i class="fas fa-trash"></i><span>Limpar Lista (${count})</span>`;
-            scanCounter.textContent = count;
+            scanCounters.forEach(counter => {
+                counter.textContent = count;
+            });
         }
+        
+        // Flash toggle functionality
+        let flashEnabled = false;
+        document.getElementById('toggleFlash').addEventListener('click', async () => {
+            if (!videoStream) return;
+            
+            try {
+                const track = videoStream.getVideoTracks()[0];
+                const capabilities = track.getCapabilities();
+                
+                if (capabilities.torch) {
+                    flashEnabled = !flashEnabled;
+                    await track.applyConstraints({
+                        advanced: [{ torch: flashEnabled }]
+                    });
+                    
+                    const flashButton = document.getElementById('toggleFlash');
+                    if (flashEnabled) {
+                        flashButton.classList.remove('bg-gray-700');
+                        flashButton.classList.add('bg-yellow-500');
+                        flashButton.innerHTML = '<i class="fas fa-flashlight"></i><span>Flash ON</span>';
+                    } else {
+                        flashButton.classList.remove('bg-yellow-500');
+                        flashButton.classList.add('bg-gray-700');
+                        flashButton.innerHTML = '<i class="fas fa-flashlight"></i><span>Flash</span>';
+                    }
+                }
+            } catch (error) {
+                console.log('Flash não suportado:', error);
+            }
+        });
 
         // Quick withdraw function
         function quickWithdraw(productId) {
@@ -1489,5 +1538,5 @@
 
 
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'98749a10b3bdf171',t:'MTc1OTI0NDU1MS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9874a3311443cdc3',t:'MTc1OTI0NDkyNS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
