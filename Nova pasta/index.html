@@ -43,7 +43,7 @@
         <header class="bg-white shadow-sm border-b">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex justify-between items-center py-4">
-                    <h1 class="text-2xl font-bold text-gray-900">Sistema de Almoxarifado</h1>
+                    <h1 class="text-2xl font-bold text-gray-900">Sistema de Almoxarifado Teste</h1>
                     <div class="flex items-center space-x-4">
                         <span class="text-sm text-gray-600">Sistema Ativo</span>
                     </div>
@@ -187,51 +187,75 @@
                     </div>
                 </div>
                 
-                <!-- QR Scanning Overlay with Frame -->
+                <!-- QR Scanning Overlay with Perfect Frame -->
                 <div id="scanningOverlay" class="absolute inset-0 hidden">
                     <!-- Top header -->
                     <div class="absolute top-4 left-4 right-4 flex justify-between items-center z-50">
-                        <div class="bg-black bg-opacity-70 text-white px-3 py-2 rounded-full text-sm flex items-center space-x-2">
-                            <div class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-                            <span>Aponte para o QR Code</span>
+                        <div class="bg-black bg-opacity-80 text-white px-4 py-3 rounded-full text-sm flex items-center space-x-2 backdrop-blur-sm">
+                            <div class="w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
+                            <span class="font-medium">Procurando QR Code...</span>
                         </div>
                         <button id="stopCamera" class="bg-red-500 text-white p-3 rounded-full hover:bg-red-600 transition duration-200 shadow-lg">
                             <i class="fas fa-times text-lg"></i>
                         </button>
                     </div>
                     
-                    <!-- QR Code Frame -->
+                    <!-- QR Code Frame - Centralizado Perfeitamente -->
                     <div class="absolute inset-0 flex items-center justify-center">
                         <!-- Dark overlay with transparent center -->
-                        <div class="absolute inset-0 bg-black bg-opacity-50"></div>
+                        <div class="absolute inset-0 bg-black bg-opacity-60"></div>
                         
-                        <!-- QR Frame -->
-                        <div class="relative z-10">
-                            <!-- Transparent center area -->
-                            <div class="w-64 h-64 border-4 border-white rounded-2xl relative bg-transparent" style="box-shadow: 0 0 0 9999px rgba(0,0,0,0.5);">
-                                <!-- Corner indicators -->
-                                <div class="absolute -top-1 -left-1 w-8 h-8 border-l-4 border-t-4 border-green-400 rounded-tl-lg"></div>
-                                <div class="absolute -top-1 -right-1 w-8 h-8 border-r-4 border-t-4 border-green-400 rounded-tr-lg"></div>
-                                <div class="absolute -bottom-1 -left-1 w-8 h-8 border-l-4 border-b-4 border-green-400 rounded-bl-lg"></div>
-                                <div class="absolute -bottom-1 -right-1 w-8 h-8 border-r-4 border-b-4 border-green-400 rounded-br-lg"></div>
-                                
-                                <!-- Scanning line animation -->
-                                <div class="absolute inset-0 overflow-hidden rounded-2xl">
-                                    <div class="w-full h-1 bg-gradient-to-r from-transparent via-green-400 to-transparent scan-line"></div>
+                        <!-- QR Frame Container -->
+                        <div class="relative z-10 flex flex-col items-center">
+                            <!-- Enquadramento Principal -->
+                            <div class="relative">
+                                <!-- Área transparente central - quadrado perfeito -->
+                                <div class="w-80 h-80 relative bg-transparent" style="box-shadow: 0 0 0 9999px rgba(0,0,0,0.4);">
+                                    <!-- Borda principal -->
+                                    <div class="absolute inset-0 border-2 border-white rounded-3xl shadow-lg"></div>
+                                    
+                                    <!-- Cantos animados - posicionamento perfeito -->
+                                    <div class="absolute -top-3 -left-3 w-16 h-16 border-l-8 border-t-8 border-green-400 rounded-tl-3xl animate-pulse shadow-lg"></div>
+                                    <div class="absolute -top-3 -right-3 w-16 h-16 border-r-8 border-t-8 border-green-400 rounded-tr-3xl animate-pulse shadow-lg"></div>
+                                    <div class="absolute -bottom-3 -left-3 w-16 h-16 border-l-8 border-b-8 border-green-400 rounded-bl-3xl animate-pulse shadow-lg"></div>
+                                    <div class="absolute -bottom-3 -right-3 w-16 h-16 border-r-8 border-b-8 border-green-400 rounded-br-3xl animate-pulse shadow-lg"></div>
+                                    
+                                    <!-- Linha de escaneamento melhorada -->
+                                    <div class="absolute inset-0 overflow-hidden rounded-3xl">
+                                        <div class="w-full h-3 bg-gradient-to-r from-transparent via-green-400 to-transparent scan-line opacity-90 shadow-lg"></div>
+                                    </div>
+                                    
+                                    <!-- Indicador central -->
+                                    <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                                        <div class="w-6 h-6 bg-green-400 rounded-full animate-ping"></div>
+                                        <div class="absolute top-0 left-0 w-6 h-6 bg-green-500 rounded-full shadow-lg"></div>
+                                    </div>
+                                    
+                                    <!-- Grid de auxílio (sutil) -->
+                                    <div class="absolute inset-4 border border-white border-opacity-20 rounded-2xl"></div>
+                                    <div class="absolute top-1/2 left-4 right-4 h-px bg-white bg-opacity-20"></div>
+                                    <div class="absolute left-1/2 top-4 bottom-4 w-px bg-white bg-opacity-20"></div>
                                 </div>
                             </div>
                             
-                            <!-- Instructions -->
-                            <div class="text-center mt-6">
-                                <p class="text-white text-lg font-medium mb-2">Posicione o QR Code dentro do quadro</p>
-                                <p class="text-gray-300 text-sm">A detecção é automática</p>
+                            <!-- Instruções melhoradas -->
+                            <div class="mt-8 text-center">
+                                <div class="bg-black bg-opacity-80 rounded-2xl px-8 py-4 backdrop-blur-sm shadow-2xl">
+                                    <p class="text-white text-xl font-bold mb-2">📱 Centralize o QR Code</p>
+                                    <p class="text-green-300 text-base mb-3">Detecção automática em múltiplas áreas</p>
+                                    <div class="flex items-center justify-center space-x-3">
+                                        <div class="w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
+                                        <span class="text-green-400 text-sm font-bold tracking-wide">ESCANEANDO...</span>
+                                        <div class="w-3 h-3 bg-green-400 rounded-full animate-pulse" style="animation-delay: 0.5s;"></div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                     
-                    <!-- Success feedback -->
-                    <div id="scanSuccess" class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-green-500 text-white px-6 py-3 rounded-full text-lg font-bold shadow-2xl hidden z-50">
-                        <i class="fas fa-check mr-2"></i>
+                    <!-- Success feedback melhorado -->
+                    <div id="scanSuccess" class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-green-500 text-white px-8 py-4 rounded-2xl text-xl font-bold shadow-2xl hidden z-50 backdrop-blur-sm">
+                        <i class="fas fa-check mr-3 text-2xl"></i>
                         QR Detectado!
                     </div>
                 </div>
@@ -1042,10 +1066,12 @@
             }
         });
 
-        // Simple, stable QR scanning
+        // Scanner QR Ultra-Melhorado com Múltiplas Estratégias
         function startSimpleQRScanning(videoElement) {
             let lastScanTime = 0;
-            const scanDelay = 200; // Reduzido para 5 FPS para evitar travamentos
+            const scanDelay = 100; // Mais rápido para melhor detecção
+            let scanAttempts = 0;
+            let lastDetectionTime = 0;
             
             function scanFrame() {
                 const now = Date.now();
@@ -1056,6 +1082,7 @@
                     return;
                 }
                 lastScanTime = now;
+                scanAttempts++;
                 
                 try {
                     if (videoElement.readyState === videoElement.HAVE_ENOUGH_DATA) {
@@ -1066,22 +1093,58 @@
                         // Draw video frame to canvas
                         context.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
                         
-                        // Get image data from center region (matching the QR frame)
-                        const centerX = Math.floor(canvas.width * 0.25);
-                        const centerY = Math.floor(canvas.height * 0.25);
-                        const centerWidth = Math.floor(canvas.width * 0.5);
-                        const centerHeight = Math.floor(canvas.height * 0.5);
+                        // Múltiplas áreas de detecção para maior precisão
+                        const areas = [
+                            // Área central (principal)
+                            {
+                                x: Math.floor(canvas.width * 0.2),
+                                y: Math.floor(canvas.height * 0.2),
+                                width: Math.floor(canvas.width * 0.6),
+                                height: Math.floor(canvas.height * 0.6)
+                            },
+                            // Área um pouco maior
+                            {
+                                x: Math.floor(canvas.width * 0.15),
+                                y: Math.floor(canvas.height * 0.15),
+                                width: Math.floor(canvas.width * 0.7),
+                                height: Math.floor(canvas.height * 0.7)
+                            },
+                            // Área menor (para QRs pequenos)
+                            {
+                                x: Math.floor(canvas.width * 0.3),
+                                y: Math.floor(canvas.height * 0.3),
+                                width: Math.floor(canvas.width * 0.4),
+                                height: Math.floor(canvas.height * 0.4)
+                            }
+                        ];
                         
-                        const imageData = context.getImageData(centerX, centerY, centerWidth, centerHeight);
+                        // Tentar detectar em cada área
+                        for (let area of areas) {
+                            const imageData = context.getImageData(area.x, area.y, area.width, area.height);
+                            
+                            // Configurações otimizadas para melhor detecção
+                            const code = jsQR(imageData.data, imageData.width, imageData.height, {
+                                inversionAttempts: "attemptBoth",
+                                locateOptions: {
+                                    tryHarder: true,
+                                    assumeGS1: false
+                                }
+                            });
+                            
+                            if (code && code.data && code.data.trim()) {
+                                // Evitar detecções duplicadas muito rápidas
+                                if (now - lastDetectionTime > 1000) {
+                                    console.log('QR detectado com sucesso:', code.data);
+                                    lastDetectionTime = now;
+                                    handleQRScan(code.data);
+                                    return; // Sair após primeira detecção bem-sucedida
+                                }
+                            }
+                        }
                         
-                        // Try to detect QR code
-                        const code = jsQR(imageData.data, imageData.width, imageData.height, {
-                            inversionAttempts: "attemptBoth",
-                        });
-                        
-                        if (code && code.data) {
-                            console.log('QR detectado:', code.data);
-                            handleQRScan(code.data);
+                        // Feedback visual do status de escaneamento
+                        if (scanAttempts % 30 === 0) { // A cada 3 segundos aproximadamente
+                            updateScanningStatus();
                         }
                     }
                 } catch (error) {
@@ -1098,7 +1161,16 @@
             scanningInterval = true;
             requestAnimationFrame(scanFrame);
             
-            console.log('Scanner simples iniciado - 5 FPS estável');
+            console.log('Scanner ultra-melhorado iniciado - Múltiplas áreas de detecção');
+        }
+        
+        // Atualizar status de escaneamento
+        function updateScanningStatus() {
+            const statusDiv = document.getElementById('scanStatus');
+            if (statusDiv) {
+                statusDiv.textContent = 'Procurando QR...';
+                statusDiv.style.color = '#10b981';
+            }
         }
 
         // Stop camera
@@ -1160,12 +1232,10 @@
                             updateScannedCounter();
                         }
                         
-                        // Auto-show results after first scan
-                        if (scannedProductsSet.size === 1) {
-                            setTimeout(() => {
-                                showScannedResults();
-                            }, 1500);
-                        }
+                        // Auto-show results IMEDIATAMENTE após qualquer scan
+                        setTimeout(() => {
+                            showScannedResults();
+                        }, 800); // Reduzido para mostrar mais rápido
                     }
                 });
 
@@ -1672,5 +1742,5 @@
 
 
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9874b91345cccdc3',t:'MTc1OTI0NTgyMi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9874c36472e3f171',t:'MTc1OTI0NjI0NC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
