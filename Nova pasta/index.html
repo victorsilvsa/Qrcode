@@ -51,95 +51,89 @@
             </div>
         </header>
 
-        <!-- Navigation - Mobile First -->
-        <nav class="bg-white shadow-sm sticky top-0 z-30">
-            <div class="px-2 sm:px-4 lg:px-8">
-                <div class="flex justify-around sm:justify-start sm:space-x-8">
-                    <button id="produtosTab" class="flex-1 sm:flex-none py-3 px-2 sm:px-4 border-b-2 border-blue-500 text-blue-600 font-medium flex flex-col sm:flex-row items-center space-y-1 sm:space-y-0 sm:space-x-2 text-xs sm:text-sm">
-                        <i class="fas fa-boxes text-lg sm:text-base"></i>
-                        <span class="hidden sm:inline">Produtos</span>
-                        <span class="sm:hidden">Produtos</span>
+        <!-- Navigation -->
+        <nav class="bg-white shadow-sm">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex space-x-8">
+                    <button id="produtosTab" class="py-4 px-2 border-b-2 border-blue-500 text-blue-600 font-medium flex items-center space-x-2">
+                        <i class="fas fa-boxes"></i>
+                        <span>Produtos</span>
                     </button>
-                    <button id="scannerTab" class="flex-1 sm:flex-none py-3 px-2 sm:px-4 border-b-2 border-transparent text-gray-500 hover:text-gray-700 flex flex-col sm:flex-row items-center space-y-1 sm:space-y-0 sm:space-x-2 text-xs sm:text-sm">
-                        <i class="fas fa-qrcode text-lg sm:text-base"></i>
-                        <span class="hidden sm:inline">Scanner QR</span>
-                        <span class="sm:hidden">Scanner</span>
+                    <button id="scannerTab" class="py-4 px-2 border-b-2 border-transparent text-gray-500 hover:text-gray-700 flex items-center space-x-2">
+                        <i class="fas fa-qrcode"></i>
+                        <span>Scanner QR</span>
                     </button>
-                    <button id="listaTab" class="flex-1 sm:flex-none py-3 px-2 sm:px-4 border-b-2 border-transparent text-gray-500 hover:text-gray-700 flex flex-col sm:flex-row items-center space-y-1 sm:space-y-0 sm:space-x-2 text-xs sm:text-sm relative">
-                        <i class="fas fa-clipboard-list text-lg sm:text-base"></i>
-                        <span class="hidden sm:inline">Lista</span>
-                        <span class="sm:hidden">Lista</span>
-                        <span id="listaTabBadge" class="absolute -top-1 -right-1 sm:static sm:ml-1 bg-red-500 text-white px-1.5 py-0.5 sm:px-2 sm:py-1 rounded-full text-xs font-bold hidden animate-pulse">0</span>
+                    <button id="relatoriosTab" class="py-4 px-2 border-b-2 border-transparent text-gray-500 hover:text-gray-700 flex items-center space-x-2">
+                        <i class="fas fa-chart-bar"></i>
+                        <span>Relatórios</span>
                     </button>
                 </div>
             </div>
         </nav>
 
-        <!-- Products Section - Mobile First -->
-        <div id="produtosSection" class="px-2 sm:px-4 lg:px-8 py-4 sm:py-8">
+        <!-- Products Section -->
+        <div id="produtosSection" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             <!-- Add Product Button -->
-            <div class="mb-4 sm:mb-6">
-                <button id="showAddForm" class="w-full sm:w-auto bg-blue-600 text-white px-4 sm:px-6 py-3 rounded-lg hover:bg-blue-700 transition duration-200 flex items-center justify-center space-x-2 text-sm sm:text-base">
+            <div class="mb-6">
+                <button id="showAddForm" class="bg-blue-600 text-white px-6 py-3 rounded-md hover:bg-blue-700 transition duration-200 flex items-center space-x-2">
                     <i class="fas fa-plus"></i>
                     <span>Adicionar Novo Produto</span>
                 </button>
             </div>
             
-            <!-- Add Product Form - Mobile Optimized -->
-            <div id="addProductForm" class="bg-white rounded-lg shadow-md p-4 sm:p-6 mb-6 sm:mb-8 hidden">
+            <!-- Add Product Form -->
+            <div id="addProductForm" class="bg-white rounded-lg shadow-md p-6 mb-8 hidden">
                 <h3 class="text-lg font-semibold text-gray-800 mb-4">Cadastrar Novo Produto</h3>
-                <form id="productForm" class="space-y-4">
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div class="sm:col-span-2">
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Nome do Produto</label>
-                            <input type="text" id="productName" required class="w-full px-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-base">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Código Interno</label>
-                            <input type="text" id="productCode" required class="w-full px-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-base">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Quantidade</label>
-                            <input type="number" id="productQuantity" required min="0" class="w-full px-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-base">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Setor</label>
-                            <input type="text" id="productSector" required class="w-full px-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-base">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Corredor</label>
-                            <input type="text" id="productCorridor" required class="w-full px-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-base">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Prateleira</label>
-                            <input type="text" id="productShelf" required class="w-full px-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-base">
-                        </div>
+                <form id="productForm" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Nome do Produto</label>
+                        <input type="text" id="productName" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                     </div>
-                    <div class="pt-4">
-                        <button type="submit" class="w-full sm:w-auto bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition duration-200 font-medium">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Código Interno</label>
+                        <input type="text" id="productCode" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Quantidade</label>
+                        <input type="number" id="productQuantity" required min="0" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Prateleira</label>
+                        <input type="text" id="productShelf" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Setor</label>
+                        <input type="text" id="productSector" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Corredor</label>
+                        <input type="text" id="productCorridor" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div class="md:col-span-2">
+                        <button type="submit" class="bg-green-600 text-white px-6 py-2 rounded-md hover:bg-green-700 transition duration-200">
                             Cadastrar Produto
                         </button>
                     </div>
                 </form>
             </div>
 
-            <!-- Products List - Mobile Optimized -->
+            <!-- Products List -->
             <div class="bg-white rounded-lg shadow-md">
-                <div class="p-4 sm:p-6 border-b border-gray-200">
-                    <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center space-y-3 sm:space-y-0">
+                <div class="p-6 border-b border-gray-200">
+                    <div class="flex justify-between items-center">
                         <h3 class="text-lg font-semibold text-gray-800">Lista de Produtos</h3>
-                        <div class="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
-                            <button id="generateAllQR" class="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition duration-200 text-sm font-medium">
+                        <div class="flex space-x-2">
+                            <button id="generateAllQR" class="bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700 transition duration-200">
                                 Gerar QR de Todos
                             </button>
-                            <button id="deleteAllQR" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition duration-200 flex items-center justify-center space-x-2 text-sm font-medium">
+                            <button id="deleteAllQR" class="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 transition duration-200 flex items-center space-x-2">
                                 <i class="fas fa-trash"></i>
                                 <span>Apagar Todos QR</span>
                             </button>
                         </div>
                     </div>
                 </div>
-                <div id="productsList" class="p-4 sm:p-6">
+                <div id="productsList" class="p-6">
                     <div class="text-center text-gray-500">Carregando produtos...</div>
                 </div>
             </div>
@@ -188,22 +182,16 @@
                         
                         <div class="grid grid-cols-1 gap-4 text-sm text-gray-400">
                             <div class="flex items-center space-x-3 bg-gray-800 p-3 rounded-lg">
-                                <svg class="w-5 h-5 text-green-400" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M12.395 2.553a1 1 0 00-1.45-.385c-.345.23-.614.558-.822.88-.214.33-.403.713-.57 1.116-.334.804-.614 1.768-.84 2.734a31.365 31.365 0 00-.613 3.58 2.64 2.64 0 01-.945-1.067c-.328-.68-.398-1.534-.398-2.654A1 1 0 005.05 6.05 6.981 6.981 0 003 11a7 7 0 1011.95-4.95c-.592-.591-.98-.985-1.348-1.467-.363-.476-.724-1.063-1.207-2.03zM12.12 15.12A3 3 0 017 13s.879.5 2.5.5c0-1 .5-4 1.25-4.5.5 1 .786 1.293 1.371 1.879A2.99 2.99 0 0113 13a2.99 2.99 0 01-.879 2.121z" clip-rule="evenodd"></path>
-                                </svg>
-                                <span>APENAS Scanner Nativo</span>
+                                <i class="fas fa-mobile-alt text-green-400 text-lg"></i>
+                                <span>🚀 APENAS Scanner Nativo</span>
                             </div>
                             <div class="flex items-center space-x-3 bg-gray-800 p-3 rounded-lg">
-                                <svg class="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clip-rule="evenodd"></path>
-                                </svg>
-                                <span>Performance máxima (60fps)</span>
+                                <i class="fas fa-bolt text-yellow-400 text-lg"></i>
+                                <span>⚡ Performance máxima (60fps)</span>
                             </div>
                             <div class="flex items-center space-x-3 bg-gray-800 p-3 rounded-lg">
-                                <svg class="w-5 h-5 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M3 5a2 2 0 012-2h10a2 2 0 012 2v8a2 2 0 01-2 2h-2.22l.123.489.804.804A1 1 0 0113 18H7a1 1 0 01-.707-1.707l.804-.804L7.22 15H5a2 2 0 01-2-2V5zm5.771 7H5V5h10v7H8.771z" clip-rule="evenodd"></path>
-                                </svg>
-                                <span>Chrome (Android) ou Safari (iOS)</span>
+                                <i class="fas fa-chrome text-blue-400 text-lg"></i>
+                                <span>📱 Chrome (Android) ou Safari (iOS)</span>
                             </div>
                         </div>
                     </div>
@@ -291,94 +279,138 @@
             </div>
             
             <!-- Bottom Controls (Mobile Optimized) -->
-            <div class="bg-black text-white p-3 border-t border-gray-800">
-                <div id="scannerControls" class="grid grid-cols-2 gap-3">
-                    <button onclick="showSection('lista')" class="bg-blue-600 text-white px-4 py-3 rounded-xl hover:bg-blue-700 transition duration-200 text-sm font-medium flex items-center justify-center space-x-2 shadow-lg">
-                        <i class="fas fa-list text-lg"></i>
-                        <span>Ver Lista</span>
-                        <span id="listBadge" class="bg-white text-blue-600 px-2 py-1 rounded-full text-xs font-bold">0</span>
+            <div class="bg-black text-white p-4 border-t border-gray-800">
+                <div class="grid grid-cols-4 gap-2">
+                    <button id="viewScannedList" class="bg-blue-600 text-white px-3 py-2 rounded-lg hover:bg-blue-700 transition duration-200 text-sm flex items-center justify-center space-x-1">
+                        <i class="fas fa-list"></i>
+                        <span>Lista</span>
                     </button>
-                    <button id="toggleFlash" class="bg-gray-700 text-white px-4 py-3 rounded-xl hover:bg-gray-600 transition duration-200 text-sm font-medium flex items-center justify-center space-x-2">
-                        <i class="fas fa-flashlight text-lg"></i>
+                    <button id="clearScanned" class="bg-gray-700 text-white px-3 py-2 rounded-lg hover:bg-gray-600 transition duration-200 text-sm flex items-center justify-center space-x-1">
+                        <i class="fas fa-trash"></i>
+                        <span>Limpar</span>
+                    </button>
+                    <button id="toggleFlash" class="bg-gray-700 text-white px-3 py-2 rounded-lg hover:bg-gray-600 transition duration-200 text-sm flex items-center justify-center space-x-1">
+                        <i class="fas fa-flashlight"></i>
                         <span>Flash</span>
                     </button>
+                    <button onclick="exportScannedList()" class="bg-green-600 text-white px-3 py-2 rounded-lg hover:bg-green-700 transition duration-200 text-sm flex items-center justify-center space-x-1">
+                        <i class="fas fa-download"></i>
+                        <span>CSV</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Scan Results (Mobile Optimized) -->
+            <div id="scanResults" class="bg-gray-50 min-h-screen hidden">
+                <!-- Header Compacto -->
+                <div class="sticky top-0 bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-lg z-40">
+                    <div class="p-2">
+                        <!-- Linha Principal -->
+                        <div class="flex justify-between items-center mb-2">
+                            <div class="flex items-center space-x-2">
+                                <i class="fas fa-list-check"></i>
+                                <h4 class="font-bold text-sm">Lista de Trabalho</h4>
+                                <span id="resultsCounter" class="bg-white text-blue-600 px-2 py-0.5 rounded-full text-xs font-bold">0</span>
+                            </div>
+                            <button onclick="clearAllScanned()" class="bg-red-500 text-white p-1.5 rounded hover:bg-red-600 transition duration-200">
+                                <i class="fas fa-trash text-sm"></i>
+                            </button>
+                        </div>
+                        
+                        <!-- Navegação Compacta -->
+                        <div class="grid grid-cols-3 gap-1">
+                            <button onclick="backToScanner()" class="bg-green-500 text-white py-1.5 rounded hover:bg-green-600 transition duration-200 flex items-center justify-center space-x-1 text-xs font-medium">
+                                <i class="fas fa-qrcode"></i>
+                                <span>Scanner</span>
+                            </button>
+                            <button onclick="exportScannedList()" class="bg-white bg-opacity-20 text-white py-1.5 rounded hover:bg-opacity-30 transition duration-200 flex items-center justify-center space-x-1 text-xs">
+                                <i class="fas fa-download"></i>
+                                <span>Exportar</span>
+                            </button>
+                            <button onclick="backToProducts()" class="bg-white bg-opacity-20 text-white py-1.5 rounded hover:bg-opacity-30 transition duration-200 flex items-center justify-center space-x-1 text-xs">
+                                <i class="fas fa-boxes"></i>
+                                <span>Produtos</span>
+                            </button>
+                        </div>
+                    </div>
                 </div>
                 
-                <!-- Extended Controls (shown when items scanned) -->
-                <div id="extendedControls" class="grid grid-cols-2 gap-2 mt-3 hidden">
-                    <button id="clearScanned" class="bg-red-600 text-white px-3 py-2 rounded-lg hover:bg-red-700 transition duration-200 text-xs flex items-center justify-center space-x-1">
-                        <i class="fas fa-trash"></i>
-                        <span>Limpar Lista</span>
-                    </button>
-                    <button onclick="exportScannedList()" class="bg-green-600 text-white px-3 py-2 rounded-lg hover:bg-green-700 transition duration-200 text-xs flex items-center justify-center space-x-1">
-                        <i class="fas fa-download"></i>
-                        <span>Exportar CSV</span>
-                    </button>
+                <!-- Controles de Visualização -->
+                <div class="bg-white border-b border-gray-200 px-2 py-1">
+                    <div class="flex space-x-1">
+                        <button id="detailedViewBtn" onclick="showDetailedView()" class="flex-1 bg-blue-500 text-white py-1.5 px-2 rounded text-xs font-medium flex items-center justify-center space-x-1 hover:bg-blue-600 transition duration-200">
+                            <i class="fas fa-th-large"></i>
+                            <span>Detalhado</span>
+                        </button>
+                        <button id="compactViewBtn" onclick="showCompactView()" class="flex-1 bg-gray-200 text-gray-700 py-1.5 px-2 rounded text-xs font-medium flex items-center justify-center space-x-1 hover:bg-gray-300 transition duration-200">
+                            <i class="fas fa-list"></i>
+                            <span>Compacto</span>
+                        </button>
+                    </div>
                 </div>
+                
+                <!-- Products Container -->
+                <div id="scannedProducts" class="p-2 pb-16">
+                    <!-- Scanned products will appear here -->
+                </div>
+                
+                <!-- Empty State -->
+                <div id="noProductsMessage" class="p-6 text-center hidden">
+                    <div class="bg-white rounded-2xl p-8 shadow-sm border border-gray-200">
+                        <div class="text-gray-400 mb-8">
+                            <div class="bg-gray-100 p-6 rounded-full w-24 h-24 mx-auto mb-6 flex items-center justify-center">
+                                <i class="fas fa-qrcode text-4xl text-gray-400"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-gray-600 mb-3">Nenhum produto escaneado</h3>
+                            <p class="text-gray-500 text-base mb-8 max-w-sm mx-auto">Use o scanner para adicionar produtos à sua lista de trabalho</p>
+                        </div>
+                        <button onclick="backToScanner()" class="bg-green-500 text-white px-8 py-4 rounded-xl hover:bg-green-600 transition duration-200 flex items-center space-x-3 mx-auto shadow-sm text-base font-medium">
+                            <i class="fas fa-qrcode text-lg"></i>
+                            <span>Iniciar Scanner</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Barra de Ações Compacta -->
+                <div class="fixed bottom-2 left-2 right-2 z-40">
+                    <div class="bg-white rounded-lg shadow-lg border border-gray-200 p-1.5">
+                        <div class="grid grid-cols-3 gap-1">
+                            <button onclick="backToScanner()" class="bg-green-500 text-white py-2 rounded hover:bg-green-600 transition duration-200 flex items-center justify-center space-x-1 text-xs font-bold shadow-sm">
+                                <i class="fas fa-qrcode"></i>
+                                <span>Scanner</span>
+                            </button>
+                            <button onclick="exportScannedList()" class="bg-blue-500 text-white py-2 rounded hover:bg-blue-600 transition duration-200 flex items-center justify-center space-x-1 text-xs font-medium">
+                                <i class="fas fa-download"></i>
+                                <span>Exportar</span>
+                            </button>
+                            <button onclick="clearAllScanned()" class="bg-red-500 text-white py-2 rounded hover:bg-red-600 transition duration-200 flex items-center justify-center space-x-1 text-xs font-medium">
+                                <i class="fas fa-trash"></i>
+                                <span>Limpar</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
             </div>
         </div>
 
-        <!-- Lista Section -->
-        <div id="listaSection" class="w-full min-h-screen bg-gray-50 hidden">
-            <!-- Header Elegante -->
-            <div class="sticky top-0 bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-xl z-40">
-                <div class="p-4">
-                    <!-- Linha Principal -->
-                    <div class="flex justify-between items-center mb-4">
-                        <div class="flex items-center space-x-3">
-                            <div class="bg-white bg-opacity-20 p-2 rounded-lg">
-                                <i class="fas fa-clipboard-list text-xl"></i>
-                            </div>
-                            <div>
-                                <h4 class="font-bold text-lg">Produtos Escaneados</h4>
-                                <div class="flex items-center space-x-2 text-sm text-blue-100">
-                                    <span id="listaCounter" class="bg-white text-blue-600 px-3 py-1 rounded-full text-xs font-bold">0</span>
-                                    <span>itens na lista</span>
-                                </div>
-                            </div>
-                        </div>
-                        <button onclick="showSection('scanner')" class="bg-green-500 text-white p-3 rounded-xl hover:bg-green-600 transition duration-200 shadow-lg">
-                            <i class="fas fa-qrcode text-lg"></i>
-                        </button>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Products Container -->
-            <div id="listaProducts" class="p-2 pb-16">
-                <!-- Scanned products will appear here -->
-            </div>
-            
-            <!-- Empty State -->
-            <div id="listaNoProductsMessage" class="p-6 text-center">
-                <div class="bg-white rounded-2xl p-8 shadow-sm border border-gray-200">
-                    <div class="text-gray-400 mb-8">
-                        <div class="bg-gray-100 p-6 rounded-full w-24 h-24 mx-auto mb-6 flex items-center justify-center">
-                            <i class="fas fa-qrcode text-4xl text-gray-400"></i>
-                        </div>
-                        <h3 class="text-xl font-bold text-gray-600 mb-3">Nenhum produto escaneado</h3>
-                        <p class="text-gray-500 text-base mb-8 max-w-sm mx-auto">Use o scanner para adicionar produtos à sua lista de trabalho</p>
-                    </div>
-                    <button onclick="showSection('scanner')" class="bg-green-500 text-white px-8 py-4 rounded-xl hover:bg-green-600 transition duration-200 flex items-center space-x-3 mx-auto shadow-sm text-base font-medium">
-                        <i class="fas fa-qrcode text-lg"></i>
-                        <span>Iniciar Scanner</span>
+        <!-- Reports Section -->
+        <div id="relatoriosSection" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 hidden">
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h3 class="text-lg font-semibold text-gray-800 mb-4">Relatórios de Movimentação</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                    <button id="dailyReport" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition duration-200">
+                        Relatório Diário
+                    </button>
+                    <button id="weeklyReport" class="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition duration-200">
+                        Relatório Semanal
+                    </button>
+                    <button id="monthlyReport" class="bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700 transition duration-200">
+                        Relatório Mensal
                     </button>
                 </div>
-            </div>
-            
-            <!-- Barra de Ações Elegante -->
-            <div id="listaActionBar" class="fixed bottom-4 left-4 right-4 z-40 hidden">
-                <div class="bg-white rounded-2xl shadow-2xl border border-gray-200 p-3">
-                    <div class="grid grid-cols-2 gap-3">
-                        <button onclick="exportScannedList()" class="bg-gradient-to-r from-blue-500 to-blue-600 text-white py-3 px-4 rounded-xl hover:from-blue-600 hover:to-blue-700 transition duration-200 flex items-center justify-center space-x-2 text-sm font-medium shadow-lg">
-                            <i class="fas fa-download text-lg"></i>
-                            <span>Exportar CSV</span>
-                        </button>
-                        <button onclick="clearAllScanned()" class="bg-gradient-to-r from-red-500 to-red-600 text-white py-3 px-4 rounded-xl hover:from-red-600 hover:to-red-700 transition duration-200 flex items-center justify-center space-x-2 text-sm font-medium shadow-lg">
-                            <i class="fas fa-trash text-lg"></i>
-                            <span>Limpar Lista</span>
-                        </button>
-                    </div>
+                <div id="reportContent" class="border-t pt-4">
+                    <p class="text-gray-500">Selecione um período para gerar o relatório</p>
                 </div>
             </div>
         </div>
@@ -458,7 +490,7 @@
     </div>
 
     <script>
-        // Firebase Configuration - CORRIGIDO
+        // Firebase Configuration
         const firebaseConfig = {
             apiKey: "AIzaSyBOqTvYZsNqVAs3FgKY6YvCuSOUQ4tZ7EE",
             authDomain: "almoxarifado-92b48.firebaseapp.com",
@@ -470,297 +502,186 @@
             measurementId: "G-W8KZKH2FTM"
         };
 
-        // Initialize Firebase - CORRIGIDO
-        let app, auth, database;
-        
-        try {
-            app = firebase.initializeApp(firebaseConfig);
-            auth = firebase.auth();
-            database = firebase.database();
-            console.log('✅ Firebase conectado com sucesso!');
-        } catch (error) {
-            console.error('❌ Erro Firebase:', error);
-            alert('Erro ao conectar com Firebase: ' + error.message);
-        }
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const database = firebase.database();
 
         let currentProductId = null;
+        let qrGenerationQueue = [];
+        let isGeneratingQR = false;
 
         // Check URL parameters for product ID
         const urlParams = new URLSearchParams(window.location.search);
         const productId = urlParams.get('product');
 
-        // Initialize app - CORRIGIDO
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('🚀 Inicializando sistema...');
-            
-            // Aguardar Firebase estar pronto
-            setTimeout(() => {
-                if (database) {
-                    loadProducts();
-                    console.log('✅ Sistema inicializado!');
-                } else {
-                    console.error('❌ Firebase não inicializado');
-                    alert('Erro: Firebase não conectado!');
-                }
-            }, 1000);
-            
-            // If product ID in URL, open that product
-            if (productId) {
-                setTimeout(() => openProductModal(productId), 2000);
-            }
-        });
+        // Initialize app without authentication
+        loadProducts();
 
-        // AGUARDAR DOM CARREGAR ANTES DE ADICIONAR EVENTOS
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('🔧 Configurando eventos...');
-            
-            // Show/hide add product form - CORRIGIDO
-            const showAddFormBtn = document.getElementById('showAddForm');
-            if (showAddFormBtn) {
-                showAddFormBtn.addEventListener('click', () => {
-                    const form = document.getElementById('addProductForm');
-                    if (form.classList.contains('hidden')) {
-                        form.classList.remove('hidden');
-                        showAddFormBtn.innerHTML = '<i class="fas fa-times"></i><span>Cancelar</span>';
-                    } else {
-                        form.classList.add('hidden');
-                        showAddFormBtn.innerHTML = '<i class="fas fa-plus"></i><span>Adicionar Novo Produto</span>';
-                        document.getElementById('productForm').reset();
-                    }
-                });
-            }
-
-            // Navigation tabs - CORRIGIDO
-            const produtosTab = document.getElementById('produtosTab');
-            const scannerTab = document.getElementById('scannerTab');
-            const listaTab = document.getElementById('listaTab');
-            
-            if (produtosTab) {
-                produtosTab.addEventListener('click', () => {
-                    console.log('🔄 Mudando para aba Produtos');
-                    showSection('produtos');
-                });
-            }
-
-            if (scannerTab) {
-                scannerTab.addEventListener('click', () => {
-                    console.log('🔄 Mudando para aba Scanner');
-                    showSection('scanner');
-                });
-            }
-
-            if (listaTab) {
-                listaTab.addEventListener('click', () => {
-                    console.log('🔄 Mudando para aba Lista');
-                    showSection('lista');
-                });
-            }
-            
-            console.log('✅ Eventos configurados!');
-        });
-
-        // Função para mostrar seções - NOVA
-        function showSection(section) {
-            // Esconder todas as seções
-            const sections = ['produtosSection', 'scannerSection', 'listaSection'];
-            sections.forEach(sectionId => {
-                const element = document.getElementById(sectionId);
-                if (element) {
-                    element.classList.add('hidden');
-                }
-            });
-            
-            // Mostrar seção selecionada
-            const targetSection = document.getElementById(section + 'Section');
-            if (targetSection) {
-                targetSection.classList.remove('hidden');
-            }
-            
-            // Atualizar estilos das abas
-            const tabs = ['produtosTab', 'scannerTab', 'listaTab'];
-            tabs.forEach(tabId => {
-                const tab = document.getElementById(tabId);
-                if (tab) {
-                    tab.classList.remove('border-blue-500', 'text-blue-600');
-                    tab.classList.add('border-transparent', 'text-gray-500');
-                }
-            });
-            
-            // Ativar aba selecionada
-            const activeTab = document.getElementById(section + 'Tab');
-            if (activeTab) {
-                activeTab.classList.remove('border-transparent', 'text-gray-500');
-                activeTab.classList.add('border-blue-500', 'text-blue-600');
-            }
-            
-            // Se for a aba Lista, sincronizar com produtos escaneados
-            if (section === 'lista') {
-                syncListaWithScannedProducts();
-            }
+        // If product ID in URL, open that product
+        if (productId) {
+            setTimeout(() => openProductModal(productId), 1000);
         }
 
-        // Add product form - CORRIGIDO
-        document.addEventListener('DOMContentLoaded', function() {
-            const productForm = document.getElementById('productForm');
-            if (productForm) {
-                productForm.addEventListener('submit', (e) => {
-                    e.preventDefault();
-                    
-                    if (!database) {
-                        alert('❌ Erro: Firebase não conectado!');
-                        return;
-                    }
-                    
-                    console.log('📝 Cadastrando produto...');
-                    
-                    const productData = {
-                        name: document.getElementById('productName').value,
-                        code: document.getElementById('productCode').value,
-                        quantity: parseInt(document.getElementById('productQuantity').value),
-                        location: {
-                            shelf: document.getElementById('productShelf').value,
-                            sector: document.getElementById('productSector').value,
-                            corridor: document.getElementById('productCorridor').value
-                        },
-                        createdAt: new Date().toISOString()
-                    };
-
-                    const newProductRef = database.ref('products').push();
-                    newProductRef.set(productData).then(() => {
-                        console.log('✅ Produto cadastrado:', productData.name);
-                        
-                        // Generate QR Code immediately
-                        generateQRCodeForProduct(newProductRef.key, productData);
-                        
-                        // Reset form and hide it
-                        productForm.reset();
-                        document.getElementById('addProductForm').classList.add('hidden');
-                        const showAddBtn = document.getElementById('showAddForm');
-                        if (showAddBtn) {
-                            showAddBtn.innerHTML = '<i class="fas fa-plus"></i><span>Adicionar Novo Produto</span>';
-                        }
-                        
-                        alert('Produto cadastrado com sucesso! QR Code sendo gerado...');
-                        loadProducts();
-                    }).catch(error => {
-                        console.error('❌ Erro ao cadastrar:', error);
-                        alert('❌ Erro ao cadastrar produto: ' + error.message);
-                    });
-                });
-            }
-        });
-
-        // QR Code ULTRA OTIMIZADO V2 - ZERO TRAVAMENTOS
-        let qrGenerationQueue = [];
-        let isGeneratingQR = false;
-        let qrWorker = null;
-        
-        function generateQRCodeForProduct(productId, productData) {
-            qrGenerationQueue.push({ productId, productData });
-            processQRQueue();
-        }
-        
-        function processQRQueue() {
-            if (isGeneratingQR || qrGenerationQueue.length === 0) return;
-            
-            isGeneratingQR = true;
-            const { productId, productData } = qrGenerationQueue.shift();
-            
-            // Usar requestIdleCallback quando disponível para não travar
-            const processQR = () => {
-                try {
-                    const currentUrl = window.location.origin + window.location.pathname;
-                    const qrUrl = `${currentUrl}?product=${productId}`;
-                    
-                    console.log('🚀 Gerando QR ultra-otimizado:', productData.name);
-                    
-                    // Configuração mínima para máxima velocidade
-                    const qr = qrcode(0, 'L'); // Correção baixa (7%) - mais rápido
-                    qr.addData(qrUrl);
-                    qr.make();
-                    
-                    const canvas = document.createElement('canvas');
-                    const ctx = canvas.getContext('2d');
-                    
-                    // Configurações ultra-leves
-                    const moduleCount = qr.getModuleCount();
-                    const moduleSize = 8; // Ainda menor
-                    const quietZone = 2; // Borda mínima
-                    const totalSize = (moduleCount + (quietZone * 2)) * moduleSize;
-                    
-                    canvas.width = totalSize;
-                    canvas.height = totalSize;
-                    
-                    // Otimizações máximas
-                    ctx.imageSmoothingEnabled = false;
-                    ctx.fillStyle = '#FFFFFF';
-                    ctx.fillRect(0, 0, totalSize, totalSize);
-                    ctx.fillStyle = '#000000';
-                    
-                    // Desenho ultra-rápido em micro-lotes
-                    let currentRow = 0;
-                    
-                    function drawMicroBatch() {
-                        const startTime = performance.now();
-                        
-                        // Desenhar até usar no máximo 2ms
-                        while (currentRow < moduleCount && (performance.now() - startTime) < 2) {
-                            for (let col = 0; col < moduleCount; col++) {
-                                if (qr.isDark(currentRow, col)) {
-                                    const x = (col + quietZone) * moduleSize;
-                                    const y = (currentRow + quietZone) * moduleSize;
-                                    ctx.fillRect(x, y, moduleSize, moduleSize);
-                                }
-                            }
-                            currentRow++;
-                        }
-                        
-                        if (currentRow < moduleCount) {
-                            // Continuar no próximo frame disponível
-                            if (window.requestIdleCallback) {
-                                requestIdleCallback(drawMicroBatch, { timeout: 16 });
-                            } else {
-                                setTimeout(drawMicroBatch, 1);
-                            }
-                        } else {
-                            finishQRGeneration();
-                        }
-                    }
-                    
-                    function finishQRGeneration() {
-                        // Qualidade mínima para máxima velocidade
-                        const qrDataUrl = canvas.toDataURL('image/png', 0.6);
-                        
-                        // Salvar de forma não-bloqueante
-                        database.ref(`products/${productId}/qrCode`).set(qrDataUrl)
-                            .then(() => console.log('✅ QR salvo:', productData.name))
-                            .catch(error => console.error('❌ Erro QR:', error))
-                            .finally(() => {
-                                isGeneratingQR = false;
-                                // Processar próximo com delay mínimo
-                                if (window.requestIdleCallback) {
-                                    requestIdleCallback(processQRQueue, { timeout: 50 });
-                                } else {
-                                    setTimeout(processQRQueue, 10);
-                                }
-                            });
-                    }
-                    
-                    // Iniciar desenho otimizado
-                    drawMicroBatch();
-                    
-                } catch (error) {
-                    console.error('❌ Erro ao gerar QR:', error);
-                    isGeneratingQR = false;
-                    setTimeout(processQRQueue, 50);
-                }
-            };
-            
-            // Usar requestIdleCallback se disponível
-            if (window.requestIdleCallback) {
-                requestIdleCallback(processQR, { timeout: 100 });
+        // Show/hide add product form
+        document.getElementById('showAddForm').addEventListener('click', () => {
+            const form = document.getElementById('addProductForm');
+            if (form.classList.contains('hidden')) {
+                form.classList.remove('hidden');
+                document.getElementById('showAddForm').textContent = '❌ Cancelar';
             } else {
-                setTimeout(processQR, 10);
+                form.classList.add('hidden');
+                document.getElementById('showAddForm').textContent = '➕ Adicionar Novo Produto';
+                document.getElementById('productForm').reset();
+            }
+        });
+
+
+
+        // Navigation tabs
+        document.getElementById('produtosTab').addEventListener('click', () => {
+            document.getElementById('produtosSection').classList.remove('hidden');
+            document.getElementById('scannerSection').classList.add('hidden');
+            document.getElementById('relatoriosSection').classList.add('hidden');
+            
+            // Update tab styles
+            document.getElementById('produtosTab').classList.add('border-blue-500', 'text-blue-600');
+            document.getElementById('produtosTab').classList.remove('border-transparent', 'text-gray-500');
+            document.getElementById('scannerTab').classList.add('border-transparent', 'text-gray-500');
+            document.getElementById('scannerTab').classList.remove('border-blue-500', 'text-blue-600');
+            document.getElementById('relatoriosTab').classList.add('border-transparent', 'text-gray-500');
+            document.getElementById('relatoriosTab').classList.remove('border-blue-500', 'text-blue-600');
+        });
+
+        document.getElementById('scannerTab').addEventListener('click', () => {
+            document.getElementById('produtosSection').classList.add('hidden');
+            document.getElementById('scannerSection').classList.remove('hidden');
+            document.getElementById('relatoriosSection').classList.add('hidden');
+            
+            // Update tab styles
+            document.getElementById('scannerTab').classList.add('border-blue-500', 'text-blue-600');
+            document.getElementById('scannerTab').classList.remove('border-transparent', 'text-gray-500');
+            document.getElementById('produtosTab').classList.add('border-transparent', 'text-gray-500');
+            document.getElementById('produtosTab').classList.remove('border-blue-500', 'text-blue-600');
+            document.getElementById('relatoriosTab').classList.add('border-transparent', 'text-gray-500');
+            document.getElementById('relatoriosTab').classList.remove('border-blue-500', 'text-blue-600');
+        });
+
+        document.getElementById('relatoriosTab').addEventListener('click', () => {
+            document.getElementById('produtosSection').classList.add('hidden');
+            document.getElementById('scannerSection').classList.add('hidden');
+            document.getElementById('relatoriosSection').classList.remove('hidden');
+            
+            // Update tab styles
+            document.getElementById('relatoriosTab').classList.add('border-blue-500', 'text-blue-600');
+            document.getElementById('relatoriosTab').classList.remove('border-transparent', 'text-gray-500');
+            document.getElementById('produtosTab').classList.add('border-transparent', 'text-gray-500');
+            document.getElementById('produtosTab').classList.remove('border-blue-500', 'text-blue-600');
+            document.getElementById('scannerTab').classList.add('border-transparent', 'text-gray-500');
+            document.getElementById('scannerTab').classList.remove('border-blue-500', 'text-blue-600');
+        });
+
+
+
+        // Add product form
+        document.getElementById('productForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const productData = {
+                name: document.getElementById('productName').value,
+                code: document.getElementById('productCode').value,
+                quantity: parseInt(document.getElementById('productQuantity').value),
+                location: {
+                    shelf: document.getElementById('productShelf').value,
+                    sector: document.getElementById('productSector').value,
+                    corridor: document.getElementById('productCorridor').value
+                },
+                createdAt: new Date().toISOString()
+            };
+
+            const newProductRef = database.ref('products').push();
+            newProductRef.set(productData).then(() => {
+                // Generate QR Code immediately
+                generateQRCodeForProduct(newProductRef.key, productData);
+                
+                // Reset form and hide it
+                document.getElementById('productForm').reset();
+                document.getElementById('addProductForm').classList.add('hidden');
+                document.getElementById('showAddForm').textContent = '➕ Adicionar Novo Produto';
+                
+                alert('Produto cadastrado com sucesso! QR Code sendo gerado...');
+                loadProducts();
+            });
+        });
+
+        // QR Code Otimizado para Impressão em Papel
+        function generateQRCodeForProduct(productId, productData) {
+            const currentUrl = window.location.origin + window.location.pathname;
+            const qrUrl = `${currentUrl}?product=${productId}`;
+            
+            console.log('Gerando QR para papel:', productData.name);
+            
+            try {
+                // Configuração otimizada para papel - máxima legibilidade
+                const qr = qrcode(0, 'H'); // Máxima correção de erro (30%)
+                qr.addData(qrUrl);
+                qr.make();
+                
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                
+                // Configurações para impressão perfeita
+                const moduleCount = qr.getModuleCount();
+                const moduleSize = 16; // Módulos maiores para papel
+                const quietZone = 6; // Borda branca maior
+                const totalSize = (moduleCount + (quietZone * 2)) * moduleSize;
+                
+                // Resolução ultra-alta para impressão
+                canvas.width = totalSize;
+                canvas.height = totalSize;
+                
+                // Desabilitar suavização para pixels nítidos
+                ctx.imageSmoothingEnabled = false;
+                ctx.webkitImageSmoothingEnabled = false;
+                ctx.mozImageSmoothingEnabled = false;
+                ctx.msImageSmoothingEnabled = false;
+                
+                // Fundo branco puro - essencial para papel
+                ctx.fillStyle = '#FFFFFF';
+                ctx.fillRect(0, 0, totalSize, totalSize);
+                
+                // Preto puro para máximo contraste
+                ctx.fillStyle = '#000000';
+                for (let row = 0; row < moduleCount; row++) {
+                    for (let col = 0; col < moduleCount; col++) {
+                        if (qr.isDark(row, col)) {
+                            const x = (col + quietZone) * moduleSize;
+                            const y = (row + quietZone) * moduleSize;
+                            // Desenhar módulos com bordas perfeitas
+                            ctx.fillRect(x, y, moduleSize, moduleSize);
+                        }
+                    }
+                }
+                
+                // Borda externa para melhor definição no papel
+                ctx.strokeStyle = '#E5E7EB';
+                ctx.lineWidth = 2;
+                ctx.strokeRect(1, 1, totalSize-2, totalSize-2);
+                
+                console.log('QR otimizado para papel gerado:', productData.name);
+                const qrDataUrl = canvas.toDataURL('image/png', 1.0);
+                
+                // Salvar no Firebase
+                database.ref(`products/${productId}/qrCode`).set(qrDataUrl).then(() => {
+                    console.log('QR salvo no Firebase:', productData.name);
+                    loadProducts();
+                }).catch((error) => {
+                    console.error('Erro ao salvar QR:', error);
+                });
+                
+            } catch (error) {
+                console.error('Erro ao gerar QR:', error);
+                alert('Erro ao gerar QR Code: ' + error.message);
             }
         }
 
@@ -769,163 +690,57 @@
             generateQRCodeForProduct(productId, productData);
         }
 
-        // Load products - ULTRA OTIMIZADO V2 - ZERO TRAVAMENTOS
-        let productsCache = { data: null, timestamp: 0 };
-        let loadProductsTimeout = null;
-        let isLoadingProducts = false;
-        
+        // Load products
         function loadProducts() {
-            console.log('📦 Carregando produtos...');
-            
-            // Verificar se Firebase está conectado
-            if (!database) {
-                console.error('❌ Database não inicializado');
+            database.ref('products').on('value', (snapshot) => {
+                const products = snapshot.val();
                 const productsList = document.getElementById('productsList');
-                if (productsList) {
-                    productsList.innerHTML = '<div class="text-center text-red-500 py-8">❌ Erro: Firebase não conectado</div>';
-                }
-                return;
-            }
-            
-            // Evitar múltiplas chamadas simultâneas
-            if (isLoadingProducts) {
-                console.log('⏳ Já carregando produtos...');
-                return;
-            }
-            
-            // Debounce agressivo
-            if (loadProductsTimeout) {
-                clearTimeout(loadProductsTimeout);
-            }
-            
-            loadProductsTimeout = setTimeout(() => {
-                isLoadingProducts = true;
                 
-                database.ref('products').once('value').then((snapshot) => {
-                    const products = snapshot.val();
-                    const productsList = document.getElementById('productsList');
-                    
-                    console.log('📊 Produtos encontrados:', products ? Object.keys(products).length : 0);
-                    
-                    if (!products) {
-                        console.log('📝 Nenhum produto no banco');
-                        if (productsList) {
-                            productsList.innerHTML = '<div class="text-center text-gray-500 py-8">Nenhum produto cadastrado</div>';
-                        }
-                        isLoadingProducts = false;
-                        return;
-                    }
+                if (!products) {
+                    productsList.innerHTML = '<div class="text-center text-gray-500">Nenhum produto cadastrado</div>';
+                    return;
+                }
 
-                    // Cache inteligente com timestamp
-                    const productsString = JSON.stringify(products);
-                    const now = Date.now();
+                let html = '<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">';
+                
+                Object.entries(products).forEach(([id, product]) => {
+                    const qrCodeHtml = product.qrCode ? 
+                        `<img src="${product.qrCode}" alt="QR Code" class="w-16 h-16 border border-gray-300 rounded">` : 
+                        '<div class="w-16 h-16 bg-gray-100 border border-gray-300 rounded flex items-center justify-center text-xs text-gray-500">Sem QR</div>';
                     
-                    if (productsCache.data === productsString && (now - productsCache.timestamp) < 5000) {
-                        isLoadingProducts = false;
-                        return; // Dados não mudaram nos últimos 5s
-                    }
-                    
-                    productsCache.data = productsString;
-                    productsCache.timestamp = now;
-
-                    // Renderização ultra-otimizada
-                    const productEntries = Object.entries(products);
-                    const totalProducts = productEntries.length;
-                    
-                    // Mostrar loading
-                    productsList.innerHTML = `
-                        <div class="text-center py-8">
-                            <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-2"></div>
-                            <div class="text-gray-600">Carregando ${totalProducts} produtos...</div>
+                    html += `
+                        <div class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition duration-200">
+                            <div class="flex justify-between items-start mb-3">
+                                <div class="flex-1 cursor-pointer" onclick="openProductModal('${id}')">
+                                    <h4 class="font-semibold text-gray-800 mb-2">${product.name}</h4>
+                                    <p class="text-sm text-gray-600 mb-1">Código: ${product.code}</p>
+                                    <p class="text-sm text-gray-600 mb-1">Quantidade: ${product.quantity}</p>
+                                    <p class="text-sm text-gray-600">Local: ${product.location.sector} - ${product.location.corridor} - ${product.location.shelf}</p>
+                                </div>
+                                <div class="ml-4 cursor-pointer" onclick="openQRModal('${id}', '${product.name}', '${product.code}')">
+                                    ${qrCodeHtml}
+                                </div>
+                            </div>
+                            <div class="flex space-x-2">
+                                ${!product.qrCode ? `
+                                    <button onclick="generateQRForExisting('${id}', ${JSON.stringify(product).replace(/"/g, '&quot;')});" 
+                                            class="text-blue-600 hover:text-blue-800 text-sm">
+                                        📱 Gerar QR
+                                    </button>
+                                ` : `
+                                    <button onclick="downloadQR('${product.qrCode}', '${product.code}', '${product.name}')" 
+                                            class="text-green-600 hover:text-green-800 text-sm">
+                                        💾 Baixar QR
+                                    </button>
+                                `}
+                            </div>
                         </div>
                     `;
-                    
-                    // Renderização em micro-lotes ultra-rápidos
-                    let html = '<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">';
-                    let processedCount = 0;
-                    
-                    function renderMicroBatch(startIndex) {
-                        const startTime = performance.now();
-                        let currentIndex = startIndex;
-                        
-                        // Processar até usar no máximo 5ms
-                        while (currentIndex < totalProducts && (performance.now() - startTime) < 5) {
-                            const [id, product] = productEntries[currentIndex];
-                            
-                            // Template ultra-simplificado para velocidade
-                            const qrIcon = product.qrCode ? '<i class="fas fa-check-circle text-green-500"></i>' : '<i class="fas fa-circle text-gray-300"></i>';
-                            const escapedProduct = JSON.stringify(product).replace(/"/g, '&quot;');
-                            
-                            // Verificar se location existe e tem os campos necessários
-                            const location = product.location || {};
-                            const sector = location.sector || 'N/A';
-                            const corridor = location.corridor || 'N/A';
-                            const shelf = location.shelf || 'N/A';
-                            
-                            html += `
-                                <div class="bg-white border border-gray-200 rounded-lg p-3 hover:shadow-sm transition-shadow">
-                                    <div class="flex items-start space-x-3">
-                                        <div class="flex-1 cursor-pointer" onclick="openProductModal('${id}')">
-                                            <h4 class="font-medium text-gray-800 text-sm mb-1">${product.name}</h4>
-                                            <div class="text-xs text-gray-600 space-y-0.5">
-                                                <div>Código: ${product.code} | Qtd: ${product.quantity}</div>
-                                                <div>Local: ${sector}-${corridor}-${shelf}</div>
-                                            </div>
-                                        </div>
-                                        ${product.qrCode ? 
-                                            `<div class="flex-shrink-0">
-                                                <img src="${product.qrCode}" alt="QR Code" class="w-16 h-16 border border-gray-300 rounded cursor-pointer" onclick="openQRModal('${id}', '${product.name}', '${product.code}')">
-                                            </div>` :
-                                            `<div class="flex-shrink-0 w-16 h-16 border-2 border-dashed border-gray-300 rounded flex items-center justify-center">
-                                                <i class="fas fa-qrcode text-gray-400"></i>
-                                            </div>`
-                                        }
-                                    </div>
-                                    <div class="flex justify-between items-center mt-2">
-                                        <div class="flex space-x-1 text-xs">
-                                            ${!product.qrCode ? 
-                                                `<button onclick="generateQRForExisting('${id}', ${escapedProduct});" class="text-blue-600 hover:text-blue-800"><i class="fas fa-qrcode"></i> Gerar QR</button>` :
-                                                `<button onclick="downloadQR('${product.qrCode}', '${product.code}', '${product.name}')" class="text-green-600 hover:text-green-800"><i class="fas fa-download"></i> Baixar</button>`
-                                            }
-                                        </div>
-                                        <div class="text-lg">${qrIcon}</div>
-                                    </div>
-                                </div>
-                            `;
-                            
-                            currentIndex++;
-                            processedCount++;
-                        }
-                        
-                        if (currentIndex < totalProducts) {
-                            // Continuar no próximo frame disponível
-                            if (window.requestIdleCallback) {
-                                requestIdleCallback(() => renderMicroBatch(currentIndex), { timeout: 16 });
-                            } else {
-                                setTimeout(() => renderMicroBatch(currentIndex), 1);
-                            }
-                        } else {
-                            // Finalizar renderização
-                            html += '</div>';
-                            productsList.innerHTML = html;
-                            isLoadingProducts = false;
-                            console.log(`✅ ${totalProducts} produtos carregados em modo ultra-otimizado`);
-                        }
-                    }
-                    
-                    // Iniciar renderização otimizada
-                    if (window.requestIdleCallback) {
-                        requestIdleCallback(() => renderMicroBatch(0), { timeout: 50 });
-                    } else {
-                        setTimeout(() => renderMicroBatch(0), 10);
-                    }
-                    
-                }).catch(error => {
-                    console.error('❌ Erro ao carregar produtos:', error);
-                    document.getElementById('productsList').innerHTML = '<div class="text-center text-red-500 py-8">❌ Erro ao carregar produtos</div>';
-                    isLoadingProducts = false;
                 });
-            }, 50); // Debounce reduzido
+                
+                html += '</div>';
+                productsList.innerHTML = html;
+            });
         }
 
         // Open product modal
@@ -939,13 +754,8 @@
                 document.getElementById('modalProductName').textContent = product.name;
                 document.getElementById('modalProductCode').textContent = product.code;
                 document.getElementById('modalProductQuantity').textContent = product.quantity;
-                const location = product.location || {};
-                const sector = location.sector || 'N/A';
-                const corridor = location.corridor || 'N/A';
-                const shelf = location.shelf || 'N/A';
-                
                 document.getElementById('modalProductLocation').textContent = 
-                    `${sector} - ${corridor} - ${shelf}`;
+                    `${product.location.sector} - ${product.location.corridor} - ${product.location.shelf}`;
 
                 loadMovementHistory(productId);
                 document.getElementById('productModal').classList.remove('hidden');
@@ -1043,96 +853,186 @@
             });
         }
 
-        // Eventos dos botões - CORRIGIDO
-        document.addEventListener('DOMContentLoaded', function() {
-            // Generate QR codes for all products
-            const generateAllQRBtn = document.getElementById('generateAllQR');
-            if (generateAllQRBtn) {
-                generateAllQRBtn.addEventListener('click', () => {
-                    if (!database) {
-                        alert('❌ Erro: Firebase não conectado!');
-                        return;
-                    }
-                    
-                    if (confirm('Gerar QR codes para todos os produtos sem QR?')) {
-                        database.ref('products').once('value').then((snapshot) => {
-                            const products = snapshot.val();
-                            if (!products) return;
-                            
-                            let productsToProcess = [];
-                            
-                            Object.entries(products).forEach(([id, product]) => {
-                                if (!product.qrCode) {
-                                    productsToProcess.push({ productId: id, productData: product });
-                                }
-                            });
-                            
-                            if (productsToProcess.length === 0) {
-                                alert('Todos os produtos já possuem QR codes!');
-                                return;
-                            }
-                            
-                            console.log(`🔄 Gerando ${productsToProcess.length} QR codes...`);
-                            
-                            // Generate QR codes one by one
-                            let processed = 0;
-                            productsToProcess.forEach(({ productId, productData }, index) => {
-                                setTimeout(() => {
-                                    generateQRCodeForProduct(productId, productData);
-                                    processed++;
-                                    if (processed === productsToProcess.length) {
-                                        alert(`${productsToProcess.length} QR codes gerados com sucesso!`);
-                                    }
-                                }, index * 500); // 500ms delay between each
-                            });
-                        });
-                    }
-                });
+        // Report functions
+        document.getElementById('dailyReport').addEventListener('click', () => generateReport('daily'));
+        document.getElementById('weeklyReport').addEventListener('click', () => generateReport('weekly'));
+        document.getElementById('monthlyReport').addEventListener('click', () => generateReport('monthly'));
+
+        function generateReport(period) {
+            const now = new Date();
+            let startDate;
+            
+            switch(period) {
+                case 'daily':
+                    startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+                    break;
+                case 'weekly':
+                    startDate = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+                    break;
+                case 'monthly':
+                    startDate = new Date(now.getFullYear(), now.getMonth(), 1);
+                    break;
             }
 
-            // Delete all QR codes
-            const deleteAllQRBtn = document.getElementById('deleteAllQR');
-            if (deleteAllQRBtn) {
-                deleteAllQRBtn.addEventListener('click', () => {
-                    if (!database) {
-                        alert('❌ Erro: Firebase não conectado!');
+            database.ref('movements').once('value').then((snapshot) => {
+                const allMovements = snapshot.val();
+                if (!allMovements) {
+                    document.getElementById('reportContent').innerHTML = '<p class="text-gray-500">Nenhuma movimentação encontrada</p>';
+                    return;
+                }
+
+                let filteredMovements = [];
+                Object.entries(allMovements).forEach(([productId, movements]) => {
+                    Object.values(movements).forEach(movement => {
+                        const movementDate = new Date(movement.timestamp);
+                        if (movementDate >= startDate) {
+                            filteredMovements.push({...movement, productId});
+                        }
+                    });
+                });
+
+                displayReport(filteredMovements, period);
+            });
+        }
+
+        function displayReport(movements, period) {
+            const reportContent = document.getElementById('reportContent');
+            
+            if (movements.length === 0) {
+                reportContent.innerHTML = '<p class="text-gray-500">Nenhuma movimentação encontrada no período</p>';
+                return;
+            }
+
+            let html = `
+                <div class="mb-4">
+                    <h4 class="font-semibold text-gray-800 mb-2">Relatório ${period === 'daily' ? 'Diário' : period === 'weekly' ? 'Semanal' : 'Mensal'}</h4>
+                    <button onclick="exportReport()" class="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition duration-200 mb-4">
+                        Exportar CSV
+                    </button>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Data</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tipo</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Quantidade</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Usuário</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+            `;
+
+            movements.forEach(movement => {
+                const date = new Date(movement.timestamp).toLocaleString('pt-BR');
+                const typeText = movement.type === 'withdraw' ? 'Retirada' : 'Devolução';
+                const typeClass = movement.type === 'withdraw' ? 'text-red-600' : 'text-green-600';
+                
+                html += `
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${date}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm ${typeClass}">${typeText}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${movement.quantity}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${movement.userEmail}</td>
+                    </tr>
+                `;
+            });
+
+            html += '</tbody></table></div>';
+            reportContent.innerHTML = html;
+            
+            // Store movements for export
+            window.currentReportData = movements;
+        }
+
+        function exportReport() {
+            if (!window.currentReportData) return;
+            
+            let csv = 'Data,Tipo,Quantidade,Usuário\n';
+            window.currentReportData.forEach(movement => {
+                const date = new Date(movement.timestamp).toLocaleString('pt-BR');
+                const type = movement.type === 'withdraw' ? 'Retirada' : 'Devolução';
+                csv += `"${date}","${type}","${movement.quantity}","${movement.userEmail}"\n`;
+            });
+
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `relatorio-${new Date().toISOString().split('T')[0]}.csv`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        // Generate QR codes for all products
+        document.getElementById('generateAllQR').addEventListener('click', () => {
+            if (confirm('Gerar QR codes para todos os produtos sem QR?')) {
+                database.ref('products').once('value').then((snapshot) => {
+                    const products = snapshot.val();
+                    if (!products) return;
+                    
+                    let productsToProcess = [];
+                    
+                    Object.entries(products).forEach(([id, product]) => {
+                        if (!product.qrCode) {
+                            productsToProcess.push({ productId: id, productData: product });
+                        }
+                    });
+                    
+                    if (productsToProcess.length === 0) {
+                        alert('Todos os produtos já possuem QR codes!');
                         return;
                     }
                     
-                    if (confirm('Apagar TODOS os QR codes dos produtos? Esta ação não pode ser desfeita!')) {
-                        database.ref('products').once('value').then((snapshot) => {
-                            const products = snapshot.val();
-                            if (!products) return;
-                            
-                            let productsWithQR = [];
-                            
-                            Object.entries(products).forEach(([id, product]) => {
-                                if (product.qrCode) {
-                                    productsWithQR.push(id);
-                                }
-                            });
-                            
-                            if (productsWithQR.length === 0) {
-                                alert('Nenhum produto possui QR code para apagar!');
-                                return;
+                    // Generate QR codes one by one
+                    let processed = 0;
+                    productsToProcess.forEach(({ productId, productData }, index) => {
+                        setTimeout(() => {
+                            generateQRCodeForProduct(productId, productData);
+                            processed++;
+                            if (processed === productsToProcess.length) {
+                                alert(`${productsToProcess.length} QR codes gerados com sucesso!`);
                             }
-                            
-                            console.log(`🗑️ Apagando ${productsWithQR.length} QR codes...`);
-                            
-                            // Delete QR codes from all products
-                            const updates = {};
-                            productsWithQR.forEach(productId => {
-                                updates[`products/${productId}/qrCode`] = null;
-                            });
-                            
-                            database.ref().update(updates).then(() => {
-                                alert(`${productsWithQR.length} QR codes foram apagados com sucesso!`);
-                                loadProducts(); // Refresh the list
-                            }).catch((error) => {
-                                alert('Erro ao apagar QR codes: ' + error.message);
-                            });
-                        });
+                        }, index * 500); // 500ms delay between each
+                    });
+                });
+            }
+        });
+
+        // Delete all QR codes
+        document.getElementById('deleteAllQR').addEventListener('click', () => {
+            if (confirm('Apagar TODOS os QR codes dos produtos? Esta ação não pode ser desfeita!')) {
+                database.ref('products').once('value').then((snapshot) => {
+                    const products = snapshot.val();
+                    if (!products) return;
+                    
+                    let productsWithQR = [];
+                    
+                    Object.entries(products).forEach(([id, product]) => {
+                        if (product.qrCode) {
+                            productsWithQR.push(id);
+                        }
+                    });
+                    
+                    if (productsWithQR.length === 0) {
+                        alert('Nenhum produto possui QR code para apagar!');
+                        return;
                     }
+                    
+                    // Delete QR codes from all products
+                    const updates = {};
+                    productsWithQR.forEach(productId => {
+                        updates[`products/${productId}/qrCode`] = null;
+                    });
+                    
+                    database.ref().update(updates).then(() => {
+                        alert(`${productsWithQR.length} QR codes foram apagados com sucesso!`);
+                        loadProducts(); // Refresh the list
+                    }).catch((error) => {
+                        alert('Erro ao apagar QR codes: ' + error.message);
+                    });
                 });
             }
         });
@@ -1152,6 +1052,10 @@
         let scanningInterval = null;
         let scannedProductsSet = new Set();
         let nativeScanner = null;
+
+
+
+
 
         // SCANNER NATIVO DO CELULAR - APENAS NATIVO
         document.getElementById('startCamera').addEventListener('click', async () => {
@@ -1242,6 +1146,8 @@
             };
         }
 
+
+
         // Mostrar interface da câmera
         function showCameraInterface() {
             document.getElementById('cameraPlaceholder').classList.add('hidden');
@@ -1249,213 +1155,109 @@
             document.getElementById('scanningOverlay').classList.remove('hidden');
         }
 
-        // SCANNER NATIVO ULTRA OTIMIZADO V2 - ZERO TRAVAMENTOS
+        // SCANNER NATIVO USANDO BARCODE DETECTOR (Android Chrome)
         function startNativeScanning(videoElement) {
             let isScanning = false;
-            let frameSkip = 0;
-            let lastScanTime = 0;
-            let scanAttempts = 0;
             
             function scanWithNativeAPI() {
                 if (isScanning || !scanningInterval || !nativeScanner) return;
                 
-                const now = performance.now();
-                
-                // Controle de FPS adaptativo - reduzir se muitos erros
-                const fpsDelay = scanAttempts > 10 ? 100 : 75; // 10fps ou 13fps
-                if (now - lastScanTime < fpsDelay) return;
-                
-                // Skip frames inteligente
-                frameSkip++;
-                if (frameSkip % (scanAttempts > 5 ? 5 : 3) !== 0) return;
-                
                 isScanning = true;
-                lastScanTime = now;
-                scanAttempts++;
                 
-                // Timeout mais agressivo
-                const scanTimeout = setTimeout(() => {
-                    isScanning = false;
-                    console.log('⏱️ Scanner timeout - continuando...');
-                }, 50);
-                
-                // Usar requestIdleCallback quando possível
-                const performScan = () => {
-                    nativeScanner.detect(videoElement)
-                        .then(barcodes => {
-                            clearTimeout(scanTimeout);
-                            scanAttempts = Math.max(0, scanAttempts - 1); // Reduzir contador em sucesso
+                // Usar BarcodeDetector nativo - MUITO mais rápido
+                nativeScanner.detect(videoElement)
+                    .then(barcodes => {
+                        if (barcodes.length > 0) {
+                            const qrCode = barcodes.find(barcode => 
+                                barcode.format === 'qr_code' || 
+                                barcode.rawValue.includes('product=')
+                            );
                             
-                            if (barcodes.length > 0) {
-                                const qrCode = barcodes.find(barcode => 
-                                    barcode.format === 'qr_code' || 
-                                    barcode.rawValue.includes('product=')
-                                );
-                                
-                                if (qrCode && qrCode.rawValue) {
-                                    console.log('QR DETECTADO (Ultra-Otimizado):', qrCode.rawValue);
-                                    scanAttempts = 0; // Reset contador
-                                    handleQRScan(qrCode.rawValue);
-                                }
+                            if (qrCode && qrCode.rawValue) {
+                                console.log('🎯 QR DETECTADO (Scanner Nativo):', qrCode.rawValue);
+                                handleQRScan(qrCode.rawValue);
                             }
-                        })
-                        .catch(error => {
-                            clearTimeout(scanTimeout);
-                            // Não logar erros frequentes para não poluir console
-                            if (scanAttempts % 20 === 0) {
-                                console.log('Scanner: erro ocasional (normal)');
-                            }
-                        })
-                        .finally(() => {
-                            isScanning = false;
-                        });
-                };
-                
-                // Usar requestIdleCallback se disponível para não bloquear UI
-                if (window.requestIdleCallback && scanAttempts < 3) {
-                    requestIdleCallback(performScan, { timeout: 30 });
-                } else {
-                    performScan();
-                }
+                        }
+                    })
+                    .catch(error => {
+                        console.log('Erro no scanner nativo:', error);
+                    })
+                    .finally(() => {
+                        isScanning = false;
+                    });
             }
             
-            // FPS ultra-baixo para máxima estabilidade
-            scanningInterval = setInterval(scanWithNativeAPI, 80); // 12.5fps
-            console.log('🚀 Scanner ULTRA-OTIMIZADO V2 iniciado - Zero travamentos!');
+            // Scanner nativo roda a 60fps - performance máxima
+            scanningInterval = setInterval(scanWithNativeAPI, 16); // ~60fps
+            console.log('🚀 Scanner NATIVO iniciado - Performance máxima!');
         }
 
-        // SCANNER iOS ULTRA OTIMIZADO V2 - ZERO TRAVAMENTOS
-        let canvas = null;
-        let context = null;
-        let imageDataBuffer = null;
-        
+        // SCANNER OTIMIZADO PARA iOS
         function startOptimizedScanning(videoElement) {
             let isProcessing = false;
             let frameCount = 0;
-            let lastProcessTime = 0;
-            let errorCount = 0;
-            let successCount = 0;
             
             function scanOptimized() {
                 if (isProcessing || !scanningInterval) return;
                 
-                const now = performance.now();
-                
-                // FPS adaptativo baseado em performance
-                const fpsDelay = errorCount > 5 ? 150 : 120; // 6.6fps ou 8.3fps
-                if (now - lastProcessTime < fpsDelay) {
-                    if (window.requestIdleCallback) {
-                        requestIdleCallback(scanOptimized, { timeout: 16 });
-                    } else {
-                        requestAnimationFrame(scanOptimized);
-                    }
-                    return;
-                }
-                
                 frameCount++;
-                // Skip frames mais agressivo se muitos erros
-                const skipFrames = errorCount > 3 ? 8 : 6;
-                if (frameCount % skipFrames !== 0) {
-                    if (window.requestIdleCallback) {
-                        requestIdleCallback(scanOptimized, { timeout: 16 });
-                    } else {
-                        requestAnimationFrame(scanOptimized);
-                    }
+                // iOS: processar a cada 3 frames para melhor performance
+                if (frameCount % 3 !== 0) {
+                    requestAnimationFrame(scanOptimized);
                     return;
                 }
                 
                 isProcessing = true;
-                lastProcessTime = now;
-                
-                // Timeout mais agressivo
-                const processTimeout = setTimeout(() => {
-                    isProcessing = false;
-                    errorCount++;
-                    console.log('⏱️ iOS Scanner timeout');
-                }, 100);
                 
                 try {
                     if (videoElement.readyState === videoElement.HAVE_ENOUGH_DATA) {
-                        // Criar canvas apenas uma vez com configurações otimizadas
+                        // Usar resolução otimizada para iOS
                         if (!canvas) {
                             canvas = document.createElement('canvas');
-                            context = canvas.getContext('2d', {
-                                alpha: false,
-                                desynchronized: true,
-                                willReadFrequently: true
-                            });
-                            context.imageSmoothingEnabled = false;
+                            context = canvas.getContext('2d');
                         }
                         
-                        // Resolução ainda menor para iOS
-                        const scale = 0.25; // Reduzido de 0.3 para 0.25
-                        const newWidth = Math.floor(videoElement.videoWidth * scale);
-                        const newHeight = Math.floor(videoElement.videoHeight * scale);
-                        
-                        // Redimensionar canvas apenas se necessário
-                        if (canvas.width !== newWidth || canvas.height !== newHeight) {
-                            canvas.width = newWidth;
-                            canvas.height = newHeight;
-                        }
+                        // Resolução otimizada para iOS Safari
+                        const scale = 0.5; // Reduzir para melhor performance
+                        canvas.width = videoElement.videoWidth * scale;
+                        canvas.height = videoElement.videoHeight * scale;
                         
                         context.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
                         
-                        // Área ultra-focada no centro
-                        const centerX = Math.floor(canvas.width * 0.35);
-                        const centerY = Math.floor(canvas.height * 0.35);
-                        const centerWidth = Math.floor(canvas.width * 0.3);
-                        const centerHeight = Math.floor(canvas.height * 0.3);
+                        // Área central focada
+                        const centerX = Math.floor(canvas.width * 0.2);
+                        const centerY = Math.floor(canvas.height * 0.2);
+                        const centerWidth = Math.floor(canvas.width * 0.6);
+                        const centerHeight = Math.floor(canvas.height * 0.6);
                         
                         const imageData = context.getImageData(centerX, centerY, centerWidth, centerHeight);
                         
-                        // Configurações jsQR ultra-otimizadas
                         const code = jsQR(imageData.data, imageData.width, imageData.height, {
-                            inversionAttempts: "dontInvert",
-                            locateOptions: {
-                                tryHarder: false,
-                                maxPatterns: 1
-                            }
+                            inversionAttempts: "attemptBoth"
                         });
                         
                         if (code && code.data && code.data.trim()) {
-                            console.log('QR DETECTADO (iOS Ultra V2):', code.data);
-                            errorCount = Math.max(0, errorCount - 2); // Reduzir contador de erros
-                            successCount++;
+                            console.log('🎯 QR DETECTADO (iOS Otimizado):', code.data);
                             handleQRScan(code.data);
                         }
                     }
                 } catch (error) {
-                    errorCount++;
-                    // Logar apenas erros críticos
-                    if (errorCount % 15 === 0) {
-                        console.log('iOS Scanner: erro ocasional');
-                    }
+                    console.error('Erro no scan iOS:', error);
                 } finally {
-                    clearTimeout(processTimeout);
                     isProcessing = false;
                 }
                 
                 if (scanningInterval) {
-                    // Usar requestIdleCallback quando possível para não bloquear UI
-                    if (window.requestIdleCallback && errorCount < 5) {
-                        requestIdleCallback(scanOptimized, { timeout: 50 });
-                    } else {
-                        requestAnimationFrame(scanOptimized);
-                    }
+                    requestAnimationFrame(scanOptimized);
                 }
             }
             
             scanningInterval = true;
-            
-            // Iniciar com requestIdleCallback se disponível
-            if (window.requestIdleCallback) {
-                requestIdleCallback(scanOptimized, { timeout: 100 });
-            } else {
-                requestAnimationFrame(scanOptimized);
-            }
-            
-            console.log('🍎 Scanner iOS ULTRA OTIMIZADO V2 - Zero travamentos!');
+            requestAnimationFrame(scanOptimized);
+            console.log('🍎 Scanner iOS OTIMIZADO iniciado!');
         }
+
+
         
         // Atualizar status de escaneamento
         function updateScanningStatus() {
@@ -1521,7 +1323,7 @@
                 const productId = url.searchParams.get('product');
                 
                 if (!productId) {
-                    console.log('QR não é do sistema');
+                    console.log('❌ QR não é do sistema');
                     showInvalidQRFeedback();
                     return;
                 }
@@ -1532,7 +1334,7 @@
                 
                 // FEEDBACK INSTANTÂNEO PRIMEIRO
                 showScanSuccessFeedback();
-                updateScanStatus('QR Detectado!');
+                updateScanStatus('✅ QR Detectado!');
                 
                 // Buscar produto e processar
                 database.ref(`products/${productId}`).once('value').then((snapshot) => {
@@ -1542,33 +1344,33 @@
                         setTimeout(() => {
                             if (scannedProductsSet.has(productId)) {
                                 updateScannedProductDisplay(productId, product);
-                                updateScanStatus(`${product.name} atualizado!`);
+                                updateScanStatus(`🔄 ${product.name} atualizado!`);
                                 showAlreadyScannedFeedback();
                             } else {
                                 scannedProductsSet.add(productId);
                                 addScannedProduct(productId, product);
-                                updateScanStatus(`${product.name} adicionado!`);
+                                updateScanStatus(`➕ ${product.name} adicionado!`);
                                 updateScannedCounter();
                             }
                         }, 200);
                         
-                        // 🔥 CORRIGIDO: Ir para aba Lista após 1 segundo
+                        // Auto-mostrar resultados após 1 segundo
                         setTimeout(() => {
-                            showSection('lista');
+                            showScannedResults();
                         }, 1000);
                     } else {
-                        updateScanStatus('Produto não encontrado');
+                        updateScanStatus('❌ Produto não encontrado');
                         showInvalidQRFeedback();
                     }
                 }).catch(error => {
                     console.error('Erro ao buscar produto:', error);
-                    updateScanStatus('Erro ao buscar produto');
+                    updateScanStatus('❌ Erro ao buscar produto');
                     showInvalidQRFeedback();
                 });
 
             } catch (error) {
-                console.log('QR inválido:', qrText);
-                updateScanStatus('QR Code inválido');
+                console.log('❌ QR inválido:', qrText);
+                updateScanStatus('❌ QR Code inválido');
                 showInvalidQRFeedback();
             }
         }
@@ -1576,14 +1378,14 @@
         // Global view state
         let currentView = 'detailed'; // 'detailed' or 'compact'
 
-        // Add scanned product to results - CONECTADO AO BD
+        // Add scanned product to results (Mobile Optimized)
         function addScannedProduct(productId, product) {
-            const listaProducts = document.getElementById('listaProducts');
-            const listaNoProductsMessage = document.getElementById('listaNoProductsMessage');
+            const scannedProducts = document.getElementById('scannedProducts');
+            const noProductsMessage = document.getElementById('noProductsMessage');
             
-            // Hide no products messages
-            if (listaNoProductsMessage) {
-                listaNoProductsMessage.classList.add('hidden');
+            // Hide no products message
+            if (noProductsMessage) {
+                noProductsMessage.classList.add('hidden');
             }
             
             // Get current timestamp
@@ -1593,98 +1395,70 @@
                 minute: '2-digit'
             });
             
-            // 🔥 SALVAR NO BANCO DE DADOS - PRODUTO ESCANEADO
-            const scanData = {
-                productId: productId,
-                productName: product.name,
-                productCode: product.code,
-                scannedAt: new Date().toISOString(),
-                scannedTime: timeString,
-                quantity: product.quantity,
-                location: product.location,
-                userAgent: navigator.userAgent,
-                timestamp: firebase.database.ServerValue.TIMESTAMP
-            };
+            // Create product card based on current view
+            const productCard = document.createElement('div');
+            productCard.setAttribute('data-product-id', productId);
             
-            // Salvar no Firebase
-            database.ref('scannedProducts').push(scanData)
-                .then(() => {
-                    console.log('✅ Produto escaneado salvo no BD:', product.name);
-                })
-                .catch(error => {
-                    console.error('❌ Erro ao salvar scan no BD:', error);
-                });
+            if (currentView === 'detailed') {
+                createDetailedCard(productCard, productId, product, timeString);
+            } else {
+                createCompactCard(productCard, productId, product, timeString);
+            }
             
-            // Create product card for lista section
-            const listaCard = document.createElement('div');
-            listaCard.setAttribute('data-product-id', productId);
-            createDetailedCard(listaCard, productId, product, timeString);
+            // Add to top of list with animation
+            productCard.style.opacity = '0';
+            productCard.style.transform = 'translateY(-20px)';
+            scannedProducts.insertBefore(productCard, scannedProducts.firstChild);
             
-            // Add to top of lista with animation
-            listaCard.style.opacity = '0';
-            listaCard.style.transform = 'translateY(-20px)';
-            listaProducts.insertBefore(listaCard, listaProducts.firstChild);
-            
-            // Animate in card
+            // Animate in
             setTimeout(() => {
-                listaCard.style.transition = 'all 0.4s ease';
-                listaCard.style.opacity = '1';
-                listaCard.style.transform = 'translateY(0)';
+                productCard.style.transition = 'all 0.4s ease';
+                productCard.style.opacity = '1';
+                productCard.style.transform = 'translateY(0)';
             }, 10);
         }
 
-        // Create detailed card view - Layout Elegante
+        // Create detailed card view - Layout Ultra Compacto
         function createDetailedCard(productCard, productId, product, timeString) {
-            productCard.className = 'bg-white border border-gray-200 rounded-xl shadow-lg detailed-card mb-3 overflow-hidden';
+            productCard.className = 'bg-white border border-gray-200 rounded-lg shadow-sm detailed-card mb-2';
             productCard.innerHTML = `
-                <!-- Header Elegante -->
-                <div class="bg-gradient-to-r from-blue-500 to-blue-600 text-white p-4">
+                <!-- Header Compacto -->
+                <div class="bg-gradient-to-r from-blue-500 to-blue-600 text-white p-2">
                     <div class="flex justify-between items-center">
-                        <div class="flex items-center space-x-3 min-w-0 flex-1">
-                            <div class="bg-green-400 w-3 h-3 rounded-full flex-shrink-0 animate-pulse"></div>
-                            <div class="min-w-0 flex-1">
-                                <h3 class="font-bold text-base truncate">${product.name}</h3>
-                                <p class="text-blue-100 text-sm">${product.code}</p>
-                            </div>
+                        <div class="flex items-center space-x-2 min-w-0 flex-1">
+                            <div class="bg-green-400 w-2 h-2 rounded-full flex-shrink-0"></div>
+                            <h3 class="font-bold text-sm truncate">${product.name}</h3>
                         </div>
-                        <div class="text-right flex-shrink-0 ml-3">
-                            <div class="bg-white bg-opacity-20 px-3 py-2 rounded-lg">
-                                <div class="text-xl font-bold quantity-display">${product.quantity}</div>
-                                <div class="text-xs text-blue-100">unidades</div>
-                            </div>
+                        <div class="text-right flex-shrink-0 ml-2">
+                            <div class="text-lg font-bold quantity-display">${product.quantity}</div>
                         </div>
                     </div>
                 </div>
                 
-                <!-- Conteúdo -->
-                <div class="p-4 space-y-3">
-                    <!-- Localização -->
-                    <div class="flex items-center space-x-2 text-sm">
-                        <i class="fas fa-map-marker-alt text-gray-400"></i>
-                        <span class="text-gray-600">Setor ${product.location?.sector || 'N/A'} • Corredor ${product.location?.corridor || 'N/A'} • Prateleira ${product.location?.shelf || 'N/A'}</span>
+                <!-- Conteúdo Compacto -->
+                <div class="p-2 space-y-2">
+                    <!-- Info em linha -->
+                    <div class="flex justify-between items-center text-xs">
+                        <span class="text-gray-600 font-medium">${product.code}</span>
+                        <span class="text-blue-600">${product.location.sector}-${product.location.corridor}-${product.location.shelf}</span>
                     </div>
                     
-                    <!-- Ações -->
-                    <div class="flex justify-between items-center pt-2 border-t border-gray-100">
-                        <div class="flex space-x-2">
-                            <button class="bg-red-500 text-white px-3 py-2 rounded-lg text-sm hover:bg-red-600 transition duration-200 flex items-center space-x-1" onclick="quickWithdraw('${productId}')">
+                    <!-- Ações Inline -->
+                    <div class="flex justify-between items-center">
+                        <div class="flex space-x-1">
+                            <button class="bg-red-500 text-white px-2 py-1 rounded text-xs hover:bg-red-600 transition duration-200" onclick="quickWithdraw('${productId}')">
                                 <i class="fas fa-minus"></i>
-                                <span>Retirar</span>
                             </button>
-                            <button class="bg-green-500 text-white px-3 py-2 rounded-lg text-sm hover:bg-green-600 transition duration-200 flex items-center space-x-1" onclick="quickReturn('${productId}')">
+                            <button class="bg-green-500 text-white px-2 py-1 rounded text-xs hover:bg-green-600 transition duration-200" onclick="quickReturn('${productId}')">
                                 <i class="fas fa-plus"></i>
-                                <span>Devolver</span>
                             </button>
-                            <button class="bg-blue-500 text-white px-3 py-2 rounded-lg text-sm hover:bg-blue-600 transition duration-200" onclick="openProductModal('${productId}')">
+                            <button class="bg-blue-500 text-white px-2 py-1 rounded text-xs hover:bg-blue-600 transition duration-200" onclick="openProductModal('${productId}')">
                                 <i class="fas fa-eye"></i>
                             </button>
                         </div>
-                        <div class="flex items-center space-x-3">
-                            <span class="text-xs text-gray-400 timestamp-display flex items-center space-x-1">
-                                <i class="fas fa-clock"></i>
-                                <span>${timeString}</span>
-                            </span>
-                            <button class="text-gray-400 hover:text-red-500 text-sm p-1" onclick="removeFromScanned('${productId}')">
+                        <div class="flex items-center space-x-2">
+                            <span class="text-xs text-gray-400 timestamp-display">${timeString}</span>
+                            <button class="text-gray-400 hover:text-red-500 text-xs" onclick="removeFromScanned('${productId}')">
                                 <i class="fas fa-trash"></i>
                             </button>
                         </div>
@@ -1693,28 +1467,128 @@
             `;
         }
 
+        // Create compact card view - Super Compacto
+        function createCompactCard(productCard, productId, product, timeString) {
+            productCard.className = 'bg-white border border-gray-200 rounded-lg shadow-sm compact-card mb-1';
+            productCard.innerHTML = `
+                <div class="p-2">
+                    <!-- Linha Única -->
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-2 flex-1 min-w-0">
+                            <div class="bg-green-400 w-2 h-2 rounded-full flex-shrink-0"></div>
+                            <div class="min-w-0 flex-1">
+                                <div class="flex items-center space-x-2">
+                                    <h4 class="font-bold text-sm text-gray-800 truncate">${product.name}</h4>
+                                    <span class="quantity-display bg-blue-100 text-blue-800 px-2 py-0.5 rounded text-xs font-bold">
+                                        ${product.quantity}
+                                    </span>
+                                </div>
+                                <div class="flex items-center space-x-2 text-xs text-gray-500">
+                                    <span>${product.code}</span>
+                                    <span>•</span>
+                                    <span>${product.location.sector}-${product.location.corridor}-${product.location.shelf}</span>
+                                    <span>•</span>
+                                    <span class="timestamp-display">${timeString}</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Ações Compactas -->
+                        <div class="flex items-center space-x-1 flex-shrink-0 ml-2">
+                            <button class="bg-red-500 text-white p-1 rounded text-xs hover:bg-red-600 transition duration-200" onclick="quickWithdraw('${productId}')">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                            <button class="bg-green-500 text-white p-1 rounded text-xs hover:bg-green-600 transition duration-200" onclick="quickReturn('${productId}')">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                            <button class="text-gray-400 hover:text-red-500 text-xs p-1" onclick="removeFromScanned('${productId}')">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Switch to detailed view
+        function showDetailedView() {
+            currentView = 'detailed';
+            
+            // Update button states
+            document.getElementById('detailedViewBtn').className = 'flex-1 bg-blue-500 text-white py-2 px-4 rounded-lg text-sm font-medium flex items-center justify-center space-x-2';
+            document.getElementById('compactViewBtn').className = 'flex-1 bg-gray-200 text-gray-700 py-2 px-4 rounded-lg text-sm font-medium flex items-center justify-center space-x-2';
+            
+            // Rebuild all cards
+            rebuildScannedProducts();
+        }
+
+        // Switch to compact view
+        function showCompactView() {
+            currentView = 'compact';
+            
+            // Update button states
+            document.getElementById('compactViewBtn').className = 'flex-1 bg-blue-500 text-white py-2 px-4 rounded-lg text-sm font-medium flex items-center justify-center space-x-2';
+            document.getElementById('detailedViewBtn').className = 'flex-1 bg-gray-200 text-gray-700 py-2 px-4 rounded-lg text-sm font-medium flex items-center justify-center space-x-2';
+            
+            // Rebuild all cards
+            rebuildScannedProducts();
+        }
+
+        // Rebuild all scanned products with current view
+        function rebuildScannedProducts() {
+            const scannedProducts = document.getElementById('scannedProducts');
+            const existingCards = Array.from(scannedProducts.children);
+            
+            // Get all product data from existing cards
+            const productData = [];
+            existingCards.forEach(card => {
+                const productId = card.getAttribute('data-product-id');
+                if (productId && scannedProductsSet.has(productId)) {
+                    // Get product data from Firebase
+                    database.ref(`products/${productId}`).once('value').then((snapshot) => {
+                        const product = snapshot.val();
+                        if (product) {
+                            productData.push({ productId, product });
+                            
+                            // If this is the last product, rebuild
+                            if (productData.length === scannedProductsSet.size) {
+                                // Clear container
+                                scannedProducts.innerHTML = '';
+                                
+                                // Add all products with new view
+                                productData.reverse().forEach(({ productId, product }) => {
+                                    const now = new Date();
+                                    const timeString = now.toLocaleTimeString('pt-BR', { 
+                                        hour: '2-digit', 
+                                        minute: '2-digit'
+                                    });
+                                    
+                                    const productCard = document.createElement('div');
+                                    productCard.setAttribute('data-product-id', productId);
+                                    
+                                    if (currentView === 'detailed') {
+                                        createDetailedCard(productCard, productId, product, timeString);
+                                    } else {
+                                        createCompactCard(productCard, productId, product, timeString);
+                                    }
+                                    
+                                    scannedProducts.appendChild(productCard);
+                                });
+                            }
+                        }
+                    });
+                }
+            });
+        }
+
         // Clear all scanned products
         function clearAllScanned() {
             if (confirm('Limpar todos os produtos escaneados da lista?')) {
                 scannedProductsSet.clear();
-                document.getElementById('listaProducts').innerHTML = '';
-                document.getElementById('listaNoProductsMessage').classList.remove('hidden');
+                document.getElementById('scannedProducts').innerHTML = '';
+                document.getElementById('noProductsMessage').classList.remove('hidden');
                 updateScannedCounter();
             }
-        }
-
-        // Sync Lista with scanned products
-        function syncListaWithScannedProducts() {
-            const listaProducts = document.getElementById('listaProducts');
-            const listaNoProductsMessage = document.getElementById('listaNoProductsMessage');
-            
-            if (scannedProductsSet.size === 0) {
-                listaProducts.innerHTML = '';
-                listaNoProductsMessage.classList.remove('hidden');
-                return;
-            }
-            
-            listaNoProductsMessage.classList.add('hidden');
         }
 
         // Export scanned list
@@ -1754,36 +1628,41 @@
             });
         }
 
-        // Feedback visual ULTRA OTIMIZADO V2 - ZERO TRAVAMENTOS
-        let feedbackTimeout = null;
-        let feedbackElement = null;
-        
+        // Feedback visual otimizado e mais rápido
         function showScanSuccessFeedback() {
-            // Cancelar feedback anterior
-            if (feedbackTimeout) {
-                clearTimeout(feedbackTimeout);
-            }
+            const successDiv = document.getElementById('scanSuccess');
             
-            // Reutilizar elemento para evitar criação/destruição
-            if (!feedbackElement) {
-                feedbackElement = document.getElementById('scanSuccess');
-            }
+            // Reset para estado inicial
+            successDiv.innerHTML = `
+                <div class="flex items-center space-x-3">
+                    <div class="bg-white bg-opacity-20 p-2 rounded-full animate-pulse">
+                        <i class="fas fa-check text-xl"></i>
+                    </div>
+                    <span class="font-bold">✅ QR DETECTADO!</span>
+                </div>
+            `;
+            successDiv.className = 'absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-green-500 text-white px-6 py-4 rounded-2xl text-lg font-bold shadow-2xl z-50 backdrop-blur-sm border-2 border-green-300';
             
-            // Feedback ultra-simples
-            feedbackElement.innerHTML = '<i class="fas fa-check"></i> QR OK!';
-            feedbackElement.className = 'absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-green-500 text-white px-3 py-1 rounded-lg text-sm font-bold z-50';
+            // Mostrar imediatamente
+            successDiv.classList.remove('hidden');
+            successDiv.style.transform = 'translate(-50%, -50%) scale(0.9)';
+            successDiv.style.opacity = '0';
             
-            // Mostrar instantaneamente
-            feedbackElement.classList.remove('hidden');
-            feedbackElement.style.opacity = '1';
+            // Animação rápida de entrada
+            setTimeout(() => {
+                successDiv.style.transition = 'all 0.2s ease-out';
+                successDiv.style.transform = 'translate(-50%, -50%) scale(1)';
+                successDiv.style.opacity = '1';
+            }, 10);
             
-            // Esconder rapidamente
-            feedbackTimeout = setTimeout(() => {
-                feedbackElement.style.opacity = '0';
+            // Esconder após tempo menor
+            setTimeout(() => {
+                successDiv.style.opacity = '0';
+                successDiv.style.transform = 'translate(-50%, -50%) scale(1.1)';
                 setTimeout(() => {
-                    feedbackElement.classList.add('hidden');
-                }, 50);
-            }, 400);
+                    successDiv.classList.add('hidden');
+                }, 200);
+            }, 800);
         }
         
         function showAlreadyScannedFeedback() {
@@ -1858,72 +1737,105 @@
         }
         
         function updateScanStatus(message) {
-            // Atualização ultra-otimizada - apenas elementos essenciais
+            // Atualizar status no header
             const statusDiv = document.getElementById('scanStatus');
-            const scanningText = document.getElementById('scanningText');
-            
-            // Atualizar apenas texto, sem animações custosas
             if (statusDiv) {
-                statusDiv.textContent = message;
-                statusDiv.style.color = message.includes('Erro') || message.includes('inválido') || message.includes('não encontrado') ? '#ef4444' : 
-                                      message.includes('Atualizado') ? '#f59e0b' : '#10b981';
+                statusDiv.style.transition = 'all 0.2s ease';
+                statusDiv.style.transform = 'scale(0.95)';
+                
+                setTimeout(() => {
+                    statusDiv.textContent = message;
+                    statusDiv.style.color = message.includes('❌') ? '#ef4444' : 
+                                          message.includes('🔄') ? '#f59e0b' : '#10b981';
+                    statusDiv.style.transform = 'scale(1)';
+                }, 100);
             }
             
-            if (scanningText) {
+            // Atualizar indicador no overlay de escaneamento
+            const scanningText = document.getElementById('scanningText');
+            const scanningDot = document.getElementById('scanningDot');
+            const scanningIndicator = document.getElementById('scanningIndicator');
+            
+            if (scanningText && scanningDot && scanningIndicator) {
                 scanningText.textContent = message;
+                
+                // Mudar cor do indicador baseado no status
+                if (message.includes('✅')) {
+                    scanningDot.className = 'w-3 h-3 bg-green-400 rounded-full animate-bounce';
+                    scanningIndicator.className = 'bg-green-600 bg-opacity-90 text-white px-4 py-3 rounded-xl text-sm flex items-center space-x-3 backdrop-blur-sm border border-green-400 transition-all duration-300';
+                } else if (message.includes('❌')) {
+                    scanningDot.className = 'w-3 h-3 bg-red-400 rounded-full animate-pulse';
+                    scanningIndicator.className = 'bg-red-600 bg-opacity-90 text-white px-4 py-3 rounded-xl text-sm flex items-center space-x-3 backdrop-blur-sm border border-red-400 transition-all duration-300';
+                } else if (message.includes('🔄')) {
+                    scanningDot.className = 'w-3 h-3 bg-yellow-400 rounded-full animate-spin';
+                    scanningIndicator.className = 'bg-yellow-600 bg-opacity-90 text-white px-4 py-3 rounded-xl text-sm flex items-center space-x-3 backdrop-blur-sm border border-yellow-400 transition-all duration-300';
+                } else {
+                    scanningDot.className = 'w-3 h-3 bg-green-400 rounded-full animate-pulse';
+                    scanningIndicator.className = 'bg-black bg-opacity-90 text-white px-4 py-3 rounded-xl text-sm flex items-center space-x-3 backdrop-blur-sm border border-gray-600 transition-all duration-300';
+                }
             }
             
-            // Reset rápido após 2 segundos (reduzido de 3)
+            // Voltar ao estado padrão após 3 segundos
             setTimeout(() => {
-                if (scanningInterval && statusDiv) {
-                    statusDiv.textContent = 'Procurando QR Code...';
-                    statusDiv.style.color = '#10b981';
+                if (scanningInterval) {
+                    if (statusDiv) {
+                        statusDiv.style.transition = 'all 0.3s ease';
+                        statusDiv.textContent = 'Procurando QR Code...';
+                        statusDiv.style.color = '#10b981';
+                    }
+                    
+                    if (scanningText && scanningDot && scanningIndicator) {
+                        scanningText.textContent = 'Procurando QR Code';
+                        scanningDot.className = 'w-3 h-3 bg-green-400 rounded-full animate-pulse';
+                        scanningIndicator.className = 'bg-black bg-opacity-90 text-white px-4 py-3 rounded-xl text-sm flex items-center space-x-3 backdrop-blur-sm border border-gray-600 transition-all duration-300';
+                    }
                 }
-                if (scanningInterval && scanningText) {
-                    scanningText.textContent = 'Procurando QR Code';
-                }
-            }, 2000);
+            }, 3000);
+        }
+        
+        function showScannedResults() {
+            document.getElementById('cameraContainer').classList.add('hidden');
+            document.getElementById('scanResults').classList.remove('hidden');
+        }
+        
+        function backToScanner() {
+            document.getElementById('scanResults').classList.add('hidden');
+            document.getElementById('cameraContainer').classList.remove('hidden');
+        }
+        
+        // Função para voltar à aba de produtos
+        function backToProducts() {
+            // Parar o scanner primeiro
+            if (scanningInterval) {
+                document.getElementById('stopCamera').click();
+            }
+            
+            // Voltar para a aba de produtos
+            document.getElementById('produtosSection').classList.remove('hidden');
+            document.getElementById('scannerSection').classList.add('hidden');
+            document.getElementById('relatoriosSection').classList.add('hidden');
+            
+            // Update tab styles
+            document.getElementById('produtosTab').classList.add('border-blue-500', 'text-blue-600');
+            document.getElementById('produtosTab').classList.remove('border-transparent', 'text-gray-500');
+            document.getElementById('scannerTab').classList.add('border-transparent', 'text-gray-500');
+            document.getElementById('scannerTab').classList.remove('border-blue-500', 'text-blue-600');
+            document.getElementById('relatoriosTab').classList.add('border-transparent', 'text-gray-500');
+            document.getElementById('relatoriosTab').classList.remove('border-blue-500', 'text-blue-600');
         }
 
         // Update scanned counter
         function updateScannedCounter() {
             const count = scannedProductsSet.size;
             const scanCounters = document.querySelectorAll('#scanCounter');
-            const listaCounter = document.getElementById('listaCounter');
-            const listaTabBadge = document.getElementById('listaTabBadge');
-            const listBadge = document.getElementById('listBadge');
-            const extendedControls = document.getElementById('extendedControls');
-            const listaActionBar = document.getElementById('listaActionBar');
+            const resultsCounter = document.getElementById('resultsCounter');
             
             scanCounters.forEach(counter => {
                 counter.textContent = count;
             });
             
-            if (listaCounter) {
-                listaCounter.textContent = count;
-            }
-            
-            if (listBadge) {
-                listBadge.textContent = count;
-            }
-            
-            // Update tab badge
-            if (listaTabBadge) {
-                listaTabBadge.textContent = count;
-                if (count > 0) {
-                    listaTabBadge.classList.remove('hidden');
-                } else {
-                    listaTabBadge.classList.add('hidden');
-                }
-            }
-            
-            // Show/hide controls based on count
-            if (count > 0) {
-                if (extendedControls) extendedControls.classList.remove('hidden');
-                if (listaActionBar) listaActionBar.classList.remove('hidden');
-            } else {
-                if (extendedControls) extendedControls.classList.add('hidden');
-                if (listaActionBar) listaActionBar.classList.add('hidden');
+            if (resultsCounter) {
+                resultsCounter.textContent = count;
             }
         }
         
@@ -1980,48 +1892,32 @@
             }
         });
 
-        // Quick withdraw function - CONECTADO AO BD
+        // Quick withdraw function
         function quickWithdraw(productId) {
             const quantity = parseInt(prompt('Quantidade a retirar:'));
             if (quantity && quantity > 0) {
                 database.ref(`products/${productId}`).once('value').then((snapshot) => {
                     const product = snapshot.val();
                     if (quantity > product.quantity) {
-                        alert('Quantidade insuficiente em estoque!');
+                        alert('❌ Quantidade insuficiente em estoque!');
                         return;
                     }
                     
                     const newQuantity = product.quantity - quantity;
                     database.ref(`products/${productId}/quantity`).set(newQuantity);
 
-                    // 🔥 SALVAR RETIRADA NO BD - HISTÓRICO COMPLETO
-                    const withdrawData = {
+                    // Record movement
+                    const movementData = {
                         type: 'withdraw',
-                        productId: productId,
-                        productName: product.name,
-                        productCode: product.code,
                         quantity: quantity,
-                        previousQuantity: product.quantity,
-                        newQuantity: newQuantity,
                         timestamp: new Date().toISOString(),
-                        withdrawnAt: firebase.database.ServerValue.TIMESTAMP,
-                        userEmail: 'Scanner Mobile',
-                        location: product.location,
-                        method: 'quick_withdraw_scanner',
-                        userAgent: navigator.userAgent
+                        userEmail: 'Scanner',
+                        previousQuantity: product.quantity,
+                        newQuantity: newQuantity
                     };
 
-                    // Salvar em movements E em withdrawals para histórico completo
-                    database.ref(`movements/${productId}`).push(withdrawData);
-                    database.ref('withdrawals').push(withdrawData)
-                        .then(() => {
-                            console.log('✅ Retirada salva no BD:', product.name, quantity);
-                        })
-                        .catch(error => {
-                            console.error('❌ Erro ao salvar retirada:', error);
-                        });
-                    
-                    alert(`${quantity} unidades retiradas com sucesso!`);
+                    database.ref(`movements/${productId}`).push(movementData);
+                    alert(`✅ ${quantity} unidades retiradas com sucesso!`);
                     
                     // Update the scanned item display
                     setTimeout(() => {
@@ -2034,7 +1930,7 @@
             }
         }
 
-        // Quick return function - CONECTADO AO BD
+        // Quick return function
         function quickReturn(productId) {
             const quantity = parseInt(prompt('Quantidade a devolver:'));
             if (quantity && quantity > 0) {
@@ -2043,34 +1939,18 @@
                     const newQuantity = product.quantity + quantity;
                     database.ref(`products/${productId}/quantity`).set(newQuantity);
 
-                    // 🔥 SALVAR DEVOLUÇÃO NO BD - HISTÓRICO COMPLETO
-                    const returnData = {
+                    // Record movement
+                    const movementData = {
                         type: 'return',
-                        productId: productId,
-                        productName: product.name,
-                        productCode: product.code,
                         quantity: quantity,
-                        previousQuantity: product.quantity,
-                        newQuantity: newQuantity,
                         timestamp: new Date().toISOString(),
-                        returnedAt: firebase.database.ServerValue.TIMESTAMP,
-                        userEmail: 'Scanner Mobile',
-                        location: product.location,
-                        method: 'quick_return_scanner',
-                        userAgent: navigator.userAgent
+                        userEmail: 'Scanner',
+                        previousQuantity: product.quantity,
+                        newQuantity: newQuantity
                     };
 
-                    // Salvar em movements E em returns para histórico completo
-                    database.ref(`movements/${productId}`).push(returnData);
-                    database.ref('returns').push(returnData)
-                        .then(() => {
-                            console.log('✅ Devolução salva no BD:', product.name, quantity);
-                        })
-                        .catch(error => {
-                            console.error('❌ Erro ao salvar devolução:', error);
-                        });
-                    
-                    alert(`${quantity} unidades devolvidas com sucesso!`);
+                    database.ref(`movements/${productId}`).push(movementData);
+                    alert(`✅ ${quantity} unidades devolvidas com sucesso!`);
                     
                     // Update the scanned item display
                     setTimeout(() => {
@@ -2086,25 +1966,23 @@
         // Remove from scanned list
         function removeFromScanned(productId) {
             scannedProductsSet.delete(productId);
-            const productCards = document.querySelectorAll(`[data-product-id="${productId}"]`);
+            const productCard = document.querySelector(`[data-product-id="${productId}"]`);
             
-            productCards.forEach(productCard => {
-                if (productCard) {
-                    productCard.style.transition = 'all 0.3s ease';
-                    productCard.style.opacity = '0';
-                    productCard.style.transform = 'translateX(-100%)';
-                    setTimeout(() => productCard.remove(), 300);
-                }
-            });
+            if (productCard) {
+                productCard.style.transition = 'all 0.3s ease';
+                productCard.style.opacity = '0';
+                productCard.style.transform = 'translateX(-100%)';
+                setTimeout(() => productCard.remove(), 300);
+            }
             
             updateScannedCounter();
             
             // Show no products message if no items
             if (scannedProductsSet.size === 0) {
                 setTimeout(() => {
-                    const listaNoProductsMessage = document.getElementById('listaNoProductsMessage');
-                    if (listaNoProductsMessage) {
-                        listaNoProductsMessage.classList.remove('hidden');
+                    const noProductsMessage = document.getElementById('noProductsMessage');
+                    if (noProductsMessage) {
+                        noProductsMessage.classList.remove('hidden');
                     }
                 }, 400);
             }
@@ -2112,59 +1990,66 @@
 
         // Update scanned product display
         function updateScannedProductDisplay(productId, updatedProduct) {
-            const productCards = document.querySelectorAll(`[data-product-id="${productId}"]`);
+            const productCard = document.querySelector(`[data-product-id="${productId}"]`);
             
-            productCards.forEach(productCard => {
-                if (productCard) {
-                    // Update quantity display
-                    const quantityDiv = productCard.querySelector('.quantity-display');
-                    if (quantityDiv) {
+            if (productCard) {
+                // Update quantity display (works for both views)
+                const quantityDiv = productCard.querySelector('.quantity-display');
+                if (quantityDiv) {
+                    if (currentView === 'detailed') {
                         quantityDiv.textContent = updatedProduct.quantity;
-                        
-                        // Add visual feedback with pulse animation
-                        quantityDiv.style.backgroundColor = '#fef3c7';
-                        quantityDiv.style.borderRadius = '8px';
-                        quantityDiv.style.padding = '4px 8px';
-                        quantityDiv.style.transition = 'all 0.3s ease';
-                        
-                        // Pulse effect
-                        setTimeout(() => {
-                            quantityDiv.style.transform = 'scale(1.1)';
-                        }, 100);
-                        
-                        setTimeout(() => {
-                            quantityDiv.style.transform = 'scale(1)';
-                            quantityDiv.style.backgroundColor = 'transparent';
-                            quantityDiv.style.padding = '0';
-                        }, 1000);
+                    } else {
+                        quantityDiv.textContent = `${updatedProduct.quantity} un`;
                     }
                     
-                    // Update timestamp
-                    const timestampSpan = productCard.querySelector('.timestamp-display span');
-                    if (timestampSpan) {
-                        const now = new Date();
-                        const timeString = now.toLocaleTimeString('pt-BR', { 
-                            hour: '2-digit', 
-                            minute: '2-digit'
-                        });
-                        timestampSpan.textContent = timeString;
-                        
-                        // Flash the timestamp
-                        timestampSpan.style.color = '#10b981';
-                        setTimeout(() => {
-                            timestampSpan.style.color = '#9ca3af';
-                        }, 1500);
-                    }
+                    // Add visual feedback with pulse animation
+                    quantityDiv.style.backgroundColor = '#fef3c7';
+                    quantityDiv.style.borderRadius = '8px';
+                    quantityDiv.style.padding = '4px 8px';
+                    quantityDiv.style.transition = 'all 0.3s ease';
+                    
+                    // Pulse effect
+                    setTimeout(() => {
+                        quantityDiv.style.transform = 'scale(1.1)';
+                    }, 100);
+                    
+                    setTimeout(() => {
+                        quantityDiv.style.transform = 'scale(1)';
+                        quantityDiv.style.backgroundColor = 'transparent';
+                        quantityDiv.style.padding = currentView === 'detailed' ? '0' : '0';
+                    }, 1000);
                 }
-            });
+                
+                // Update timestamp
+                const timestampDiv = productCard.querySelector('.timestamp-display');
+                if (timestampDiv) {
+                    const now = new Date();
+                    const timeString = now.toLocaleTimeString('pt-BR', { 
+                        hour: '2-digit', 
+                        minute: '2-digit'
+                    });
+                    timestampDiv.textContent = timeString;
+                    
+                    // Flash the timestamp
+                    timestampDiv.style.color = '#10b981';
+                    setTimeout(() => {
+                        timestampDiv.style.color = currentView === 'detailed' ? '#374151' : '#6b7280';
+                    }, 1500);
+                }
+            }
         }
+
+        // View scanned list button
+        document.getElementById('viewScannedList').addEventListener('click', () => {
+            showScannedResults();
+        });
 
         // Clear scanned products
         document.getElementById('clearScanned').addEventListener('click', () => {
             if (confirm('Limpar todos os produtos escaneados da lista?')) {
                 scannedProductsSet.clear();
-                document.getElementById('listaProducts').innerHTML = '';
-                document.getElementById('listaNoProductsMessage').classList.remove('hidden');
+                document.getElementById('scannedProducts').innerHTML = '';
+                document.getElementById('noProductsMessage').classList.remove('hidden');
                 updateScannedCounter();
             }
         });
@@ -2256,6 +2141,12 @@
             };
             img.src = currentQRData.qrCode;
         });
+
+
+
+
+
+
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9875bfeaf346f171',t:'MTc1OTI1NjU4OC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9875883cd2fff171',t:'MTc1OTI1NDMwNy4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
