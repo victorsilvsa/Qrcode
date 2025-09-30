@@ -1725,40 +1725,7 @@
             img.src = currentQRData.qrCode;
         });
 
-        // Focus camera button
-        document.getElementById('focusCamera').addEventListener('click', async () => {
-            try {
-                const videoElement = document.getElementById('cameraPreview');
-                if (videoStream && videoElement) {
-                    const track = videoStream.getVideoTracks()[0];
-                    const capabilities = track.getCapabilities();
-                    
-                    if (capabilities.focusMode && capabilities.focusMode.includes('manual')) {
-                        await track.applyConstraints({
-                            advanced: [{ focusMode: 'single-shot' }]
-                        });
-                        
-                        // Visual feedback
-                        const focusBtn = document.getElementById('focusCamera');
-                        const originalText = focusBtn.textContent;
-                        focusBtn.textContent = '✅ Focado!';
-                        focusBtn.classList.add('bg-green-600');
-                        focusBtn.classList.remove('bg-blue-600');
-                        
-                        setTimeout(() => {
-                            focusBtn.textContent = originalText;
-                            focusBtn.classList.remove('bg-green-600');
-                            focusBtn.classList.add('bg-blue-600');
-                        }, 1500);
-                    } else {
-                        alert('Esta câmera não suporta foco manual');
-                    }
-                }
-            } catch (error) {
-                console.error('Erro ao focar:', error);
-                alert('Erro ao ajustar foco');
-            }
-        });
+
 
         // Toggle flash button
         let flashEnabled = false;
@@ -1806,5 +1773,5 @@
             }
         });
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9874685612cbf171',t:'MTc1OTI0MjUxNS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9874928a057ef171',t:'MTc1OTI0NDI0My4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
