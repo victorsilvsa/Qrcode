@@ -508,6 +508,8 @@
         const database = firebase.database();
 
         let currentProductId = null;
+        let qrGenerationQueue = [];
+        let isGeneratingQR = false;
 
         // Check URL parameters for product ID
         const urlParams = new URLSearchParams(window.location.search);
@@ -612,117 +614,74 @@
             });
         });
 
-        // QR Code ULTRA OTIMIZADO V2 - ZERO TRAVAMENTOS
-        let qrGenerationQueue = [];
-        let isGeneratingQR = false;
-        let qrWorker = null;
-        
+        // QR Code Otimizado para Impressão em Papel
         function generateQRCodeForProduct(productId, productData) {
-            qrGenerationQueue.push({ productId, productData });
-            processQRQueue();
-        }
-        
-        function processQRQueue() {
-            if (isGeneratingQR || qrGenerationQueue.length === 0) return;
+            const currentUrl = window.location.origin + window.location.pathname;
+            const qrUrl = `${currentUrl}?product=${productId}`;
             
-            isGeneratingQR = true;
-            const { productId, productData } = qrGenerationQueue.shift();
+            console.log('Gerando QR para papel:', productData.name);
             
-            // Usar requestIdleCallback quando disponível para não travar
-            const processQR = () => {
-                try {
-                    const currentUrl = window.location.origin + window.location.pathname;
-                    const qrUrl = `${currentUrl}?product=${productId}`;
-                    
-                    console.log('🚀 Gerando QR ultra-otimizado:', productData.name);
-                    
-                    // Configuração mínima para máxima velocidade
-                    const qr = qrcode(0, 'L'); // Correção baixa (7%) - mais rápido
-                    qr.addData(qrUrl);
-                    qr.make();
-                    
-                    const canvas = document.createElement('canvas');
-                    const ctx = canvas.getContext('2d');
-                    
-                    // Configurações ultra-leves
-                    const moduleCount = qr.getModuleCount();
-                    const moduleSize = 8; // Ainda menor
-                    const quietZone = 2; // Borda mínima
-                    const totalSize = (moduleCount + (quietZone * 2)) * moduleSize;
-                    
-                    canvas.width = totalSize;
-                    canvas.height = totalSize;
-                    
-                    // Otimizações máximas
-                    ctx.imageSmoothingEnabled = false;
-                    ctx.fillStyle = '#FFFFFF';
-                    ctx.fillRect(0, 0, totalSize, totalSize);
-                    ctx.fillStyle = '#000000';
-                    
-                    // Desenho ultra-rápido em micro-lotes
-                    let currentRow = 0;
-                    
-                    function drawMicroBatch() {
-                        const startTime = performance.now();
-                        
-                        // Desenhar até usar no máximo 2ms
-                        while (currentRow < moduleCount && (performance.now() - startTime) < 2) {
-                            for (let col = 0; col < moduleCount; col++) {
-                                if (qr.isDark(currentRow, col)) {
-                                    const x = (col + quietZone) * moduleSize;
-                                    const y = (currentRow + quietZone) * moduleSize;
-                                    ctx.fillRect(x, y, moduleSize, moduleSize);
-                                }
-                            }
-                            currentRow++;
-                        }
-                        
-                        if (currentRow < moduleCount) {
-                            // Continuar no próximo frame disponível
-                            if (window.requestIdleCallback) {
-                                requestIdleCallback(drawMicroBatch, { timeout: 16 });
-                            } else {
-                                setTimeout(drawMicroBatch, 1);
-                            }
-                        } else {
-                            finishQRGeneration();
+            try {
+                // Configuração otimizada para papel - máxima legibilidade
+                const qr = qrcode(0, 'H'); // Máxima correção de erro (30%)
+                qr.addData(qrUrl);
+                qr.make();
+                
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                
+                // Configurações para impressão perfeita
+                const moduleCount = qr.getModuleCount();
+                const moduleSize = 16; // Módulos maiores para papel
+                const quietZone = 6; // Borda branca maior
+                const totalSize = (moduleCount + (quietZone * 2)) * moduleSize;
+                
+                // Resolução ultra-alta para impressão
+                canvas.width = totalSize;
+                canvas.height = totalSize;
+                
+                // Desabilitar suavização para pixels nítidos
+                ctx.imageSmoothingEnabled = false;
+                ctx.webkitImageSmoothingEnabled = false;
+                ctx.mozImageSmoothingEnabled = false;
+                ctx.msImageSmoothingEnabled = false;
+                
+                // Fundo branco puro - essencial para papel
+                ctx.fillStyle = '#FFFFFF';
+                ctx.fillRect(0, 0, totalSize, totalSize);
+                
+                // Preto puro para máximo contraste
+                ctx.fillStyle = '#000000';
+                for (let row = 0; row < moduleCount; row++) {
+                    for (let col = 0; col < moduleCount; col++) {
+                        if (qr.isDark(row, col)) {
+                            const x = (col + quietZone) * moduleSize;
+                            const y = (row + quietZone) * moduleSize;
+                            // Desenhar módulos com bordas perfeitas
+                            ctx.fillRect(x, y, moduleSize, moduleSize);
                         }
                     }
-                    
-                    function finishQRGeneration() {
-                        // Qualidade mínima para máxima velocidade
-                        const qrDataUrl = canvas.toDataURL('image/png', 0.6);
-                        
-                        // Salvar de forma não-bloqueante
-                        database.ref(`products/${productId}/qrCode`).set(qrDataUrl)
-                            .then(() => console.log('✅ QR salvo:', productData.name))
-                            .catch(error => console.error('❌ Erro QR:', error))
-                            .finally(() => {
-                                isGeneratingQR = false;
-                                // Processar próximo com delay mínimo
-                                if (window.requestIdleCallback) {
-                                    requestIdleCallback(processQRQueue, { timeout: 50 });
-                                } else {
-                                    setTimeout(processQRQueue, 10);
-                                }
-                            });
-                    }
-                    
-                    // Iniciar desenho otimizado
-                    drawMicroBatch();
-                    
-                } catch (error) {
-                    console.error('❌ Erro ao gerar QR:', error);
-                    isGeneratingQR = false;
-                    setTimeout(processQRQueue, 50);
                 }
-            };
-            
-            // Usar requestIdleCallback se disponível
-            if (window.requestIdleCallback) {
-                requestIdleCallback(processQR, { timeout: 100 });
-            } else {
-                setTimeout(processQR, 10);
+                
+                // Borda externa para melhor definição no papel
+                ctx.strokeStyle = '#E5E7EB';
+                ctx.lineWidth = 2;
+                ctx.strokeRect(1, 1, totalSize-2, totalSize-2);
+                
+                console.log('QR otimizado para papel gerado:', productData.name);
+                const qrDataUrl = canvas.toDataURL('image/png', 1.0);
+                
+                // Salvar no Firebase
+                database.ref(`products/${productId}/qrCode`).set(qrDataUrl).then(() => {
+                    console.log('QR salvo no Firebase:', productData.name);
+                    loadProducts();
+                }).catch((error) => {
+                    console.error('Erro ao salvar QR:', error);
+                });
+                
+            } catch (error) {
+                console.error('Erro ao gerar QR:', error);
+                alert('Erro ao gerar QR Code: ' + error.message);
             }
         }
 
@@ -731,127 +690,57 @@
             generateQRCodeForProduct(productId, productData);
         }
 
-        // Load products - ULTRA OTIMIZADO V2 - ZERO TRAVAMENTOS
-        let productsCache = { data: null, timestamp: 0 };
-        let loadProductsTimeout = null;
-        let isLoadingProducts = false;
-        
+        // Load products
         function loadProducts() {
-            // Evitar múltiplas chamadas simultâneas
-            if (isLoadingProducts) return;
-            
-            // Debounce agressivo
-            if (loadProductsTimeout) {
-                clearTimeout(loadProductsTimeout);
-            }
-            
-            loadProductsTimeout = setTimeout(() => {
-                isLoadingProducts = true;
+            database.ref('products').on('value', (snapshot) => {
+                const products = snapshot.val();
+                const productsList = document.getElementById('productsList');
                 
-                database.ref('products').once('value').then((snapshot) => {
-                    const products = snapshot.val();
-                    const productsList = document.getElementById('productsList');
-                    
-                    if (!products) {
-                        productsList.innerHTML = '<div class="text-center text-gray-500 py-8">Nenhum produto cadastrado</div>';
-                        isLoadingProducts = false;
-                        return;
-                    }
+                if (!products) {
+                    productsList.innerHTML = '<div class="text-center text-gray-500">Nenhum produto cadastrado</div>';
+                    return;
+                }
 
-                    // Cache inteligente com timestamp
-                    const productsString = JSON.stringify(products);
-                    const now = Date.now();
+                let html = '<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">';
+                
+                Object.entries(products).forEach(([id, product]) => {
+                    const qrCodeHtml = product.qrCode ? 
+                        `<img src="${product.qrCode}" alt="QR Code" class="w-16 h-16 border border-gray-300 rounded">` : 
+                        '<div class="w-16 h-16 bg-gray-100 border border-gray-300 rounded flex items-center justify-center text-xs text-gray-500">Sem QR</div>';
                     
-                    if (productsCache.data === productsString && (now - productsCache.timestamp) < 5000) {
-                        isLoadingProducts = false;
-                        return; // Dados não mudaram nos últimos 5s
-                    }
-                    
-                    productsCache.data = productsString;
-                    productsCache.timestamp = now;
-
-                    // Renderização ultra-otimizada
-                    const productEntries = Object.entries(products);
-                    const totalProducts = productEntries.length;
-                    
-                    // Mostrar loading
-                    productsList.innerHTML = `
-                        <div class="text-center py-8">
-                            <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-2"></div>
-                            <div class="text-gray-600">Carregando ${totalProducts} produtos...</div>
+                    html += `
+                        <div class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition duration-200">
+                            <div class="flex justify-between items-start mb-3">
+                                <div class="flex-1 cursor-pointer" onclick="openProductModal('${id}')">
+                                    <h4 class="font-semibold text-gray-800 mb-2">${product.name}</h4>
+                                    <p class="text-sm text-gray-600 mb-1">Código: ${product.code}</p>
+                                    <p class="text-sm text-gray-600 mb-1">Quantidade: ${product.quantity}</p>
+                                    <p class="text-sm text-gray-600">Local: ${product.location.sector} - ${product.location.corridor} - ${product.location.shelf}</p>
+                                </div>
+                                <div class="ml-4 cursor-pointer" onclick="openQRModal('${id}', '${product.name}', '${product.code}')">
+                                    ${qrCodeHtml}
+                                </div>
+                            </div>
+                            <div class="flex space-x-2">
+                                ${!product.qrCode ? `
+                                    <button onclick="generateQRForExisting('${id}', ${JSON.stringify(product).replace(/"/g, '&quot;')});" 
+                                            class="text-blue-600 hover:text-blue-800 text-sm">
+                                        📱 Gerar QR
+                                    </button>
+                                ` : `
+                                    <button onclick="downloadQR('${product.qrCode}', '${product.code}', '${product.name}')" 
+                                            class="text-green-600 hover:text-green-800 text-sm">
+                                        💾 Baixar QR
+                                    </button>
+                                `}
+                            </div>
                         </div>
                     `;
-                    
-                    // Renderização em micro-lotes ultra-rápidos
-                    let html = '<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">';
-                    let processedCount = 0;
-                    
-                    function renderMicroBatch(startIndex) {
-                        const startTime = performance.now();
-                        let currentIndex = startIndex;
-                        
-                        // Processar até usar no máximo 5ms
-                        while (currentIndex < totalProducts && (performance.now() - startTime) < 5) {
-                            const [id, product] = productEntries[currentIndex];
-                            
-                            // Template ultra-simplificado para velocidade
-                            const qrIcon = product.qrCode ? '✅' : '⚪';
-                            const escapedProduct = JSON.stringify(product).replace(/"/g, '&quot;');
-                            
-                            html += `
-                                <div class="bg-white border border-gray-200 rounded-lg p-3 hover:shadow-sm transition-shadow">
-                                    <div class="flex justify-between items-start mb-2">
-                                        <div class="flex-1 cursor-pointer" onclick="openProductModal('${id}')">
-                                            <h4 class="font-medium text-gray-800 text-sm mb-1">${product.name}</h4>
-                                            <div class="text-xs text-gray-600 space-y-0.5">
-                                                <div>📦 ${product.code} | 📊 ${product.quantity}</div>
-                                                <div>📍 ${product.location.sector}-${product.location.corridor}-${product.location.shelf}</div>
-                                            </div>
-                                        </div>
-                                        <div class="ml-2 text-lg">${qrIcon}</div>
-                                    </div>
-                                    <div class="flex space-x-1 text-xs">
-                                        ${!product.qrCode ? 
-                                            `<button onclick="generateQRForExisting('${id}', ${escapedProduct});" class="text-blue-600 hover:text-blue-800">📱 Gerar QR</button>` :
-                                            `<button onclick="downloadQR('${product.qrCode}', '${product.code}', '${product.name}')" class="text-green-600 hover:text-green-800">💾 Baixar</button>`
-                                        }
-                                    </div>
-                                </div>
-                            `;
-                            
-                            currentIndex++;
-                            processedCount++;
-                        }
-                        
-                        if (currentIndex < totalProducts) {
-                            // Continuar no próximo frame disponível
-                            if (window.requestIdleCallback) {
-                                requestIdleCallback(() => renderMicroBatch(currentIndex), { timeout: 16 });
-                            } else {
-                                setTimeout(() => renderMicroBatch(currentIndex), 1);
-                            }
-                        } else {
-                            // Finalizar renderização
-                            html += '</div>';
-                            productsList.innerHTML = html;
-                            isLoadingProducts = false;
-                            console.log(`✅ ${totalProducts} produtos carregados em modo ultra-otimizado`);
-                        }
-                    }
-                    
-                    // Iniciar renderização otimizada
-                    if (window.requestIdleCallback) {
-                        requestIdleCallback(() => renderMicroBatch(0), { timeout: 50 });
-                    } else {
-                        setTimeout(() => renderMicroBatch(0), 10);
-                    }
-                    
-                }).catch(error => {
-                    console.error('❌ Erro ao carregar produtos:', error);
-                    document.getElementById('productsList').innerHTML = '<div class="text-center text-red-500 py-8">❌ Erro ao carregar produtos</div>';
-                    isLoadingProducts = false;
                 });
-            }, 50); // Debounce reduzido
+                
+                html += '</div>';
+                productsList.innerHTML = html;
+            });
         }
 
         // Open product modal
@@ -1266,212 +1155,106 @@
             document.getElementById('scanningOverlay').classList.remove('hidden');
         }
 
-        // SCANNER NATIVO ULTRA OTIMIZADO V2 - ZERO TRAVAMENTOS
+        // SCANNER NATIVO USANDO BARCODE DETECTOR (Android Chrome)
         function startNativeScanning(videoElement) {
             let isScanning = false;
-            let frameSkip = 0;
-            let lastScanTime = 0;
-            let scanAttempts = 0;
             
             function scanWithNativeAPI() {
                 if (isScanning || !scanningInterval || !nativeScanner) return;
                 
-                const now = performance.now();
-                
-                // Controle de FPS adaptativo - reduzir se muitos erros
-                const fpsDelay = scanAttempts > 10 ? 100 : 75; // 10fps ou 13fps
-                if (now - lastScanTime < fpsDelay) return;
-                
-                // Skip frames inteligente
-                frameSkip++;
-                if (frameSkip % (scanAttempts > 5 ? 5 : 3) !== 0) return;
-                
                 isScanning = true;
-                lastScanTime = now;
-                scanAttempts++;
                 
-                // Timeout mais agressivo
-                const scanTimeout = setTimeout(() => {
-                    isScanning = false;
-                    console.log('⏱️ Scanner timeout - continuando...');
-                }, 50);
-                
-                // Usar requestIdleCallback quando possível
-                const performScan = () => {
-                    nativeScanner.detect(videoElement)
-                        .then(barcodes => {
-                            clearTimeout(scanTimeout);
-                            scanAttempts = Math.max(0, scanAttempts - 1); // Reduzir contador em sucesso
+                // Usar BarcodeDetector nativo - MUITO mais rápido
+                nativeScanner.detect(videoElement)
+                    .then(barcodes => {
+                        if (barcodes.length > 0) {
+                            const qrCode = barcodes.find(barcode => 
+                                barcode.format === 'qr_code' || 
+                                barcode.rawValue.includes('product=')
+                            );
                             
-                            if (barcodes.length > 0) {
-                                const qrCode = barcodes.find(barcode => 
-                                    barcode.format === 'qr_code' || 
-                                    barcode.rawValue.includes('product=')
-                                );
-                                
-                                if (qrCode && qrCode.rawValue) {
-                                    console.log('🎯 QR DETECTADO (Ultra-Otimizado):', qrCode.rawValue);
-                                    scanAttempts = 0; // Reset contador
-                                    handleQRScan(qrCode.rawValue);
-                                }
+                            if (qrCode && qrCode.rawValue) {
+                                console.log('🎯 QR DETECTADO (Scanner Nativo):', qrCode.rawValue);
+                                handleQRScan(qrCode.rawValue);
                             }
-                        })
-                        .catch(error => {
-                            clearTimeout(scanTimeout);
-                            // Não logar erros frequentes para não poluir console
-                            if (scanAttempts % 20 === 0) {
-                                console.log('Scanner: erro ocasional (normal)');
-                            }
-                        })
-                        .finally(() => {
-                            isScanning = false;
-                        });
-                };
-                
-                // Usar requestIdleCallback se disponível para não bloquear UI
-                if (window.requestIdleCallback && scanAttempts < 3) {
-                    requestIdleCallback(performScan, { timeout: 30 });
-                } else {
-                    performScan();
-                }
+                        }
+                    })
+                    .catch(error => {
+                        console.log('Erro no scanner nativo:', error);
+                    })
+                    .finally(() => {
+                        isScanning = false;
+                    });
             }
             
-            // FPS ultra-baixo para máxima estabilidade
-            scanningInterval = setInterval(scanWithNativeAPI, 80); // 12.5fps
-            console.log('🚀 Scanner ULTRA-OTIMIZADO V2 iniciado - Zero travamentos!');
+            // Scanner nativo roda a 60fps - performance máxima
+            scanningInterval = setInterval(scanWithNativeAPI, 16); // ~60fps
+            console.log('🚀 Scanner NATIVO iniciado - Performance máxima!');
         }
 
-        // SCANNER iOS ULTRA OTIMIZADO V2 - ZERO TRAVAMENTOS
-        let canvas = null;
-        let context = null;
-        let imageDataBuffer = null;
-        
+        // SCANNER OTIMIZADO PARA iOS
         function startOptimizedScanning(videoElement) {
             let isProcessing = false;
             let frameCount = 0;
-            let lastProcessTime = 0;
-            let errorCount = 0;
-            let successCount = 0;
             
             function scanOptimized() {
                 if (isProcessing || !scanningInterval) return;
                 
-                const now = performance.now();
-                
-                // FPS adaptativo baseado em performance
-                const fpsDelay = errorCount > 5 ? 150 : 120; // 6.6fps ou 8.3fps
-                if (now - lastProcessTime < fpsDelay) {
-                    if (window.requestIdleCallback) {
-                        requestIdleCallback(scanOptimized, { timeout: 16 });
-                    } else {
-                        requestAnimationFrame(scanOptimized);
-                    }
-                    return;
-                }
-                
                 frameCount++;
-                // Skip frames mais agressivo se muitos erros
-                const skipFrames = errorCount > 3 ? 8 : 6;
-                if (frameCount % skipFrames !== 0) {
-                    if (window.requestIdleCallback) {
-                        requestIdleCallback(scanOptimized, { timeout: 16 });
-                    } else {
-                        requestAnimationFrame(scanOptimized);
-                    }
+                // iOS: processar a cada 3 frames para melhor performance
+                if (frameCount % 3 !== 0) {
+                    requestAnimationFrame(scanOptimized);
                     return;
                 }
                 
                 isProcessing = true;
-                lastProcessTime = now;
-                
-                // Timeout mais agressivo
-                const processTimeout = setTimeout(() => {
-                    isProcessing = false;
-                    errorCount++;
-                    console.log('⏱️ iOS Scanner timeout');
-                }, 100);
                 
                 try {
                     if (videoElement.readyState === videoElement.HAVE_ENOUGH_DATA) {
-                        // Criar canvas apenas uma vez com configurações otimizadas
+                        // Usar resolução otimizada para iOS
                         if (!canvas) {
                             canvas = document.createElement('canvas');
-                            context = canvas.getContext('2d', {
-                                alpha: false,
-                                desynchronized: true,
-                                willReadFrequently: true
-                            });
-                            context.imageSmoothingEnabled = false;
+                            context = canvas.getContext('2d');
                         }
                         
-                        // Resolução ainda menor para iOS
-                        const scale = 0.25; // Reduzido de 0.3 para 0.25
-                        const newWidth = Math.floor(videoElement.videoWidth * scale);
-                        const newHeight = Math.floor(videoElement.videoHeight * scale);
-                        
-                        // Redimensionar canvas apenas se necessário
-                        if (canvas.width !== newWidth || canvas.height !== newHeight) {
-                            canvas.width = newWidth;
-                            canvas.height = newHeight;
-                        }
+                        // Resolução otimizada para iOS Safari
+                        const scale = 0.5; // Reduzir para melhor performance
+                        canvas.width = videoElement.videoWidth * scale;
+                        canvas.height = videoElement.videoHeight * scale;
                         
                         context.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
                         
-                        // Área ultra-focada no centro
-                        const centerX = Math.floor(canvas.width * 0.35);
-                        const centerY = Math.floor(canvas.height * 0.35);
-                        const centerWidth = Math.floor(canvas.width * 0.3);
-                        const centerHeight = Math.floor(canvas.height * 0.3);
+                        // Área central focada
+                        const centerX = Math.floor(canvas.width * 0.2);
+                        const centerY = Math.floor(canvas.height * 0.2);
+                        const centerWidth = Math.floor(canvas.width * 0.6);
+                        const centerHeight = Math.floor(canvas.height * 0.6);
                         
                         const imageData = context.getImageData(centerX, centerY, centerWidth, centerHeight);
                         
-                        // Configurações jsQR ultra-otimizadas
                         const code = jsQR(imageData.data, imageData.width, imageData.height, {
-                            inversionAttempts: "dontInvert",
-                            locateOptions: {
-                                tryHarder: false,
-                                maxPatterns: 1
-                            }
+                            inversionAttempts: "attemptBoth"
                         });
                         
                         if (code && code.data && code.data.trim()) {
-                            console.log('🎯 QR DETECTADO (iOS Ultra V2):', code.data);
-                            errorCount = Math.max(0, errorCount - 2); // Reduzir contador de erros
-                            successCount++;
+                            console.log('🎯 QR DETECTADO (iOS Otimizado):', code.data);
                             handleQRScan(code.data);
                         }
                     }
                 } catch (error) {
-                    errorCount++;
-                    // Logar apenas erros críticos
-                    if (errorCount % 15 === 0) {
-                        console.log('iOS Scanner: erro ocasional');
-                    }
+                    console.error('Erro no scan iOS:', error);
                 } finally {
-                    clearTimeout(processTimeout);
                     isProcessing = false;
                 }
                 
                 if (scanningInterval) {
-                    // Usar requestIdleCallback quando possível para não bloquear UI
-                    if (window.requestIdleCallback && errorCount < 5) {
-                        requestIdleCallback(scanOptimized, { timeout: 50 });
-                    } else {
-                        requestAnimationFrame(scanOptimized);
-                    }
+                    requestAnimationFrame(scanOptimized);
                 }
             }
             
             scanningInterval = true;
-            
-            // Iniciar com requestIdleCallback se disponível
-            if (window.requestIdleCallback) {
-                requestIdleCallback(scanOptimized, { timeout: 100 });
-            } else {
-                requestAnimationFrame(scanOptimized);
-            }
-            
-            console.log('🍎 Scanner iOS ULTRA OTIMIZADO V2 - Zero travamentos!');
+            requestAnimationFrame(scanOptimized);
+            console.log('🍎 Scanner iOS OTIMIZADO iniciado!');
         }
 
 
@@ -1845,36 +1628,41 @@
             });
         }
 
-        // Feedback visual ULTRA OTIMIZADO V2 - ZERO TRAVAMENTOS
-        let feedbackTimeout = null;
-        let feedbackElement = null;
-        
+        // Feedback visual otimizado e mais rápido
         function showScanSuccessFeedback() {
-            // Cancelar feedback anterior
-            if (feedbackTimeout) {
-                clearTimeout(feedbackTimeout);
-            }
+            const successDiv = document.getElementById('scanSuccess');
             
-            // Reutilizar elemento para evitar criação/destruição
-            if (!feedbackElement) {
-                feedbackElement = document.getElementById('scanSuccess');
-            }
+            // Reset para estado inicial
+            successDiv.innerHTML = `
+                <div class="flex items-center space-x-3">
+                    <div class="bg-white bg-opacity-20 p-2 rounded-full animate-pulse">
+                        <i class="fas fa-check text-xl"></i>
+                    </div>
+                    <span class="font-bold">✅ QR DETECTADO!</span>
+                </div>
+            `;
+            successDiv.className = 'absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-green-500 text-white px-6 py-4 rounded-2xl text-lg font-bold shadow-2xl z-50 backdrop-blur-sm border-2 border-green-300';
             
-            // Feedback ultra-simples
-            feedbackElement.innerHTML = '✅ QR OK!';
-            feedbackElement.className = 'absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-green-500 text-white px-3 py-1 rounded-lg text-sm font-bold z-50';
+            // Mostrar imediatamente
+            successDiv.classList.remove('hidden');
+            successDiv.style.transform = 'translate(-50%, -50%) scale(0.9)';
+            successDiv.style.opacity = '0';
             
-            // Mostrar instantaneamente
-            feedbackElement.classList.remove('hidden');
-            feedbackElement.style.opacity = '1';
+            // Animação rápida de entrada
+            setTimeout(() => {
+                successDiv.style.transition = 'all 0.2s ease-out';
+                successDiv.style.transform = 'translate(-50%, -50%) scale(1)';
+                successDiv.style.opacity = '1';
+            }, 10);
             
-            // Esconder rapidamente
-            feedbackTimeout = setTimeout(() => {
-                feedbackElement.style.opacity = '0';
+            // Esconder após tempo menor
+            setTimeout(() => {
+                successDiv.style.opacity = '0';
+                successDiv.style.transform = 'translate(-50%, -50%) scale(1.1)';
                 setTimeout(() => {
-                    feedbackElement.classList.add('hidden');
-                }, 50);
-            }, 400);
+                    successDiv.classList.add('hidden');
+                }, 200);
+            }, 800);
         }
         
         function showAlreadyScannedFeedback() {
@@ -1949,31 +1737,60 @@
         }
         
         function updateScanStatus(message) {
-            // Atualização ultra-otimizada - apenas elementos essenciais
+            // Atualizar status no header
             const statusDiv = document.getElementById('scanStatus');
-            const scanningText = document.getElementById('scanningText');
-            
-            // Atualizar apenas texto, sem animações custosas
             if (statusDiv) {
-                statusDiv.textContent = message;
-                statusDiv.style.color = message.includes('❌') ? '#ef4444' : 
-                                      message.includes('🔄') ? '#f59e0b' : '#10b981';
+                statusDiv.style.transition = 'all 0.2s ease';
+                statusDiv.style.transform = 'scale(0.95)';
+                
+                setTimeout(() => {
+                    statusDiv.textContent = message;
+                    statusDiv.style.color = message.includes('❌') ? '#ef4444' : 
+                                          message.includes('🔄') ? '#f59e0b' : '#10b981';
+                    statusDiv.style.transform = 'scale(1)';
+                }, 100);
             }
             
-            if (scanningText) {
+            // Atualizar indicador no overlay de escaneamento
+            const scanningText = document.getElementById('scanningText');
+            const scanningDot = document.getElementById('scanningDot');
+            const scanningIndicator = document.getElementById('scanningIndicator');
+            
+            if (scanningText && scanningDot && scanningIndicator) {
                 scanningText.textContent = message;
+                
+                // Mudar cor do indicador baseado no status
+                if (message.includes('✅')) {
+                    scanningDot.className = 'w-3 h-3 bg-green-400 rounded-full animate-bounce';
+                    scanningIndicator.className = 'bg-green-600 bg-opacity-90 text-white px-4 py-3 rounded-xl text-sm flex items-center space-x-3 backdrop-blur-sm border border-green-400 transition-all duration-300';
+                } else if (message.includes('❌')) {
+                    scanningDot.className = 'w-3 h-3 bg-red-400 rounded-full animate-pulse';
+                    scanningIndicator.className = 'bg-red-600 bg-opacity-90 text-white px-4 py-3 rounded-xl text-sm flex items-center space-x-3 backdrop-blur-sm border border-red-400 transition-all duration-300';
+                } else if (message.includes('🔄')) {
+                    scanningDot.className = 'w-3 h-3 bg-yellow-400 rounded-full animate-spin';
+                    scanningIndicator.className = 'bg-yellow-600 bg-opacity-90 text-white px-4 py-3 rounded-xl text-sm flex items-center space-x-3 backdrop-blur-sm border border-yellow-400 transition-all duration-300';
+                } else {
+                    scanningDot.className = 'w-3 h-3 bg-green-400 rounded-full animate-pulse';
+                    scanningIndicator.className = 'bg-black bg-opacity-90 text-white px-4 py-3 rounded-xl text-sm flex items-center space-x-3 backdrop-blur-sm border border-gray-600 transition-all duration-300';
+                }
             }
             
-            // Reset rápido após 2 segundos (reduzido de 3)
+            // Voltar ao estado padrão após 3 segundos
             setTimeout(() => {
-                if (scanningInterval && statusDiv) {
-                    statusDiv.textContent = 'Procurando QR Code...';
-                    statusDiv.style.color = '#10b981';
+                if (scanningInterval) {
+                    if (statusDiv) {
+                        statusDiv.style.transition = 'all 0.3s ease';
+                        statusDiv.textContent = 'Procurando QR Code...';
+                        statusDiv.style.color = '#10b981';
+                    }
+                    
+                    if (scanningText && scanningDot && scanningIndicator) {
+                        scanningText.textContent = 'Procurando QR Code';
+                        scanningDot.className = 'w-3 h-3 bg-green-400 rounded-full animate-pulse';
+                        scanningIndicator.className = 'bg-black bg-opacity-90 text-white px-4 py-3 rounded-xl text-sm flex items-center space-x-3 backdrop-blur-sm border border-gray-600 transition-all duration-300';
+                    }
                 }
-                if (scanningInterval && scanningText) {
-                    scanningText.textContent = 'Procurando QR Code';
-                }
-            }, 2000);
+            }, 3000);
         }
         
         function showScannedResults() {
@@ -2331,5 +2148,5 @@
 
 
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'987586dac06fcdc3',t:'MTc1OTI1NDI1MC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9875883cd2fff171',t:'MTc1OTI1NDMwNy4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
