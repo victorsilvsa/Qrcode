@@ -11,6 +11,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         body {
             box-sizing: border-box;
@@ -24,7 +25,7 @@
         <header class="bg-white shadow-sm border-b">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex justify-between items-center py-4">
-                    <h1 class="text-2xl font-bold text-gray-900">Sistema de Almoxarifado Embalagens Tatuí</h1>
+                    <h1 class="text-2xl font-bold text-gray-900">Sistema de Almoxarifado</h1>
                     <div class="flex items-center space-x-4">
                         <span class="text-sm text-gray-600">Sistema Ativo</span>
                     </div>
@@ -36,14 +37,17 @@
         <nav class="bg-white shadow-sm">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex space-x-8">
-                    <button id="produtosTab" class="py-4 px-2 border-b-2 border-blue-500 text-blue-600 font-medium">
-                        Produtos
+                    <button id="produtosTab" class="py-4 px-2 border-b-2 border-blue-500 text-blue-600 font-medium flex items-center space-x-2">
+                        <i class="fas fa-boxes"></i>
+                        <span>Produtos</span>
                     </button>
-                    <button id="scannerTab" class="py-4 px-2 border-b-2 border-transparent text-gray-500 hover:text-gray-700">
-                        Scanner QR
+                    <button id="scannerTab" class="py-4 px-2 border-b-2 border-transparent text-gray-500 hover:text-gray-700 flex items-center space-x-2">
+                        <i class="fas fa-qrcode"></i>
+                        <span>Scanner QR</span>
                     </button>
-                    <button id="relatoriosTab" class="py-4 px-2 border-b-2 border-transparent text-gray-500 hover:text-gray-700">
-                        Relatórios
+                    <button id="relatoriosTab" class="py-4 px-2 border-b-2 border-transparent text-gray-500 hover:text-gray-700 flex items-center space-x-2">
+                        <i class="fas fa-chart-bar"></i>
+                        <span>Relatórios</span>
                     </button>
                 </div>
             </div>
@@ -53,8 +57,9 @@
         <div id="produtosSection" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             <!-- Add Product Button -->
             <div class="mb-6">
-                <button id="showAddForm" class="bg-blue-600 text-white px-6 py-3 rounded-md hover:bg-blue-700 transition duration-200">
-                    ➕ Adicionar Novo Produto
+                <button id="showAddForm" class="bg-blue-600 text-white px-6 py-3 rounded-md hover:bg-blue-700 transition duration-200 flex items-center space-x-2">
+                    <i class="fas fa-plus"></i>
+                    <span>Adicionar Novo Produto</span>
                 </button>
             </div>
             
@@ -117,77 +122,187 @@
 
         <!-- Scanner Section -->
         <div id="scannerSection" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 hidden">
-            <div class="bg-white rounded-lg shadow-md p-6">
-                <h3 class="text-lg font-semibold text-gray-800 mb-4">Scanner de QR Code</h3>
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <div class="flex items-center space-x-3 mb-6">
+                    <i class="fas fa-qrcode text-2xl text-blue-600"></i>
+                    <h3 class="text-xl font-bold text-gray-800">Scanner QR Code Avançado</h3>
+                </div>
                 
                 <!-- Camera Controls -->
                 <div class="mb-6">
-                    <div class="flex flex-wrap gap-2 mb-4">
-                        <button id="startCamera" class="bg-green-600 text-white px-6 py-2 rounded-md hover:bg-green-700 transition duration-200">
-                            📷 Iniciar Câmera
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+                        <!-- Camera Selection -->
+                        <div class="space-y-2">
+                            <label class="block text-sm font-medium text-gray-700">
+                                <i class="fas fa-camera mr-2"></i>Selecionar Câmera
+                            </label>
+                            <select id="cameraSelect" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                <option value="">Escolha uma câmera...</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Resolution Control -->
+                        <div class="space-y-2">
+                            <label class="block text-sm font-medium text-gray-700">
+                                <i class="fas fa-expand-arrows-alt mr-2"></i>Qualidade
+                            </label>
+                            <select id="resolutionSelect" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                <option value="hd">HD (1280x720)</option>
+                                <option value="fhd" selected>Full HD (1920x1080)</option>
+                                <option value="4k">4K (3840x2160)</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Brightness Control -->
+                        <div class="space-y-2">
+                            <label class="block text-sm font-medium text-gray-700">
+                                <i class="fas fa-sun mr-2"></i>Brilho
+                            </label>
+                            <input type="range" id="brightnessSlider" min="0" max="200" value="100" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+                            <div class="text-xs text-gray-500 text-center">
+                                <span id="brightnessValue">100%</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Control Buttons -->
+                    <div class="flex flex-wrap gap-3">
+                        <button id="startCamera" class="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition duration-200 flex items-center space-x-2 shadow-md">
+                            <i class="fas fa-play"></i>
+                            <span>Iniciar Câmera</span>
                         </button>
-                        <button id="stopCamera" class="bg-red-600 text-white px-6 py-2 rounded-md hover:bg-red-700 transition duration-200 hidden">
-                            ⏹️ Parar Câmera
+                        <button id="stopCamera" class="bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700 transition duration-200 flex items-center space-x-2 shadow-md hidden">
+                            <i class="fas fa-stop"></i>
+                            <span>Parar Câmera</span>
                         </button>
-                        <button id="focusCamera" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition duration-200 hidden">
-                            🎯 Focar
+                        <button id="focusCamera" class="bg-blue-600 text-white px-4 py-3 rounded-lg hover:bg-blue-700 transition duration-200 flex items-center space-x-2 shadow-md hidden">
+                            <i class="fas fa-crosshairs"></i>
+                            <span>Focar</span>
                         </button>
-                        <button id="toggleFlash" class="bg-yellow-600 text-white px-4 py-2 rounded-md hover:bg-yellow-700 transition duration-200 hidden">
-                            💡 Flash
+                        <button id="toggleFlash" class="bg-yellow-600 text-white px-4 py-3 rounded-lg hover:bg-yellow-700 transition duration-200 flex items-center space-x-2 shadow-md hidden">
+                            <i class="fas fa-lightbulb"></i>
+                            <span>Flash</span>
                         </button>
-                        <select id="cameraSelect" class="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                            <option value="">Selecionar Câmera</option>
-                        </select>
+                        <button id="enhanceImage" class="bg-purple-600 text-white px-4 py-3 rounded-lg hover:bg-purple-700 transition duration-200 flex items-center space-x-2 shadow-md hidden">
+                            <i class="fas fa-magic"></i>
+                            <span>Melhorar</span>
+                        </button>
                     </div>
                 </div>
 
                 <!-- Camera Preview -->
                 <div class="mb-6">
-                    <div id="cameraContainer" class="relative bg-gray-100 rounded-lg overflow-hidden" style="height: 400px;">
+                    <div id="cameraContainer" class="relative bg-gradient-to-br from-gray-900 to-gray-700 rounded-xl overflow-hidden shadow-2xl" style="height: 500px;">
                         <video id="cameraPreview" class="w-full h-full object-cover hidden"></video>
-                        <div id="cameraPlaceholder" class="flex items-center justify-center h-full text-gray-500">
+                        <canvas id="enhancedCanvas" class="w-full h-full object-cover hidden"></canvas>
+                        
+                        <div id="cameraPlaceholder" class="flex items-center justify-center h-full text-gray-300">
                             <div class="text-center">
-                                <svg class="w-16 h-16 mx-auto mb-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path>
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                                </svg>
-                                <p>Clique em "Iniciar Câmera" para começar a escanear</p>
+                                <i class="fas fa-camera text-6xl mb-4 text-gray-400"></i>
+                                <p class="text-lg mb-2">Scanner QR Profissional</p>
+                                <p class="text-sm text-gray-400">Selecione uma câmera e clique em "Iniciar Câmera"</p>
+                                <div class="mt-4 flex justify-center space-x-4 text-sm text-gray-500">
+                                    <div class="flex items-center space-x-1">
+                                        <i class="fas fa-check text-green-400"></i>
+                                        <span>Detecção Ultra-Rápida</span>
+                                    </div>
+                                    <div class="flex items-center space-x-1">
+                                        <i class="fas fa-check text-green-400"></i>
+                                        <span>Múltiplas Estratégias</span>
+                                    </div>
+                                    <div class="flex items-center space-x-1">
+                                        <i class="fas fa-check text-green-400"></i>
+                                        <span>Melhoria Automática</span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        <!-- Scanning overlay -->
+                        
+                        <!-- Advanced Scanning Overlay -->
                         <div id="scanningOverlay" class="absolute inset-0 hidden">
-                            <div class="absolute inset-0 bg-black bg-opacity-30"></div>
+                            <div class="absolute inset-0 bg-black bg-opacity-40"></div>
+                            
+                            <!-- Main scanning frame -->
                             <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-                                <div class="w-64 h-64 border-4 border-green-500 rounded-lg relative animate-pulse">
-                                    <div class="absolute top-0 left-0 w-8 h-8 border-t-4 border-l-4 border-green-500"></div>
-                                    <div class="absolute top-0 right-0 w-8 h-8 border-t-4 border-r-4 border-green-500"></div>
-                                    <div class="absolute bottom-0 left-0 w-8 h-8 border-b-4 border-l-4 border-green-500"></div>
-                                    <div class="absolute bottom-0 right-0 w-8 h-8 border-b-4 border-r-4 border-green-500"></div>
+                                <div class="w-80 h-80 relative">
+                                    <!-- Animated corners -->
+                                    <div class="absolute top-0 left-0 w-12 h-12 border-t-4 border-l-4 border-green-400 rounded-tl-lg animate-pulse"></div>
+                                    <div class="absolute top-0 right-0 w-12 h-12 border-t-4 border-r-4 border-green-400 rounded-tr-lg animate-pulse"></div>
+                                    <div class="absolute bottom-0 left-0 w-12 h-12 border-b-4 border-l-4 border-green-400 rounded-bl-lg animate-pulse"></div>
+                                    <div class="absolute bottom-0 right-0 w-12 h-12 border-b-4 border-r-4 border-green-400 rounded-br-lg animate-pulse"></div>
+                                    
+                                    <!-- Center crosshair -->
+                                    <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                                        <div class="w-8 h-8 border-2 border-green-400 rounded-full flex items-center justify-center">
+                                            <div class="w-2 h-2 bg-green-400 rounded-full animate-ping"></div>
+                                        </div>
+                                    </div>
                                     
                                     <!-- Scanning line animation -->
-                                    <div class="absolute inset-0 overflow-hidden">
-                                        <div id="scanLine" class="absolute w-full h-1 bg-green-400 opacity-80" style="top: 0; animation: scanAnimation 2s linear infinite;"></div>
+                                    <div class="absolute inset-0 overflow-hidden rounded-lg">
+                                        <div id="scanLine" class="absolute w-full h-1 bg-gradient-to-r from-transparent via-green-400 to-transparent opacity-80" style="top: 0; animation: scanAnimation 2s ease-in-out infinite;"></div>
                                     </div>
                                 </div>
                             </div>
                             
-                            <!-- Status indicator -->
-                            <div class="absolute top-4 left-1/2 transform -translate-x-1/2 bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-medium">
-                                🔍 Procurando QR Code...
+                            <!-- Status indicators -->
+                            <div class="absolute top-6 left-1/2 transform -translate-x-1/2">
+                                <div class="bg-blue-600 text-white px-6 py-3 rounded-full text-sm font-medium flex items-center space-x-2 shadow-lg">
+                                    <i class="fas fa-search animate-spin"></i>
+                                    <span id="scanStatus">Procurando QR Code...</span>
+                                </div>
                             </div>
                             
-                            <!-- Tips -->
-                            <div class="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-black bg-opacity-70 text-white px-4 py-2 rounded-lg text-sm text-center max-w-xs">
-                                💡 Mantenha o QR dentro do quadrado<br>
-                                📱 Aproxime ou afaste para melhor foco
+                            <!-- Performance indicators -->
+                            <div class="absolute top-6 right-6 space-y-2">
+                                <div class="bg-black bg-opacity-70 text-white px-3 py-2 rounded-lg text-xs">
+                                    <div class="flex items-center space-x-2">
+                                        <i class="fas fa-tachometer-alt text-green-400"></i>
+                                        <span>FPS: <span id="fpsCounter">30</span></span>
+                                    </div>
+                                </div>
+                                <div class="bg-black bg-opacity-70 text-white px-3 py-2 rounded-lg text-xs">
+                                    <div class="flex items-center space-x-2">
+                                        <i class="fas fa-eye text-blue-400"></i>
+                                        <span>Estratégia: <span id="strategyCounter">1/7</span></span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Enhanced tips -->
+                            <div class="absolute bottom-6 left-1/2 transform -translate-x-1/2 max-w-md">
+                                <div class="bg-black bg-opacity-80 text-white px-6 py-4 rounded-xl text-sm text-center shadow-lg">
+                                    <div class="flex items-center justify-center space-x-2 mb-2">
+                                        <i class="fas fa-lightbulb text-yellow-400"></i>
+                                        <span class="font-medium">Dicas para Melhor Detecção</span>
+                                    </div>
+                                    <div class="grid grid-cols-2 gap-2 text-xs">
+                                        <div class="flex items-center space-x-1">
+                                            <i class="fas fa-mobile-alt text-green-400"></i>
+                                            <span>Mantenha estável</span>
+                                        </div>
+                                        <div class="flex items-center space-x-1">
+                                            <i class="fas fa-adjust text-blue-400"></i>
+                                            <span>Boa iluminação</span>
+                                        </div>
+                                        <div class="flex items-center space-x-1">
+                                            <i class="fas fa-expand text-purple-400"></i>
+                                            <span>Distância adequada</span>
+                                        </div>
+                                        <div class="flex items-center space-x-1">
+                                            <i class="fas fa-crosshairs text-red-400"></i>
+                                            <span>QR no centro</span>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         
                         <style>
                             @keyframes scanAnimation {
-                                0% { top: 0; }
-                                50% { top: calc(100% - 4px); }
-                                100% { top: 0; }
+                                0% { top: 0; opacity: 0; }
+                                50% { opacity: 1; }
+                                100% { top: calc(100% - 4px); opacity: 0; }
                             }
                         </style>
                     </div>
@@ -195,13 +310,18 @@
 
                 <!-- Scan Results -->
                 <div id="scanResults" class="hidden">
-                    <div class="flex justify-between items-center mb-3">
-                        <h4 class="font-semibold text-gray-800">Produtos Escaneados</h4>
-                        <button id="clearScanned" class="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 transition duration-200 text-sm">
-                            🗑️ Limpar Lista
+                    <div class="flex justify-between items-center mb-4">
+                        <div class="flex items-center space-x-2">
+                            <i class="fas fa-list-check text-green-600"></i>
+                            <h4 class="font-bold text-gray-800">Produtos Escaneados</h4>
+                            <span id="scanCounter" class="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs font-medium">0</span>
+                        </div>
+                        <button id="clearScanned" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition duration-200 text-sm flex items-center space-x-2 shadow-md">
+                            <i class="fas fa-trash"></i>
+                            <span>Limpar Lista</span>
                         </button>
                     </div>
-                    <div id="scannedProducts" class="space-y-2">
+                    <div id="scannedProducts" class="space-y-3">
                         <!-- Scanned products will appear here -->
                     </div>
                 </div>
@@ -884,10 +1004,75 @@
             }
         }
 
-        // Start camera
+        // Enhanced camera variables
+        let enhancedCanvas = null;
+        let enhancedContext = null;
+        let currentBrightness = 100;
+        let fpsCounter = 0;
+        let lastFpsTime = Date.now();
+        let currentStrategy = 0;
+
+        // Brightness control
+        document.getElementById('brightnessSlider').addEventListener('input', (e) => {
+            currentBrightness = e.target.value;
+            document.getElementById('brightnessValue').textContent = currentBrightness + '%';
+            applyImageEnhancements();
+        });
+
+        // Image enhancement function
+        function applyImageEnhancements() {
+            if (!videoStream || !enhancedCanvas) return;
+            
+            const videoElement = document.getElementById('cameraPreview');
+            const canvas = document.getElementById('enhancedCanvas');
+            const ctx = canvas.getContext('2d');
+            
+            canvas.width = videoElement.videoWidth;
+            canvas.height = videoElement.videoHeight;
+            
+            // Draw original video frame
+            ctx.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
+            
+            // Apply brightness adjustment
+            if (currentBrightness !== 100) {
+                const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                const data = imageData.data;
+                const factor = currentBrightness / 100;
+                
+                for (let i = 0; i < data.length; i += 4) {
+                    data[i] = Math.min(255, data[i] * factor);     // Red
+                    data[i + 1] = Math.min(255, data[i + 1] * factor); // Green
+                    data[i + 2] = Math.min(255, data[i + 2] * factor); // Blue
+                }
+                
+                ctx.putImageData(imageData, 0, 0);
+            }
+        }
+
+        // Enhanced image button
+        document.getElementById('enhanceImage').addEventListener('click', () => {
+            const videoElement = document.getElementById('cameraPreview');
+            const canvas = document.getElementById('enhancedCanvas');
+            
+            if (canvas.classList.contains('hidden')) {
+                // Show enhanced view
+                applyImageEnhancements();
+                videoElement.classList.add('hidden');
+                canvas.classList.remove('hidden');
+                document.getElementById('enhanceImage').innerHTML = '<i class="fas fa-eye"></i><span>Original</span>';
+            } else {
+                // Show original view
+                videoElement.classList.remove('hidden');
+                canvas.classList.add('hidden');
+                document.getElementById('enhanceImage').innerHTML = '<i class="fas fa-magic"></i><span>Melhorar</span>';
+            }
+        });
+
+        // Start camera with enhanced features
         document.getElementById('startCamera').addEventListener('click', async () => {
             try {
                 const cameraSelect = document.getElementById('cameraSelect');
+                const resolutionSelect = document.getElementById('resolutionSelect');
                 const selectedCamera = cameraSelect.value;
                 
                 if (!selectedCamera) {
@@ -897,20 +1082,42 @@
 
                 const videoElement = document.getElementById('cameraPreview');
                 
-                // Request camera access with optimized settings
+                // Get resolution settings
+                let width, height;
+                switch(resolutionSelect.value) {
+                    case 'hd':
+                        width = 1280; height = 720;
+                        break;
+                    case 'fhd':
+                        width = 1920; height = 1080;
+                        break;
+                    case '4k':
+                        width = 3840; height = 2160;
+                        break;
+                    default:
+                        width = 1920; height = 1080;
+                }
+                
+                // Enhanced camera constraints
                 const constraints = {
                     video: {
                         deviceId: selectedCamera ? { exact: selectedCamera } : undefined,
-                        width: { ideal: 1920, min: 640 },
-                        height: { ideal: 1080, min: 480 },
-                        frameRate: { ideal: 30, min: 15 },
+                        width: { ideal: width, min: 640 },
+                        height: { ideal: height, min: 480 },
+                        frameRate: { ideal: 60, min: 30 },
                         focusMode: { ideal: 'continuous' },
+                        exposureMode: { ideal: 'continuous' },
+                        whiteBalanceMode: { ideal: 'continuous' },
                         facingMode: selectedCamera ? undefined : { ideal: 'environment' }
                     }
                 };
 
                 videoStream = await navigator.mediaDevices.getUserMedia(constraints);
                 videoElement.srcObject = videoStream;
+                
+                // Initialize enhanced canvas
+                enhancedCanvas = document.getElementById('enhancedCanvas');
+                enhancedContext = enhancedCanvas.getContext('2d');
                 
                 // Wait for video to load
                 videoElement.onloadedmetadata = () => {
@@ -922,8 +1129,8 @@
                         context = canvas.getContext('2d');
                     }
                     
-                    // Start QR scanning
-                    startQRScanning(videoElement);
+                    // Start enhanced QR scanning
+                    startEnhancedQRScanning(videoElement);
                 };
 
                 // Show camera preview
@@ -936,8 +1143,9 @@
                 document.getElementById('stopCamera').classList.remove('hidden');
                 document.getElementById('focusCamera').classList.remove('hidden');
                 document.getElementById('toggleFlash').classList.remove('hidden');
+                document.getElementById('enhanceImage').classList.remove('hidden');
                 
-                console.log('Câmera iniciada com sucesso');
+                console.log('Câmera avançada iniciada com sucesso');
                 
             } catch (error) {
                 console.error('Erro ao iniciar câmera:', error);
@@ -945,16 +1153,25 @@
             }
         });
 
-        // Start QR scanning with advanced detection
-        function startQRScanning(videoElement) {
+        // Enhanced QR scanning with 7 advanced strategies
+        function startEnhancedQRScanning(videoElement) {
             scanningInterval = setInterval(() => {
                 if (videoElement.readyState === videoElement.HAVE_ENOUGH_DATA) {
+                    // Update FPS counter
+                    fpsCounter++;
+                    const now = Date.now();
+                    if (now - lastFpsTime >= 1000) {
+                        document.getElementById('fpsCounter').textContent = fpsCounter;
+                        fpsCounter = 0;
+                        lastFpsTime = now;
+                    }
+                    
                     // Use higher resolution for better detection
                     canvas.width = videoElement.videoWidth;
                     canvas.height = videoElement.videoHeight;
                     context.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
                     
-                    // Try multiple scanning strategies for maximum detection
+                    // Advanced detection strategies with brightness enhancement
                     const detectionStrategies = [
                         // Strategy 1: Full image, normal
                         () => {
@@ -983,15 +1200,22 @@
                             });
                         },
                         
-                        // Strategy 4: Enhanced contrast
+                        // Strategy 4: Enhanced contrast + brightness
                         () => {
                             const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
-                            // Enhance contrast
                             const data = imageData.data;
+                            const brightnessFactor = currentBrightness / 100;
+                            
                             for (let i = 0; i < data.length; i += 4) {
-                                const gray = (data[i] + data[i + 1] + data[i + 2]) / 3;
+                                // Apply brightness
+                                let r = data[i] * brightnessFactor;
+                                let g = data[i + 1] * brightnessFactor;
+                                let b = data[i + 2] * brightnessFactor;
+                                
+                                // Enhance contrast
+                                const gray = (r + g + b) / 3;
                                 const enhanced = gray > 128 ? 255 : 0;
-                                data[i] = data[i + 1] = data[i + 2] = enhanced;
+                                data[i] = data[i + 1] = data[i + 2] = Math.min(255, enhanced);
                             }
                             return jsQR(data, imageData.width, imageData.height, {
                                 inversionAttempts: "attemptBoth",
@@ -1015,15 +1239,56 @@
                             return jsQR(imageData.data, imageData.width, imageData.height, {
                                 inversionAttempts: "attemptBoth",
                             });
+                        },
+                        
+                        // Strategy 6: Edge detection enhancement
+                        () => {
+                            const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+                            const data = imageData.data;
+                            
+                            // Apply edge detection filter
+                            for (let i = 0; i < data.length; i += 4) {
+                                const gray = (data[i] + data[i + 1] + data[i + 2]) / 3;
+                                // Sharpen edges
+                                const sharpened = Math.min(255, Math.max(0, gray * 1.5 - 64));
+                                data[i] = data[i + 1] = data[i + 2] = sharpened;
+                            }
+                            
+                            return jsQR(data, imageData.width, imageData.height, {
+                                inversionAttempts: "attemptBoth",
+                            });
+                        },
+                        
+                        // Strategy 7: Multi-region scanning
+                        () => {
+                            const regions = [
+                                { x: 0, y: 0, w: canvas.width / 2, h: canvas.height / 2 },
+                                { x: canvas.width / 2, y: 0, w: canvas.width / 2, h: canvas.height / 2 },
+                                { x: 0, y: canvas.height / 2, w: canvas.width / 2, h: canvas.height / 2 },
+                                { x: canvas.width / 2, y: canvas.height / 2, w: canvas.width / 2, h: canvas.height / 2 }
+                            ];
+                            
+                            for (const region of regions) {
+                                const imageData = context.getImageData(region.x, region.y, region.w, region.h);
+                                const result = jsQR(imageData.data, imageData.width, imageData.height, {
+                                    inversionAttempts: "attemptBoth",
+                                });
+                                if (result) return result;
+                            }
+                            return null;
                         }
                     ];
                     
                     // Try each strategy until one works
                     for (let i = 0; i < detectionStrategies.length; i++) {
                         try {
+                            currentStrategy = i + 1;
+                            document.getElementById('strategyCounter').textContent = `${currentStrategy}/7`;
+                            
                             const code = detectionStrategies[i]();
                             if (code) {
                                 console.log(`QR detectado com estratégia ${i + 1}:`, code.data);
+                                document.getElementById('scanStatus').innerHTML = `<i class="fas fa-check"></i> QR Code Detectado!`;
                                 handleQRScan(code.data);
                                 return; // Stop trying other strategies
                             }
@@ -1032,8 +1297,11 @@
                             console.log(`Estratégia ${i + 1} falhou:`, error);
                         }
                     }
+                    
+                    // Update status if no QR found
+                    document.getElementById('scanStatus').innerHTML = `<i class="fas fa-search animate-spin"></i> Procurando QR Code...`;
                 }
-            }, 30); // Even faster scanning - every 30ms
+            }, 16); // Ultra-fast scanning - 60 FPS
         }
 
         // Stop camera
@@ -1122,48 +1390,71 @@
             
             // Create product card with enhanced design
             const productCard = document.createElement('div');
-            productCard.className = 'bg-gradient-to-r from-green-50 to-emerald-50 border-l-4 border-green-500 rounded-lg p-4 shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer';
+            productCard.className = 'bg-gradient-to-r from-green-50 to-emerald-50 border-l-4 border-green-500 rounded-xl p-5 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer transform hover:scale-[1.02]';
             productCard.innerHTML = `
-                <div class="flex justify-between items-start mb-2">
+                <div class="flex justify-between items-start mb-3">
                     <div class="flex-1">
-                        <div class="flex items-center space-x-2 mb-1">
-                            <span class="text-green-600 text-lg">✅</span>
-                            <h5 class="font-bold text-gray-800 text-lg">${product.name}</h5>
-                        </div>
-                        <div class="grid grid-cols-2 gap-2 text-sm">
-                            <div>
-                                <span class="font-medium text-gray-600">Código:</span>
-                                <span class="text-gray-800 font-mono bg-gray-100 px-2 py-1 rounded ml-1">${product.code}</span>
+                        <div class="flex items-center space-x-3 mb-2">
+                            <div class="bg-green-500 text-white rounded-full p-2">
+                                <i class="fas fa-check text-sm"></i>
                             </div>
-                            <div>
-                                <span class="font-medium text-gray-600">Quantidade:</span>
-                                <span class="text-gray-800 font-bold ml-1">${product.quantity}</span>
+                            <h5 class="font-bold text-gray-800 text-xl">${product.name}</h5>
+                        </div>
+                        <div class="grid grid-cols-2 gap-3 text-sm mb-3">
+                            <div class="bg-white rounded-lg p-2 shadow-sm">
+                                <div class="flex items-center space-x-2">
+                                    <i class="fas fa-barcode text-blue-500"></i>
+                                    <span class="font-medium text-gray-600">Código:</span>
+                                </div>
+                                <span class="text-gray-800 font-mono bg-gray-100 px-2 py-1 rounded mt-1 block">${product.code}</span>
+                            </div>
+                            <div class="bg-white rounded-lg p-2 shadow-sm">
+                                <div class="flex items-center space-x-2">
+                                    <i class="fas fa-cubes text-purple-500"></i>
+                                    <span class="font-medium text-gray-600">Quantidade:</span>
+                                </div>
+                                <span class="text-gray-800 font-bold text-lg mt-1 block">${product.quantity}</span>
                             </div>
                         </div>
-                        <div class="mt-2 text-sm">
-                            <span class="font-medium text-gray-600">📍 Localização:</span>
-                            <span class="text-gray-800 ml-1">${product.location.sector} → ${product.location.corridor} → ${product.location.shelf}</span>
+                        <div class="bg-white rounded-lg p-2 shadow-sm">
+                            <div class="flex items-center space-x-2 mb-1">
+                                <i class="fas fa-map-marker-alt text-red-500"></i>
+                                <span class="font-medium text-gray-600">Localização:</span>
+                            </div>
+                            <div class="flex items-center space-x-2 text-sm">
+                                <span class="bg-blue-100 text-blue-800 px-2 py-1 rounded">${product.location.sector}</span>
+                                <i class="fas fa-arrow-right text-gray-400"></i>
+                                <span class="bg-green-100 text-green-800 px-2 py-1 rounded">${product.location.corridor}</span>
+                                <i class="fas fa-arrow-right text-gray-400"></i>
+                                <span class="bg-purple-100 text-purple-800 px-2 py-1 rounded">${product.location.shelf}</span>
+                            </div>
                         </div>
                     </div>
                     <div class="text-right ml-4">
-                        <div class="text-xs text-gray-500 mb-1">Escaneado às</div>
-                        <div class="text-sm font-medium text-green-600">${timeString}</div>
-                        <button class="mt-2 bg-blue-500 text-white px-3 py-1 rounded-full text-xs hover:bg-blue-600 transition duration-200">
-                            Ver Detalhes
-                        </button>
+                        <div class="bg-white rounded-lg p-3 shadow-sm text-center">
+                            <div class="text-xs text-gray-500 mb-1">Escaneado às</div>
+                            <div class="text-sm font-bold text-green-600">${timeString}</div>
+                            <button class="mt-2 bg-blue-500 text-white px-3 py-1 rounded-full text-xs hover:bg-blue-600 transition duration-200 flex items-center space-x-1">
+                                <i class="fas fa-eye"></i>
+                                <span>Detalhes</span>
+                            </button>
+                        </div>
                     </div>
                 </div>
-                <div class="flex justify-between items-center mt-3 pt-3 border-t border-green-200">
-                    <div class="flex space-x-2">
-                        <button class="bg-red-500 text-white px-3 py-1 rounded text-xs hover:bg-red-600 transition duration-200" onclick="quickWithdraw('${productId}')">
-                            📤 Retirar
+                <div class="flex justify-between items-center mt-4 pt-4 border-t border-green-200">
+                    <div class="flex space-x-3">
+                        <button class="bg-red-500 text-white px-4 py-2 rounded-lg text-sm hover:bg-red-600 transition duration-200 flex items-center space-x-2 shadow-md" onclick="quickWithdraw('${productId}')">
+                            <i class="fas fa-minus"></i>
+                            <span>Retirar</span>
                         </button>
-                        <button class="bg-green-500 text-white px-3 py-1 rounded text-xs hover:bg-green-600 transition duration-200" onclick="quickReturn('${productId}')">
-                            📥 Devolver
+                        <button class="bg-green-500 text-white px-4 py-2 rounded-lg text-sm hover:bg-green-600 transition duration-200 flex items-center space-x-2 shadow-md" onclick="quickReturn('${productId}')">
+                            <i class="fas fa-plus"></i>
+                            <span>Devolver</span>
                         </button>
                     </div>
-                    <button class="text-red-500 hover:text-red-700 text-xs" onclick="removeFromScanned('${productId}')">
-                        🗑️ Remover da Lista
+                    <button class="text-red-500 hover:text-red-700 text-sm flex items-center space-x-1 hover:bg-red-50 px-2 py-1 rounded transition duration-200" onclick="removeFromScanned('${productId}')">
+                        <i class="fas fa-trash"></i>
+                        <span>Remover</span>
                     </button>
                 </div>
             `;
@@ -1216,7 +1507,10 @@
         function updateScannedCounter() {
             const count = scannedProductsSet.size;
             const clearButton = document.getElementById('clearScanned');
-            clearButton.innerHTML = `🗑️ Limpar Lista (${count})`;
+            const scanCounter = document.getElementById('scanCounter');
+            
+            clearButton.innerHTML = `<i class="fas fa-trash"></i><span>Limpar Lista (${count})</span>`;
+            scanCounter.textContent = count;
         }
 
         // Quick withdraw function
@@ -1512,5 +1806,5 @@
             }
         });
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'98745ee6207ef171',t:'MTc1OTI0MjEyOC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9874685612cbf171',t:'MTc1OTI0MjUxNS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
